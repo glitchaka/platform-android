@@ -71,3 +71,41 @@ jobs:
             Where-Object { $_.Name -match 'doom|meridian' }
           if (-not $bins) { throw 'Build produced no game executable.' }
           $bins | ForEach-Object { Write-Host "Executable: $($_.FullName)" }
+
+      - name: Start native game and check for an immediate crash
+        shell: pwsh
+        run: |
+          $gameRoot = (Resolve-Path 'build/desktop-idtech4').Path
+          $gameExe = Join-Path $gameRoot 'build/Win32/Release/Doom3BFG.exe'
+          $logOut = Join-Path $gameRoot 'meridian-startup.stdout.log'
+          $logErr = Join-Path $gameRoot 'meridian-startup.stderr.log'
+          if (-not (Test-Path $gameExe)) { throw "Native executable is missing: $gameExe" }
+          $arguments = '+set fs_basepath "' + $gameRoot + '" +set r_fullscreen 0 +set com_allowConsole 1'
+          Write-Host "Launching built idTech executable from $gameRoot"
+          $process = Start-Process -FilePath $gameExe -ArgumentList $arguments -WorkingDirectory $gameRoot -PassThru -RedirectStandardOutput $logOut -RedirectStandardError $logErr
+          $deadline = (Get-Date).AddSeconds(12)
+          while (-not $process.HasExited -and (Get-Date) -lt $deadline) {
+            Start-Sleep -Milliseconds 200
+            $process.Refresh()
+          }
+          if (-not $process.HasExited) {
+            Write-Host 'Native engine remained running for startup smoke duration.'
+            Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue
+          } else {
+            Write-Host "Native engine quit during startup: exit code $($process.ExitCode)"
+            if (Test-Path $logOut) { Get-Content $logOut -Tail 80 }
+            if (Test-Path $logErr) { Get-Content $logErr -Tail 80 }
+            throw 'Executable exited before 12-second startup smoke completed.'
+          }
+      - name: Upload native Windows build and startup diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: meridian-idtech4-win32
+          if-no-files-found: warn
+          retention-days: 7
+          path: |
+            build/desktop-idtech4/build/Win32/Release/Doom3BFG.exe
+            build/desktop-idtech4/base/
+            build/desktop-idtech4/meridian-startup.stdout.log
+            build/desktop-idtech4/meridian-startup.stderr.log

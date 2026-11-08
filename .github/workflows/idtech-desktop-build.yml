@@ -24,14 +24,30 @@ jobs:
       - name: Stage native idTech 4 project
         shell: pwsh
         run: python native/tools/prepare_desktop.py
-      - name: Install legacy DirectX SDK required by original idTech 4 audio
+      - name: Cache DirectX 2010 headers and import libraries
+        id: legacy-sdk
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}\dxsdk-jun10
+          key: ashenmeridian-dxsdk-june2010-headers-libs-v1
+      - name: Install original idTech 4 DirectX dependencies on cache miss
+        if: steps.legacy-sdk.outputs.cache-hit != 'true'
         shell: pwsh
         run: |
           choco install directx-sdk --yes --no-progress --limit-output
           if ($LASTEXITCODE -ne 0) { throw 'Legacy DirectX SDK installation failed' }
           $dx = Join-Path ([System.Environment]::GetFolderPath('ProgramFilesX86')) 'Microsoft DirectX SDK (June 2010)'
-          if (-not (Test-Path "$dx/Include/dxsdkver.h")) { throw 'Legacy DirectX header not installed' }
-          "DXSDK_DIR=$dx/" >> $env:GITHUB_ENV
+          $cache = Join-Path $env:RUNNER_TEMP 'dxsdk-jun10'
+          New-Item -ItemType Directory -Force -Path $cache | Out-Null
+          Copy-Item "$dx/Include" "$cache/Include" -Recurse -Force
+          Copy-Item "$dx/Lib" "$cache/Lib" -Recurse -Force
+      - name: Set original DirectX include and library locations
+        shell: pwsh
+        run: |
+          $cache = Join-Path $env:RUNNER_TEMP 'dxsdk-jun10'
+          if (-not (Test-Path "$cache/Include/dxsdkver.h")) { throw 'Legacy DirectX header unavailable' }
+          if (-not (Test-Path "$cache/Lib/x86")) { throw 'Legacy DirectX x86 import libraries unavailable' }
+          "DXSDK_DIR=$cache/" >> $env:GITHUB_ENV
       - name: Compile original idTech 4 engine with native Meridian game
         shell: pwsh
         run: |

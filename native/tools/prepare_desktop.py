@@ -74,20 +74,20 @@ def main() -> None:
         '\tif ( cvarSystem->GetCVarBool("meridian_native") ) { return; }',
         'Common.cpp/native-shell')
     common.write_text(text, encoding="utf-8")
-    # VS2010 marked every warning fatal. Modern MSVC raises deprecation
-    # warnings in Windows headers; disable legacy /WX on staged copies only.
+    # Modern VS emits different warnings than VS2010. Keep legacy flags
+    # out of staged builds, without modifying the original engine repository.
     import re
     for project in OUT.rglob("*.vcxproj"):
         original = project.read_text(encoding="utf-8-sig")
-        updated = re.sub(r"(<TreatWarningAsError(?:\\s+[^>]*)?>)true(</TreatWarningAsError>)",
-                         r"\\1false\\2", original)
+        updated = re.sub(r"(<TreatWarningAsError(?:\s+[^>]*)?>)true(</TreatWarningAsError>)",
+                         r"\1false\2", original)
         if updated != original:
             project.write_text(updated, encoding="utf-8")
-    # C++11 requires whitespace when concatenating a string literal and macro.
+    # C++11 refuses MSVC2010-style adjacent string literals + preprocessor macro.
     classic = OUT / "doomclassic" / "doom" / "d_main.cpp"
     text = classic.read_text(encoding="utf-8")
-    text = text.replace('\\\\"SAVEGAMENAME"', '\\\\" SAVEGAMENAME "')
-    text = text.replace('SAVEGAMENAME"%c.dsg"', 'SAVEGAMENAME "%c.dsg"')
+    text = text.replace('"SAVEGAMENAME', '" SAVEGAMENAME')
+    text = text.replace('SAVEGAMENAME"', 'SAVEGAMENAME "')
     classic.write_text(text, encoding="utf-8")
     pack_assets(ROOT / "Resource", OUT / "base", staged / "generated" / "AtlasDimensions.hpp")
     print(f"Desktop staging ready: {OUT}")

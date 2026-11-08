@@ -24,6 +24,14 @@ jobs:
       - name: Stage native idTech 4 project
         shell: pwsh
         run: python native/tools/prepare_desktop.py
+      - name: Install legacy DirectX SDK required by original idTech 4 audio
+        shell: pwsh
+        run: |
+          choco install directx-sdk --yes --no-progress --limit-output
+          if ($LASTEXITCODE -ne 0) { throw 'Legacy DirectX SDK installation failed' }
+          $dx = Join-Path ([System.Environment]::GetFolderPath('ProgramFilesX86')) 'Microsoft DirectX SDK (June 2010)'
+          if (-not (Test-Path "$dx/Include/dxsdkver.h")) { throw 'Legacy DirectX header not installed' }
+          "DXSDK_DIR=$dx/" >> $env:GITHUB_ENV
       - name: Compile original idTech 4 engine with native Meridian game
         shell: pwsh
         run: |

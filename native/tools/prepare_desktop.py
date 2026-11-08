@@ -77,6 +77,19 @@ def main() -> None:
     # Modern VS emits different warnings than VS2010. Keep legacy flags
     # out of staged builds, without modifying the original engine repository.
     import re
+    # The source release predates C++11 and defines the keyword 'nullptr' as
+    # an idNullPtr() macro. In modern MSVC that rewrites the STL's nullptr
+    # expressions into non-constexpr conversions (C3615 in xcall_once.h).
+    # Remove the keyword-redefining compatibility macro in the staging copy.
+    types_header = OUT / "neo" / "idlib" / "sys" / "sys_types.h"
+    types_text = types_header.read_text(encoding="utf-8")
+    types_text, removed = re.subn(
+        r"(?m)^[ \t]*#ifndef[ \t]+nullptr[^\n]*\n[ \t]*#define[ \t]+nullptr[^\n]*\n[ \t]*#endif[ \t]*(?:\n|$)",
+        "", types_text,
+    )
+    if removed != 1:
+        raise RuntimeError(f"Expected one legacy nullptr macro, found {removed}")
+    types_header.write_text(types_text, encoding="utf-8")
     for project in OUT.rglob("*.vcxproj"):
         original = project.read_text(encoding="utf-8-sig")
         updated = re.sub(r"(<TreatWarningAsError(?:\s+[^>]*)?>)true(</TreatWarningAsError>)",

@@ -15,10 +15,13 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
-      - name: Build and run native gameplay tests with MSVC
+      - name: Find installed MSVC, build, and test native gameplay
         shell: cmd
         run: |
-          call "%ProgramFiles%\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          for /f "usebackq delims=" %%I in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -property installationPath`) do set "VSINSTALL=%%I"
+          if not defined VSINSTALL exit /b 1
+          call "%VSINSTALL%\VC\Auxiliary\Build\vcvars64.bat"
+          if errorlevel 1 exit /b 1
           cl /nologo /EHsc /std:c++17 /W4 /Fe:native_smoke.exe native\core\World.cpp native\core\Combat.cpp native\core\Game.cpp native\tests\core_smoke.cpp
           if errorlevel 1 exit /b 1
           native_smoke.exe

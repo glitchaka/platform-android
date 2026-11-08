@@ -8,6 +8,7 @@ const MILESTONES = preload("res://Scripts/milestones.gd")
 const AUDIO = preload("res://Scripts/game_audio.gd")
 const TOUCH = preload("res://Scripts/touch_controls.gd")
 const ARSENAL = preload("res://Scripts/arsenal.gd")
+const IDTECH_PROJECTILES = preload("res://Scripts/IdTech/projectiles.gd")
 const POSTGAME = preload("res://Scripts/postgame.gd")
 const PROGRESSION = preload("res://Scripts/zone_progression.gd")
 var progression = PROGRESSION.new()
@@ -926,53 +927,7 @@ func player_sound(id: String) -> void:
 		dirty = true
 
 func tick_shots(delta: float) -> void:
-	for i in range(shots.size()-1,-1,-1):
-		var shot := shots[i]
-		var step_time := delta
-		if shot.delay > 0:
-			step_time = maxf(0,delta-shot.delay)
-			shot.delay -= delta
-			if step_time == 0: continue
-		var old: Vector2 = shot.position
-		var travel: float = minf(shot.range,shot.velocity.length()*step_time)
-		shot.position += shot.velocity.normalized()*travel
-		shot.range -= travel
-		var used := false
-		var candidates := enemies.duplicate()
-		candidates.sort_custom(func(a,b): return old.distance_squared_to(a.position)<old.distance_squared_to(b.position))
-		for enemy in candidates:
-			var enemy_center: Vector2 = enemy.position+Vector2(0,-4 if enemy.boss else 0)
-			var closest := Geometry2D.get_closest_point_to_segment(enemy_center,old,shot.position)
-			if enemy.alive and not shot.hits.has(enemy.get_instance_id()) and closest.distance_to(enemy_center)<(9 if enemy.boss else 5)+shot.radius:
-				shot.hits.append(enemy.get_instance_id())
-				if shot.burn > 0: enemy.ignite(int(shot.burn))
-				enemy.hit(int(shot.damage))
-				audio.play("hit")
-				shot.pierce -= 1
-				if shot.pierce < 0:
-					used = true
-					break
-		if not used:
-			for object in level.objects:
-				if object.active or object.kind not in ["crate","lever","quest"]:
-					continue
-				if object.kind == "quest" and postgame.stage != 3: continue
-				if Geometry2D.get_closest_point_to_segment(object.position,old,shot.position).distance_to(object.position)<6+shot.radius:
-					if object.kind == "quest":
-						postgame.shoot_switch(object)
-						continue
-					activate_object(object)
-					if object.kind == "crate":
-						coins += 1
-						audio.play("crate")
-					else:
-						audio.play("switch")
-						tell("Mecanismo activado. Busca el cofre.")
-					used = true
-					break
-		if used or shot.range<=0:
-			shots.remove_at(i)
-	queue_redraw()
+	IDTECH_PROJECTILES.step(self, delta)
 
 func spawn_trial_wave() -> void:
 	if not postgame.trial.is_empty(): postgame.spawn_trial()

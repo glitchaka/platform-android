@@ -1,0 +1,4 @@
+[submodule "vendor/doom3-bfg"]
+	path = vendor/doom3-bfg
+	url = https://github.com/glitchaka/DOOM-3-BFG-GES.git
+	branch = master

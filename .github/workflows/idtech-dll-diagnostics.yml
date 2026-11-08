@@ -41,14 +41,25 @@ jobs:
             else { Write-Host "FOUND DLL: $dll" }
           }
           Write-Host "Imports: $($dlls -join ', ')"
+      - name: Capture native access-violation dumps
+        shell: pwsh
+        run: |
+          $folder = Join-Path $env:GITHUB_WORKSPACE 'native-crash-dumps'
+          New-Item -ItemType Directory -Path $folder -Force | Out-Null
+          $key = 'HKCU:\Software\Microsoft\Windows\Windows Error Reporting\LocalDumps\Doom3BFG.exe'
+          New-Item -Path $key -Force | Out-Null
+          New-ItemProperty -Path $key -Name DumpFolder -Value $folder -PropertyType ExpandString -Force | Out-Null
+          New-ItemProperty -Path $key -Name DumpType -Value 1 -PropertyType DWord -Force | Out-Null
+          New-ItemProperty -Path $key -Name DumpCount -Value 2 -PropertyType DWord -Force | Out-Null
+          Write-Host "Configured WER local dumps at $folder"
       - name: Attempt startup with official redistributable runtimes
         shell: pwsh
         run: |
           choco install directx vcredist2010 --yes --no-progress --limit-output
           $exe = (Get-ChildItem staged -Filter Doom3BFG.exe -Recurse | Select-Object -First 1).FullName
           $root = (Get-ChildItem staged -Directory -Filter base -Recurse | Select-Object -First 1).Parent.FullName
-          $out = Join-Path $env:RUNNER_TEMP 'meridian.stdout.log'
-          $err = Join-Path $env:RUNNER_TEMP 'meridian.stderr.log'
+          $out = Join-Path $env:GITHUB_WORKSPACE 'native-crash-dumps/meridian.stdout.log'
+          $err = Join-Path $env:GITHUB_WORKSPACE 'native-crash-dumps/meridian.stderr.log'
           $process = Start-Process -FilePath $exe -WorkingDirectory $root -ArgumentList ('+set fs_basepath "' + $root + '" +set r_fullscreen 0 +set com_allowConsole 1') -PassThru -RedirectStandardOutput $out -RedirectStandardError $err
           $until = (Get-Date).AddSeconds(8)
           while (-not $process.HasExited -and (Get-Date) -lt $until) { Start-Sleep -Milliseconds 200; $process.Refresh() }
@@ -60,3 +71,35 @@ jobs:
           }
           Write-Host 'Native executable remained alive for eight seconds.'
           Stop-Process -Id $process.Id -Force
+
+      - name: Locate crash site and inspect WER dump
+        if: always()
+        shell: pwsh
+        run: |
+          Start-Sleep -Seconds 3
+          $folder = Join-Path $env:GITHUB_WORKSPACE 'native-crash-dumps'
+          $dumps = @(Get-ChildItem $folder -Filter '*.dmp' -ErrorAction SilentlyContinue)
+          Write-Host "Crash dumps: $($dumps.Count)"
+          try {
+            Get-WinEvent -FilterHashtable @{ LogName='Application'; Id=1000 } -MaxEvents 15 -ErrorAction Stop |
+              Where-Object { $_.Message -match 'Doom3BFG' } |
+              ForEach-Object { Write-Host "APPLICATION CRASH: $($_.Message)" }
+          } catch {
+            Write-Warning "Windows application event log was unavailable: $_"
+          }
+          $kits=Join-Path ([System.Environment]::GetFolderPath('ProgramFilesX86')) 'Windows Kits'
+          $debuggers = @(Get-ChildItem $kits -Recurse -Filter cdb.exe -ErrorAction SilentlyContinue |
+            Where-Object { $_.FullName -match '\\x86\\' })
+          if ($dumps.Count -gt 0 -and $debuggers.Count -gt 0) {
+            & $debuggers[0].FullName -z $dumps[0].FullName -c '!analyze -v; kv; q'
+          } else {
+            Write-Host 'No local cdb.exe or minidump available; raw WER info remains in artifact.'
+          }
+      - name: Upload Windows access-violation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: meridian-access-violation-report
+          retention-days: 7
+          if-no-files-found: warn
+          path: native-crash-dumps/

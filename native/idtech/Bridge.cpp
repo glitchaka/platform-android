@@ -5,6 +5,10 @@
 #include "../core/Game.cpp"
 #include "../generated/AtlasDimensions.hpp"
 
+// Dedicated native mode: game state and UI come from Ashen Meridian,
+// not from the DOOM campaign, SWF shell, or a loaded map.
+idCVar meridian_native("meridian_native","1",CVAR_BOOL|CVAR_GAME,"run Ashen Meridian directly on idTech 4");
+
 namespace {
 meridian::Game g_meridian;
 bool g_meridianVisible=false;
@@ -26,16 +30,18 @@ void MeridianAtlas(const char *material,float px,float py,float w,float h,float 
 }
 void MeridianStart_f(const idCmdArgs &args){
     g_meridianVisible=true;
+    meridian_native.SetBool(true);
     g_meridian.NewGame();
     g_meridianLastMs=Sys_Milliseconds();
     common->Printf("Ashen Meridian: new native session started.\\n");
 }
 void MeridianLoad_f(const idCmdArgs &args){
     g_meridianVisible=true;
+    meridian_native.SetBool(true);
     if(!g_meridian.Load("meridian-native.save"))g_meridian.NewGame();
     g_meridianLastMs=Sys_Milliseconds();
 }
-void MeridianStop_f(const idCmdArgs &args){g_meridianVisible=false;}
+void MeridianStop_f(const idCmdArgs &args){g_meridianVisible=false;meridian_native.SetBool(false);}
 void MeridianRegisterCommands(){
     cmdSystem->AddCommand("meridian_start",MeridianStart_f,CMD_FL_GAME,"starts the native Ashen Meridian game");
     cmdSystem->AddCommand("meridian_load",MeridianLoad_f,CMD_FL_GAME,"loads the last native Ashen Meridian save");

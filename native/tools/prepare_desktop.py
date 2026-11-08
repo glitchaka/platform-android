@@ -39,10 +39,44 @@ def main() -> None:
         'bool idGameLocal::Draw( int clientNum ) {\n'
         '\tif ( Meridian_IsActive() ) { Meridian_Tick(); Meridian_Draw(); return true; }',
         "Game_local.cpp/render")
+    # In native mode the game does not need DOOM entity scripts, AAS, menus or map data.
+    source = replace_once(source,
+        '\\t// register game specific decl types',
+        '\\tif (meridian_native.GetBool()) {\\n'
+        '\\t\\tMeridianRegisterCommands();\\n'
+        '\\t\\tMeridianStart_f(idCmdArgs());\\n'
+        '\\t\\treturn;\\n'
+        '\\t}\\n'
+        '\\t// register game specific decl types',
+        'Game_local.cpp/native-init')
+    source = replace_once(source,
+        'void idGameLocal::Shutdown() {',
+        'void idGameLocal::Shutdown() {\\n'
+        '\\tif (meridian_native.GetBool()) { return; }',
+        'Game_local.cpp/native-shutdown')
     ENTRY.write_text(source, encoding="utf-8")
+
+    common_frame = OUT / "neo" / "framework" / "common_frame.cpp"
+    text = common_frame.read_text(encoding="utf-8")
+    text = replace_once(text,
+        'if ( loadGUI != NULL ) {',
+        'if ( cvarSystem->GetCVarBool("meridian_native") && game != NULL ) {\\n'
+        '\\t\\tgame->Draw(-1);\\n'
+        '\\t} else if ( loadGUI != NULL ) {',
+        'common_frame.cpp/native-draw')
+    common_frame.write_text(text, encoding="utf-8")
+
+    common = OUT / "neo" / "framework" / "Common.cpp"
+    text = common.read_text(encoding="utf-8")
+    text = replace_once(text,
+        'void idCommonLocal::CreateMainMenu() {',
+        'void idCommonLocal::CreateMainMenu() {\\n'
+        '\\tif ( cvarSystem->GetCVarBool("meridian_native") ) { return; }',
+        'Common.cpp/native-shell')
+    common.write_text(text, encoding="utf-8")
     pack_assets(ROOT / "Resource", OUT / "base", staged / "generated" / "AtlasDimensions.hpp")
     print(f"Desktop staging ready: {OUT}")
-    print("Engine hook: idGameLocal::Draw; registered commands meridian_start, meridian_load, meridian_stop.")
+    print("Engine hooks: idGameLocal, idCommonLocal::Draw and CreateMainMenu; native standalone startup.")
     print("Not compiled, tested, or verified playable. Build with a compatible Windows toolchain.")
 
 if __name__ == "__main__":

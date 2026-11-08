@@ -38,18 +38,14 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File Launchers/Construir_idTe
 ```
 
 La preparacion crea `build/desktop-idtech4/`, fuera del control de versiones.
-La compilacion NO se ha realizado en esta sesion. En un ejecutable que logre iniciar
-una partida en el motor, los comandos incorporados son `meridian_start`,
-`meridian_load` y `meridian_stop`. Se necesita arrancar el motor e ingresar
-a una sesion de juego para que se ejecute `idGameLocal::Draw`.
+La compilacion NO se ha realizado en esta sesion. En un ejecutable del motor que consiga arrancar, se inicia la partida nativa\nautomaticamente; los comandos de consola disponibles son `meridian_start`,
+`meridian_load` y `meridian_stop`. No es necesario abrir una sesion de DOOM: `common_frame.cpp` presenta la capa\nnativa aun sin un mapa comercial cargado.
 
 ## Limitaciones que impiden afirmar que esta terminado
 
 1. El motor fuente es una version Windows antigua que requiere adaptaciones de
    compilacion y datos base. No hay binario comprobado.
-2. El puente actualmente se engancha al dibujo de una sesion de juego existente:
-   falta un arranque autonomo directamente en Ashen Meridian y eliminar la
-   dependencia de mapas/GUI originales.
+2. Se ha incorporado un arranque alternativo y directo en `idCommonLocal::Draw`\n   y se omite el menu original en modo nativo. Sigue sin estar compilado ni\n   probado en un ejecutable Windows; pueden existir dependencias iniciales del motor.
 3. El mapa, movimiento, combate basico y progreso estan portados, pero la tienda,
    las seis armas completas, postgame, todas las variantes de enemigos, HUD, audio
    y contenido de las 55 salas siguen necesitando paridad con el juego original.
@@ -60,4 +56,4 @@ a una sesion de juego para que se ejecute `idGameLocal::Draw`.
    migracion del guardado JSON original.
 6. Solo despues de cerrar y verificar esta version nativa corresponde preparar Android.
 
-No se afirma que un submodulo por si mismo sea una migracion del motor.
+**El intento de arranque directo utiliza realmente los subsistemas del motor idTech 4.**\nNo se afirma que un submodulo por si mismo sea una migracion del motor.

@@ -3,6 +3,7 @@
 .audio-build/
 .recovery/
 Builds/
+build/
 *.zip
 *.log
 *.keystore

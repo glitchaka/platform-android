@@ -124,6 +124,30 @@ def main() -> None:
     typeinfo = OUT / "neo" / "d3xp" / "gamesys" / "TypeInfo.h"
     if not typeinfo.exists():
         typeinfo.write_text("#pragma once" + chr(10) + "// Generated type metadata is not included in this GPL source release." + chr(10), encoding="ascii")
+    # WGL ARB function pointers are obtained from a temporary OpenGL context
+    # in the old Windows renderer. On current systems those pointers can become
+    # invalid when that context is destroyed (software NX fault in
+    # GLW_ChoosePixelFormat, confirmed by the native crash dump and PDB).
+    # Use Win32's tested ChoosePixelFormat and an ordinary compatibility
+    # context instead; a modern graphics driver still exposes its GL features.
+    glimp = OUT / "neo" / "sys" / "win32" / "win_glimp.cpp"
+    text = glimp.read_text(encoding="utf-8")
+    text = replace_once(text,
+        '\tGLW_GetWGLExtensionsWithFakeWindow();',
+        '\tGLW_GetWGLExtensionsWithFakeWindow();\n'
+        '\t// Avoid calling WGL extensions acquired on a destroyed fake context.\n'
+        '\twglChoosePixelFormatARB = NULL;\n'
+        '\twglCreateContextAttribsARB = NULL;\n'
+        '\tcommon->Printf("Ashen Meridian: Win32 OpenGL compatibility context\\n");',
+        'win_glimp.cpp/stale-WGL-pointers')
+    text = replace_once(text,
+        'static HGLRC CreateOpenGLContextOnDC( const HDC hdc, const bool debugContext ) {\n',
+        'static HGLRC CreateOpenGLContextOnDC( const HDC hdc, const bool debugContext ) {\n'
+        '\tif ( wglCreateContextAttribsARB == NULL ) {\n'
+        '\t\treturn qwglCreateContext( hdc );\n'
+        '\t}\n',
+        'win_glimp.cpp/legacy-compat-context')
+    glimp.write_text(text, encoding="utf-8")
     pack_assets(ROOT / "Resource", OUT / "base", staged / "generated" / "AtlasDimensions.hpp")
     # Bring the original world references and exported maps into the native base.
     references = OUT / "base" / "meridian-source" / "maps"

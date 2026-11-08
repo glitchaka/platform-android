@@ -95,6 +95,26 @@ jobs:
           } else {
             Write-Host 'No local cdb.exe or minidump available; raw WER info remains in artifact.'
           }
+      - name: Capture exception with official Sysinternals ProcDump
+        if: always()
+        shell: pwsh
+        run: |
+          $exe = (Get-ChildItem staged -Filter Doom3BFG.exe -Recurse | Select-Object -First 1).FullName
+          $root = (Get-ChildItem staged -Directory -Filter base -Recurse | Select-Object -First 1).Parent.FullName
+          $folder = Join-Path $env:GITHUB_WORKSPACE 'native-crash-dumps'
+          New-Item -ItemType Directory -Force -Path $folder | Out-Null
+          $procDump = Join-Path $env:RUNNER_TEMP 'procdump.exe'
+          Invoke-WebRequest 'https://live.sysinternals.com/procdump.exe' -OutFile $procDump
+          $signature = Get-AuthenticodeSignature $procDump
+          Write-Host "ProcDump signature: $($signature.Status); publisher: $($signature.SignerCertificate.Subject)"
+          if ($signature.Status -ne 'Valid' -or $signature.SignerCertificate.Subject -notmatch 'Microsoft') {
+            throw 'ProcDump did not have a valid Microsoft digital signature.'
+          }
+          & $procDump -accepteula -e -mm -x $folder $exe +set fs_basepath $root +set r_fullscreen 0
+          Write-Host "ProcDump exit code: $LASTEXITCODE"
+          $dumps = @(Get-ChildItem $folder -Filter '*.dmp')
+          if ($dumps.Count -lt 1) { throw 'ProcDump did not capture an exception dump.' }
+          $dumps | ForEach-Object { Write-Host "Captured crash dump: $($_.Name), $($_.Length) bytes" }
       - name: Upload Windows access-violation evidence
         if: always()
         uses: actions/upload-artifact@v4

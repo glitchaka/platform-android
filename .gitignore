@@ -1,0 +1,16 @@
+.godot/
+.android-build/
+.audio-build/
+.recovery/
+Builds/
+*.zip
+*.log
+*.keystore
+*.jks
+.env
+.env.*
+Tests/*.png
+Tests/*.png.import
+Tests/*.json
+Tests/*output.txt
+__pycache__/

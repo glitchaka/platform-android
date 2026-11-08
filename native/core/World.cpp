@@ -103,7 +103,8 @@ Room CreateRoom(const std::string &id,const std::set<std::string> &collected,con
         addPickup(r,"coin",id+":"+num,p.x+16,p.y-10,collected);
     }
     for(int x=128;x<(int)w-40;x+=144)
-        addPickup(r,"crate",id+":crate"+std::to_string(x),(float)x,r.floorY-4,collected);
+        {char crateId[32];std::sprintf(crateId,"crate%d",x);
+         addPickup(r,"crate",id+":"+crateId,(float)x,r.floorY-4,collected);}
     return r;
 }
 }

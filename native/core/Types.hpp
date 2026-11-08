@@ -3,6 +3,7 @@
 #include <cmath>
 #include <cstddef>
 #include <string>
+#include <set>
 #include <vector>
 
 namespace meridian {
@@ -42,6 +43,7 @@ struct Bullet {
     Vec2 position,velocity;
     float remaining;
     int damage,pierce;
+    std::set<size_t> hitIndices;
     Bullet():remaining(0),damage(1),pierce(0){}
 };
 struct Room {

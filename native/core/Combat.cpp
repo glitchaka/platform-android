@@ -38,7 +38,7 @@ void Combat::TickShots(float dt,std::vector<Bullet> &shots,std::vector<Enemy> &e
         std::vector<Contact> impacts;
         for(size_t i=0;i<enemies.size();++i){
             const Enemy &e=enemies[i];
-            if(!e.alive)continue;
+            if(!e.alive||shot.hitIndices.count(i)!=0)continue;
             const Vec2 center(e.position.x,e.position.y-(e.boss?4.0f:0.0f));
             const float fraction=Fraction(old,next,center,e.boss?11.0f:6.0f);
             if(fraction>=0){Contact hit={fraction,i};impacts.push_back(hit);}
@@ -50,6 +50,7 @@ void Combat::TickShots(float dt,std::vector<Bullet> &shots,std::vector<Enemy> &e
         for(size_t i=0;i<impacts.size()&&!finished;++i){
             Enemy &e=enemies[impacts[i].index];
             if(!e.alive)continue;
+            shot.hitIndices.insert(impacts[i].index);
             e.hp-=shot.damage;
             if(e.hp<=0){
                 e.alive=false;

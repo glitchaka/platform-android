@@ -190,7 +190,8 @@ void Game::Interact(){
         const Door d=room.doors[i];
         if(!near(hero.position,Vec2(d.x,d.y),17))continue;
         if(!GateOpen(d)){notice="ACCESO BLOQUEADO";return;}
-        EnterRoom(d.target,roomId);
+        const std::string fromRoom=roomId;
+        EnterRoom(d.target,fromRoom);
         return;
     }
 }

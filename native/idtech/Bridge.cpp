@@ -1,9 +1,9 @@
 // Embedded into idTech 4's Game_local.cpp by native/tools/prepare_desktop.py.
 // Runs in the engine's rendering context; not a separate graphics framework.
-#include "core/World.cpp"
-#include "core/Combat.cpp"
-#include "core/Game.cpp"
-#include "generated/AtlasDimensions.hpp"
+#include "../core/World.cpp"
+#include "../core/Combat.cpp"
+#include "../core/Game.cpp"
+#include "../generated/AtlasDimensions.hpp"
 
 namespace {
 meridian::Game g_meridian;

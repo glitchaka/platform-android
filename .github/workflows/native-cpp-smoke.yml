@@ -1,0 +1,24 @@
+name: Native C++ core smoke (Windows)
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'native/core/**'
+      - 'native/generated/**'
+      - 'native/tests/**'
+      - '.github/workflows/native-cpp-smoke.yml'
+  workflow_dispatch:
+
+jobs:
+  native-core:
+    runs-on: windows-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and run native gameplay tests with MSVC
+        shell: cmd
+        run: |
+          call "%ProgramFiles%\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          cl /nologo /EHsc /std:c++17 /W4 /Fe:native_smoke.exe native\core\World.cpp native\core\Combat.cpp native\core\Game.cpp native\tests\core_smoke.cpp
+          if errorlevel 1 exit /b 1
+          native_smoke.exe

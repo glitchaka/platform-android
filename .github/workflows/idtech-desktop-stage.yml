@@ -35,4 +35,12 @@ jobs:
           foreach ($name in $files) {
             if (-not (Test-Path "$root/base/textures/meridian/$name.tga")) { throw "Missing original texture $name" }
           }
-          Write-Host 'idTech staging, native entrypoint and all five sprite atlases are present.'
+          $textureCount = @(Get-ChildItem "$root/base/textures/meridian" -Recurse -Filter '*.tga').Count
+          $audioCount = @(Get-ChildItem "$root/base/sound/meridian" -Recurse -File |
+            Where-Object { $_.Extension -in @('.wav', '.ogg') }).Count
+          if ($textureCount -lt 27) { throw "Only $textureCount / 27 original PNG assets packaged." }
+          if ($audioCount -lt 38) { throw "Only $audioCount / 38 original sound files packaged." }
+          foreach ($reference in @('world-map-data.json','mapa metroidvania.png')) {
+            if (-not (Test-Path "$root/base/meridian-source/maps/$reference")) { throw "Missing map reference: $reference" }
+          }
+          Write-Host "idTech native resources: $textureCount textures, $audioCount original sound files, maps and references."

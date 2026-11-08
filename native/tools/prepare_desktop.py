@@ -100,6 +100,19 @@ def main() -> None:
     if not typeinfo.exists():
         typeinfo.write_text("#pragma once\\n// Optional generated introspection metadata is unavailable in the source release.\\n", encoding="ascii")
     pack_assets(ROOT / "Resource", OUT / "base", staged / "generated" / "AtlasDimensions.hpp")
+    # Bring the original world references and exported maps into the native base.
+    references = OUT / "base" / "meridian-source" / "maps"
+    references.mkdir(parents=True, exist_ok=True)
+    for name in ("mapa metroidvania.png", "como debe usar los sprites.png"):
+        if (ROOT / name).is_file():
+            shutil.copy2(ROOT / name, references / name)
+    map_exports = ROOT / "Builds" / "Maps"
+    if map_exports.is_dir():
+        for name in ("world-map-data.json", "map-drawing.json",
+                     "mapa-completo.png", "mapa-completo.svg"):
+            source = map_exports / name
+            if source.is_file():
+                shutil.copy2(source, references / name)
     print(f"Desktop staging ready: {OUT}")
     print("Engine hooks: idGameLocal, idCommonLocal::Draw and CreateMainMenu; native standalone startup.")
     print("Not compiled, tested, or verified playable. Build with a compatible Windows toolchain.")

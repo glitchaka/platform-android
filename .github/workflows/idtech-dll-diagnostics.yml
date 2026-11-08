@@ -1,0 +1,62 @@
+name: Diagnosticar dependencias Windows de idTech 4
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/idtech-dll-diagnostics.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: windows-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: meridian-idtech4-win32
+          run-id: 42535907344
+          github-token: ${{ github.token }}
+          path: staged
+      - name: Determine missing DLLs without rebuilding the game
+        shell: pwsh
+        run: |
+          $exe = (Get-ChildItem staged -Filter Doom3BFG.exe -Recurse | Select-Object -First 1).FullName
+          if (-not $exe) { throw 'Windows executable missing from native CI artifact.' }
+          $pf = [System.Environment]::GetFolderPath('ProgramFilesX86')
+          $vswhere = Join-Path $pf 'Microsoft Visual Studio/Installer/vswhere.exe'
+          $vsdir = (& $vswhere -latest -products '*' -property installationPath).Trim()
+          $dumpbin = Get-ChildItem "$vsdir/VC/Tools/MSVC" -Filter dumpbin.exe -Recurse |
+            Where-Object { $_.FullName -match 'Hostx64.*x86' } | Select-Object -First 1
+          if (-not $dumpbin) { throw 'MSVC dumpbin unavailable.' }
+          $output = & $dumpbin.FullName /DEPENDENTS $exe
+          $dlls = @($output | ForEach-Object { if ($_ -match '^\s*([\w.\-]+\.dll)\s*$') { $Matches[1] } } | Sort-Object -Unique)
+          foreach ($dll in $dlls) {
+            $locations = @((Split-Path $exe), "$env:WINDIR/SysWOW64", "$env:WINDIR/System32")
+            $found = @($locations | ForEach-Object { Join-Path $_ $dll } | Where-Object { Test-Path $_ })
+            if ($found.Count -eq 0) { Write-Host "MISSING DLL: $dll" }
+            else { Write-Host "FOUND DLL: $dll" }
+          }
+          Write-Host "Imports: $($dlls -join ', ')"
+      - name: Attempt startup with official redistributable runtimes
+        shell: pwsh
+        run: |
+          choco install directx vcredist2010 --yes --no-progress --limit-output
+          $exe = (Get-ChildItem staged -Filter Doom3BFG.exe -Recurse | Select-Object -First 1).FullName
+          $root = (Get-ChildItem staged -Directory -Filter base -Recurse | Select-Object -First 1).Parent.FullName
+          $out = Join-Path $env:RUNNER_TEMP 'meridian.stdout.log'
+          $err = Join-Path $env:RUNNER_TEMP 'meridian.stderr.log'
+          $process = Start-Process -FilePath $exe -WorkingDirectory $root -ArgumentList ('+set fs_basepath "' + $root + '" +set r_fullscreen 0 +set com_allowConsole 1') -PassThru -RedirectStandardOutput $out -RedirectStandardError $err
+          $until = (Get-Date).AddSeconds(8)
+          while (-not $process.HasExited -and (Get-Date) -lt $until) { Start-Sleep -Milliseconds 200; $process.Refresh() }
+          if ($process.HasExited) {
+            Write-Host "EXIT CODE: $($process.ExitCode)"
+            if (Test-Path $out) { Get-Content $out -Tail 80 }
+            if (Test-Path $err) { Get-Content $err -Tail 80 }
+            throw 'Native executable exited during startup.'
+          }
+          Write-Host 'Native executable remained alive for eight seconds.'
+          Stop-Process -Id $process.Id -Force

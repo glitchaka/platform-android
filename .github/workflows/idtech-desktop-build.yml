@@ -72,6 +72,17 @@ jobs:
           if (-not $bins) { throw 'Build produced no game executable.' }
           $bins | ForEach-Object { Write-Host "Executable: $($_.FullName)" }
 
+      - name: Install Microsoft legacy DirectX runtime required by idTech 4
+        shell: pwsh
+        run: |
+          choco install directx --yes --no-progress --limit-output
+          if ($LASTEXITCODE -ne 0) { throw 'Installing the legacy DirectX game runtime failed' }
+          $required = @('XAudio2_7.dll','XInput1_3.dll','X3DAudio1_7.dll')
+          foreach ($dll in $required) {
+            $path = Join-Path "$env:WINDIR/SysWOW64" $dll
+            if (-not (Test-Path $path)) { throw "Required 32-bit DirectX runtime missing: $dll" }
+            Write-Host "Legacy DirectX runtime available: $dll"
+          }
       - name: Start native game and check for an immediate crash
         shell: pwsh
         run: |

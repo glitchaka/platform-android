@@ -57,3 +57,8 @@ La compilacion NO se ha realizado en esta sesion. En un ejecutable del motor que
 6. Solo despues de cerrar y verificar esta version nativa corresponde preparar Android.
 
 **El intento de arranque directo utiliza realmente los subsistemas del motor idTech 4.**\nNo se afirma que un submodulo por si mismo sea una migracion del motor.
+
+
+## Runtime en Windows
+
+El motor BFG legado enlaza contra DLL de DirectX de junio de 2010, especialmente XAudio 2.7, XInput 1.3 y X3DAudio 1.7. El SDK usado para compilar **no** instala necesariamente el runtime en una maquina destino. Se requiere instalar el paquete oficial **Microsoft DirectX End-User Runtimes (June 2010)** desde https://www.microsoft.com/en-us/download/details.aspx?id=8109. No se distribuyen DLL de Microsoft copiadas en el repositorio. La prueba CI instala el runtime en Windows antes de arrancar el ejecutable.

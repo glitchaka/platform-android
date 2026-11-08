@@ -4,6 +4,7 @@ No altera el submodulo ni compila automaticamente.
 """
 from __future__ import annotations
 import shutil
+import re
 from pathlib import Path
 from pack_assets import pack_assets
 
@@ -88,7 +89,6 @@ def main() -> None:
     win_headers.write_text(win_text, encoding="utf-8")
     # Modern VS emits different warnings than VS2010. Keep legacy flags
     # out of staged builds, without modifying the original engine repository.
-    import re
     # The source release predates C++11 and defines the keyword 'nullptr' as
     # an idNullPtr() macro. In modern MSVC that rewrites the STL's nullptr
     # expressions into non-constexpr conversions (C3615 in xcall_once.h).

@@ -1,0 +1,43 @@
+name: Native idTech 4 desktop executable (Windows)
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'native/core/**'
+      - 'native/idtech/**'
+      - 'native/tools/**'
+      - 'native/generated/**'
+      - '.github/workflows/idtech-desktop-build.yml'
+  workflow_dispatch:
+
+jobs:
+  idtech-windows:
+    runs-on: windows-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Prepare Python assets converter
+        shell: pwsh
+        run: python -m pip install pillow
+      - name: Stage native idTech 4 project
+        shell: pwsh
+        run: python native/tools/prepare_desktop.py
+      - name: Compile original idTech 4 engine with native Meridian game
+        shell: pwsh
+        run: |
+          $pf = [System.Environment]::GetFolderPath('ProgramFilesX86')
+          $vswhere = Join-Path $pf 'Microsoft Visual Studio\Installer\vswhere.exe'
+          $vsdir = (& $vswhere -latest -products '*' -property installationPath).Trim()
+          if (-not $vsdir) { throw 'Visual Studio not found' }
+          $msbuild = Join-Path $vsdir 'MSBuild\Current\Bin\MSBuild.exe'
+          & $msbuild 'build/desktop-idtech4/neo/doom3.sln' '/m:2' '/p:Configuration=Release' '/p:Platform=Win32' '/p:PlatformToolset=v145' '/v:minimal' '/nologo'
+          if ($LASTEXITCODE -ne 0) { throw 'idTech 4 engine compilation failed. Review compiler errors above.' }
+      - name: Check generated game executable
+        shell: pwsh
+        run: |
+          $bins = Get-ChildItem 'build/desktop-idtech4' -Recurse -Filter '*.exe' |
+            Where-Object { $_.Name -match 'doom|meridian' }
+          if (-not $bins) { throw 'Build produced no game executable.' }
+          $bins | ForEach-Object { Write-Host "Executable: $($_.FullName)" }

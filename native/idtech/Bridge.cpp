@@ -19,14 +19,44 @@ idVec4 MeridianColor(float r,float g,float b,float a=1.0f){return idVec4(r,g,b,a
 void MeridianFill(float x,float y,float w,float h,const idVec4 &color){
     renderSystem->DrawFilled(color,x,y,w,h);
 }
-void MeridianText(int x,int y,const char *text,const idVec4 &color){
-    renderSystem->DrawSmallStringExt(x,y,text,color,true);
-}
 const idMaterial *MeridianMaterial(const char *name){return declManager->FindMaterial(name);}
 void MeridianAtlas(const char *material,float px,float py,float w,float h,float sx,float sy,float sw,float sh,float texW,float texH,const idVec4 &tint){
     renderSystem->SetColor(tint);
     renderSystem->DrawStretchPic(px,py,w,h,sx/texW,sy/texH,(sx+sw)/texW,(sy+sh)/texH,MeridianMaterial(material));
     renderSystem->SetColor(MeridianColor(1,1,1));
+}
+// The UI uses the exact 8x8 bitmap alphabet from Resource/UI.png.
+void MeridianText(int x,int y,const char *text,const idVec4 &color){
+    int cursor=x;
+    for(const unsigned char *p=(const unsigned char *)text;*p;++p){
+        unsigned char c=*p;
+        if(c==0xC3 && p[1]){
+            // UTF-8 Spanish accents are normalized only for the pixel alphabet.
+            const unsigned char n=*++p;
+            switch(n){
+                case 0x81:case 0xA1:c='A';break;
+                case 0x89:case 0xA9:c='E';break;
+                case 0x8D:case 0xAD:c='I';break;
+                case 0x93:case 0xB3:c='O';break;
+                case 0x9A:case 0xBA:c='U';break;
+                case 0x91:case 0xB1:c='N';break;
+                default:c=' ';break;
+            }
+        }
+        if(c=='\\n'){cursor=x;y+=10;continue;}
+        if(c>='a'&&c<='z')c=(unsigned char)(c-'a'+'A');
+        int gx=-1,gy=0;
+        if(c>='A'&&c<='Z'){
+            int i=c-'A';gx=(i%13)*8;gy=88+(i/13)*8;
+        }else if(c>='0'&&c<='9'){
+            gx=(c-'0')*8;gy=64;
+        }else{
+            const char *punct=".!?,':;+-";
+            for(int i=0;punct[i];++i)if(c==(unsigned char)punct[i]){gx=i*8;gy=80;break;}
+        }
+        if(gx>=0)MeridianAtlas("meridian/ui",(float)cursor,(float)y,8,8,(float)gx,(float)gy,8,8,MERIDIAN_UI_W,MERIDIAN_UI_H,color);
+        cursor+=8;
+    }
 }
 void MeridianStart_f(const idCmdArgs &args){
     g_meridianVisible=true;
@@ -79,7 +109,14 @@ void Meridian_Draw(){
         const meridian::Rect &r=room.platforms[i];
         const float x=(r.x-cameraX)*scale,y=yOffset+(r.y-cameraY)*scale;
         MeridianFill(x,y,r.w*scale,r.h*scale,ground);
-        MeridianFill(x,y,r.w*scale,3,MeridianColor(0.48f,0.58f,0.48f));
+        const std::string biome=room.record->zone;
+        const float sourceY=(biome=="fungus"||biome=="aurora")?0.0f:
+                            biome=="bone"?160.0f:(biome=="city"||biome=="deep")?320.0f:520.0f;
+        for(int tile=0;tile<(int)r.w;tile+=8){
+            const float tw=std::min(8.0f,r.w-tile);
+            MeridianAtlas("meridian/tiles",x+tile*scale,y,tw*scale,16,8,sourceY,tw,8,
+                MERIDIAN_TILES_W,MERIDIAN_TILES_H,MeridianColor(1,1,1));
+        }
     }
     for(size_t i=0;i<room.doors.size();++i){
         const meridian::Door &d=room.doors[i];
@@ -92,24 +129,40 @@ void Meridian_Draw(){
         const meridian::Pickup &p=room.pickups[i];
         if(p.taken)continue;
         const float x=(p.position.x-cameraX)*scale,y=yOffset+(p.position.y-cameraY)*scale;
-        if(p.kind=="coin")MeridianFill(x-3,y-3,6,6,MeridianColor(1,0.78f,0.22f));
-        else if(p.kind=="chest")MeridianFill(x-7,y-8,15,11,MeridianColor(0.65f,0.39f,0.16f));
-        else if(p.kind=="bench")MeridianFill(x-10,y,20,6,MeridianColor(0.45f,0.32f,0.28f));
-        else MeridianFill(x-5,y-10,10,12,MeridianColor(0.66f,0.55f,0.34f));
+        if(p.kind=="coin")
+            MeridianAtlas("meridian/collectables",x-8,y-8,16,16,8,0,8,8,MERIDIAN_COLLECTABLES_W,MERIDIAN_COLLECTABLES_H,MeridianColor(1,1,1));
+        else if(p.kind=="chest")
+            MeridianAtlas("meridian/tiles",x-8,y-8,16,16,16,792,8,8,MERIDIAN_TILES_W,MERIDIAN_TILES_H,MeridianColor(1,1,1));
+        else if(p.kind=="crate")
+            MeridianAtlas("meridian/tiles",x-8,y-8,16,16,0,792,8,8,MERIDIAN_TILES_W,MERIDIAN_TILES_H,MeridianColor(1,1,1));
+        else if(p.kind=="bench")
+            MeridianAtlas("meridian/tiles",x-16,y-8,32,16,0,784,8,8,MERIDIAN_TILES_W,MERIDIAN_TILES_H,MeridianColor(1,1,1));
+        else if(p.kind=="lever")
+            MeridianAtlas("meridian/tiles",x-8,y-24,16,32,0,768,8,16,MERIDIAN_TILES_W,MERIDIAN_TILES_H,MeridianColor(1,1,1));
+        else
+            MeridianAtlas("meridian/player",x-8,y-8,16,16,0,64,8,8,MERIDIAN_PLAYER_W,MERIDIAN_PLAYER_H,MeridianColor(0.9f,0.75f,0.6f));
     }
     for(size_t i=0;i<room.enemies.size();++i){
         const meridian::Enemy &e=room.enemies[i];
         if(!e.alive)continue;
         const float x=(e.position.x-cameraX)*scale,y=yOffset+(e.position.y-cameraY)*scale;
+        const int frame=(Sys_Milliseconds()/180)%(e.boss?3:4);
         const float side=e.boss?32.0f:16.0f;
-        MeridianFill(x-side/2,y-side,side,side,e.boss?MeridianColor(0.77f,0.24f,0.23f):MeridianColor(0.64f,0.37f,0.60f));
+        MeridianAtlas("meridian/enemies",x-side/2,y-side,16,side,32+frame*8,
+            e.boss?120.0f:e.flyer?56.0f:40.0f,8,e.boss?16.0f:8.0f,
+            MERIDIAN_ENEMIES_W,MERIDIAN_ENEMIES_H,MeridianColor(1,1,1));
     }
     for(size_t i=0;i<g_meridian.Shots().size();++i){
         const meridian::Bullet &b=g_meridian.Shots()[i];
         MeridianFill((b.position.x-cameraX)*scale,yOffset+(b.position.y-cameraY)*scale,5,3,MeridianColor(1,0.91f,0.58f));
     }
     const float px=(h.position.x-cameraX)*scale,py=yOffset+(h.position.y-cameraY)*scale;
-    MeridianAtlas("meridian/player",px-8,py-8,16,16,0,64,8,8,MERIDIAN_PLAYER_W,MERIDIAN_PLAYER_H,MeridianColor(1,1,1));
+    const int frame=(Sys_Milliseconds()/125)%8;
+    const float row=!h.grounded?88.0f:std::fabs(h.velocity.x)>3.0f?16.0f:64.0f;
+    const int walk=(row==16.0f)?frame:(frame/2)%4;
+    const float sourceX=(float)walk*8+(h.facing<0?8.0f:0.0f);
+    MeridianAtlas("meridian/player",px-8,py-8,16,16,sourceX,row,h.facing<0?-8.0f:8.0f,8,
+        MERIDIAN_PLAYER_W,MERIDIAN_PLAYER_H,MeridianColor(1,1,1));
     MeridianFill(0,0,640,50,MeridianColor(0.08f,0.08f,0.11f));
     MeridianText(12,12,va("ASHEN MERIDIAN | %s",room.record->name),MeridianColor(0.87f,0.98f,0.92f));
     MeridianText(12,29,va("VIDA %d/%d  MONEDAS %d  LLAVES %d",h.health,h.maxHealth,h.coins,h.keys),MeridianColor(0.98f,0.92f,0.73f));

@@ -98,7 +98,7 @@ def main() -> None:
     # these three includes do not require definitions beyond Class.h.
     typeinfo = OUT / "neo" / "d3xp" / "gamesys" / "TypeInfo.h"
     if not typeinfo.exists():
-        typeinfo.write_text("#pragma once\\n// Optional generated introspection metadata is unavailable in the source release.\\n", encoding="ascii")
+        typeinfo.write_text("#pragma once" + chr(10) + "// Generated type metadata is not included in this GPL source release." + chr(10), encoding="ascii")
     pack_assets(ROOT / "Resource", OUT / "base", staged / "generated" / "AtlasDimensions.hpp")
     # Bring the original world references and exported maps into the native base.
     references = OUT / "base" / "meridian-source" / "maps"

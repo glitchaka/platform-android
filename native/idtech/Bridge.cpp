@@ -8,6 +8,12 @@
 #define NULL nullptr
 #define MERIDIAN_ENGINE_NULL_RESTORE
 #endif
+// Force the current C++ library's constexpr/nullptr machinery to load before
+// restoring idTech's user-defined NULL macro.
+#include <mutex>
+#include <functional>
+#include <fstream>
+#include <sstream>
 #include "../core/World.cpp"
 #include "../core/Combat.cpp"
 #include "../core/Game.cpp"

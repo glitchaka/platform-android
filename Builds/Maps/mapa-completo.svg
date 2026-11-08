@@ -1,0 +1,528 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3680" height="2750" viewBox="0 0 3680 2750" role="img" aria-labelledby="map-title"><title id="map-title">Mapa completo de Ashen Meridian: 55 salas y 65 conexiones</title>
+<rect x="0" y="0" width="3680" height="2750" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="96" y="92.32" text-anchor="start" font-family="Arial, sans-serif" font-size="46" font-weight="bold" fill="#eef3ea">ASHEN MERIDIAN  /  ATLAS COMPLETO</text>
+<text x="96" y="136.92000000000002" text-anchor="start" font-family="Arial, sans-serif" font-size="26" font-weight="normal" fill="#a7b9b8">55 salas · 9 zonas · 65 conexiones reales · versión 0.4.1</text>
+<rect x="96" y="174" width="18" height="18" rx="3" fill="#87d7c3" stroke="none" stroke-width="1"/>
+<text x="126" y="188.32" text-anchor="start" font-family="Arial, sans-serif" font-size="21" font-weight="normal" fill="#eef3ea">Jardines del Alba</text>
+<rect x="486" y="174" width="18" height="18" rx="3" fill="#caa17b" stroke="none" stroke-width="1"/>
+<text x="516" y="188.32" text-anchor="start" font-family="Arial, sans-serif" font-size="21" font-weight="normal" fill="#eef3ea">Bosque de Huesos</text>
+<rect x="876" y="174" width="18" height="18" rx="3" fill="#8970bb" stroke="none" stroke-width="1"/>
+<text x="906" y="188.32" text-anchor="start" font-family="Arial, sans-serif" font-size="21" font-weight="normal" fill="#eef3ea">Ciudad en Ruinas</text>
+<rect x="1266" y="174" width="18" height="18" rx="3" fill="#389dcc" stroke="none" stroke-width="1"/>
+<text x="1296" y="188.32" text-anchor="start" font-family="Arial, sans-serif" font-size="21" font-weight="normal" fill="#eef3ea">Cruces</text>
+<rect x="1656" y="174" width="18" height="18" rx="3" fill="#797582" stroke="none" stroke-width="1"/>
+<text x="1686" y="188.32" text-anchor="start" font-family="Arial, sans-serif" font-size="21" font-weight="normal" fill="#eef3ea">Profundidades</text>
+<rect x="2046" y="174" width="18" height="18" rx="3" fill="#729f58" stroke="none" stroke-width="1"/>
+<text x="2076" y="188.32" text-anchor="start" font-family="Arial, sans-serif" font-size="21" font-weight="normal" fill="#eef3ea">Hongos</text>
+<rect x="2436" y="174" width="18" height="18" rx="3" fill="#d4d8ce" stroke="none" stroke-width="1"/>
+<text x="2466" y="188.32" text-anchor="start" font-family="Arial, sans-serif" font-size="21" font-weight="normal" fill="#eef3ea">Palacio Blanco</text>
+<rect x="2826" y="174" width="18" height="18" rx="3" fill="#49b9b1" stroke="none" stroke-width="1"/>
+<text x="2856" y="188.32" text-anchor="start" font-family="Arial, sans-serif" font-size="21" font-weight="normal" fill="#eef3ea">Pueblo</text>
+<rect x="3216" y="174" width="18" height="18" rx="3" fill="#b9604c" stroke="none" stroke-width="1"/>
+<text x="3246" y="188.32" text-anchor="start" font-family="Arial, sans-serif" font-size="21" font-weight="normal" fill="#eef3ea">Tutorial</text>
+<polyline points="1180,374 1180,383 1216,383 1216,437 1234,437 1234,428" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1693,428 1693,473 1567,473 1567,563 1585,563 1585,554" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1045,644 1045,653 1189,653 1189,563 1216,563 1216,554" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1441,554 1441,563 1468,563 1468,743 1486,743 1486,734" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1504,734 1504,743 1558,743 1558,563 1657,563 1657,554" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1738,554 1738,563 1855,563 1855,554" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1999,554 1999,563 2026,563 2026,653 2044,653 2044,644" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1171,644 1171,662 856,662 856,752 874,752 874,743" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1162,743 1162,752 1459,752 1459,743 1522,743 1522,734" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1540,734 1540,761 1378,761 1378,851 1396,851 1396,842" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1513,842 1513,860 1468,860 1468,950 1486,950 1486,941" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1567,941 1567,950 1756,950 1756,1040 1774,1040 1774,1031" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1819,1031 1819,1040 1945,1040 1945,1094 1963,1094 1963,1085" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="2278,1085 2278,1094 2323,1094 2323,1085" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="2467,1085 2467,1094 2494,1094 2494,1616 2512,1616 2512,1607" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="2566,1607 2566,1616 2602,1616 2602,1670 2620,1670 2620,1661" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="2692,1661 2692,1688 2404,1688 2404,1877 2422,1877 2422,1868" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1810,554 1810,572 1567,572 1567,662 1585,662 1585,653" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1702,653 1702,662 1837,662 1837,842 1855,842 1855,833" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1873,833 1873,860 1936,860 1936,1040 1873,1040 1873,1031" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1918,1031 1918,1049 1927,1049 1927,1634 1855,1634 1855,1625" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1909,1625 1909,1679 1693,1679 1693,1814 1711,1814 1711,1805" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1837,1805 1837,1814 1981,1814 1981,1886 1999,1886 1999,1877" fill="none" stroke="#efbf64" stroke-width="5" stroke-linejoin="round"/>
+<polyline points="2143,1877 2143,1886 2296,1886 2296,1877 2305,1877 2305,1868" fill="none" stroke="#efbf64" stroke-width="5" stroke-linejoin="round"/>
+<polyline points="2377,1868 2377,1877 2557,1877 2557,1868" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="2692,1868 2692,1877 2737,1877 2737,1868" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="2971,1868 2971,1877 2989,1877 2989,1679 3007,1679 3007,1670" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="3115,1670 3115,1877 2998,1877 2998,1994 3016,1994 3016,1985" fill="none" stroke="#f08c74" stroke-width="3.5" stroke-linejoin="round" stroke-dasharray="12 8"/>
+<polyline points="2188,644 2188,752 1936,752 1936,842 1891,842 1891,833" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1909,833 1909,842 1954,842 1954,833" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="2350,833 2350,842 2386,842 2386,869 2404,869 2404,860" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="2557,860 2557,869 2611,869 2611,860" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="2692,860 2692,869 2899,869 2899,860" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="3025,860 3025,869 3196,869 3196,860" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="3439,860 3439,995 2611,995 2611,986" fill="none" stroke="#f08c74" stroke-width="3.5" stroke-linejoin="round" stroke-dasharray="12 8"/>
+<polyline points="3142,986 3142,995 3160,995 3160,869 2764,869 2764,860" fill="none" stroke="#f08c74" stroke-width="3.5" stroke-linejoin="round" stroke-dasharray="12 8"/>
+<polyline points="2845,860 2845,869 2593,869 2593,581 2611,581 2611,572" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="3142,572 3142,599 3160,599 3160,869 3142,869 3142,860" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1810,653 1810,671 1657,671 1657,842 1675,842 1675,833" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1810,833 1810,851 1630,851 1630,842" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1648,941 1648,950 973,950 973,941" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1441,941 1441,968 937,968 937,1085 685,1085 685,1076" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="802,1076 802,1085 667,1085 667,923" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="748,923 748,932 838,932 838,752 1441,752 1441,743" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1729,941 1729,1139 1585,1139 1585,1130" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1639,1130 1639,1166 1387,1166 1387,1310 1405,1310 1405,1301" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1531,1301 1531,1328 1396,1328 1396,1391 1072,1391 1072,1382" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1216,1382 1216,1418 955,1418 955,1409" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="982,1409 982,1418 937,1418 937,1085 910,1085 910,1076" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1000,1409 1000,1418 1045,1418 1045,1175 1072,1175 1072,1166" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1360,1166 1360,1220 1378,1220 1378,1391 1360,1391 1360,1382" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1657,1301 1657,1526 1513,1526 1513,1661 1414,1661 1414,1652" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1486,1652 1486,1661 1531,1661 1531,1652" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1801,1652 1801,1661 1954,1661 1954,1679 1972,1679 1972,1814 1954,1814 1954,1805" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="1027,1409 1027,1436 946,1436 946,1778 964,1778 964,1769" fill="none" stroke="#f08c74" stroke-width="3.5" stroke-linejoin="round" stroke-dasharray="12 8"/>
+<polyline points="1036,1769 1036,1787 694,1787 694,1985 712,1985 712,1976" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="2278,1877 2278,1904 2224,1904 2224,2192 2242,2192 2242,2183" fill="none" stroke="#f08c74" stroke-width="3.5" stroke-linejoin="round" stroke-dasharray="12 8"/>
+<polyline points="820,923 820,932 649,932 649,842 523,842 523,833" fill="none" stroke="#f08c74" stroke-width="3.5" stroke-linejoin="round" stroke-dasharray="12 8"/>
+<polyline points="172,1166 172,1175 154,1175 154,1040 424,1040 424,1031" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="496,1031 496,1040 514,1040 514,842 559,842 559,833" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="586,833 586,842 505,842 505,653 424,653 424,644" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="487,644 487,653 406,653 406,455 424,455 424,446" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="487,446 487,455 505,455 505,437 1711,437 1711,419 2359,419 2359,410" fill="none" stroke="#f08c74" stroke-width="3.5" stroke-linejoin="round" stroke-dasharray="12 8"/>
+<polyline points="2593,410 2593,419 2674,419 2674,410" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<polyline points="2944,410 2944,419 3025,419 3025,410" fill="none" stroke="#60787c" stroke-width="3.5" stroke-linejoin="round"/>
+<rect x="1045.0" y="302.0" width="144.0" height="72.0" rx="5" fill="#302626" stroke="#b9604c" stroke-width="2.5"/>
+<text x="1117.0" y="334.66" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Sendero</text>
+<text x="1117.0" y="357.38" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#ce9b8b">INICIO</text>
+<rect x="1225.0" y="302.0" width="477.0" height="126.0" rx="5" fill="#1b3739" stroke="#49b9b1" stroke-width="2.5"/>
+<text x="1463.5" y="361.66" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Pueblo</text>
+<text x="1463.5" y="384.38" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#8bd0c8">DESCANSO / TIENDA</text>
+<rect x="1036.0" y="482.0" width="144.0" height="162.0" rx="5" fill="#18323e" stroke="#389dcc" stroke-width="2.5"/>
+<text x="1108.0" y="558.16" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Torre</text>
+<text x="1108.0" y="584.16" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">oeste</text>
+<rect x="1207.0" y="482.0" width="243.0" height="72.0" rx="5" fill="#18323e" stroke="#389dcc" stroke-width="2.5"/>
+<text x="1328.5" y="514.66" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Galería alta</text>
+<text x="1328.5" y="537.38" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#81bfd8">TESORO</text>
+<rect x="1477.0" y="482.0" width="72.0" height="252.0" rx="5" fill="#18323e" stroke="#389dcc" stroke-width="2.5"/>
+<text x="1513.0" y="593.64" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" font-weight="normal" fill="#eef3ea">Pozo</text>
+<text x="1513.0" y="613.64" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" font-weight="normal" fill="#eef3ea">cent-</text>
+<text x="1513.0" y="633.64" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" font-weight="normal" fill="#eef3ea">ral</text>
+<rect x="1576.0" y="482.0" width="243.0" height="72.0" rx="5" fill="#18323e" stroke="#389dcc" stroke-width="2.5"/>
+<text x="1697.5" y="526.16" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Pozo</text>
+<rect x="1846.0" y="482.0" width="162.0" height="72.0" rx="5" fill="#18323e" stroke="#389dcc" stroke-width="2.5"/>
+<text x="1927.0" y="514.66" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Nido</text>
+<text x="1927.0" y="537.38" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#81bfd8">GUARDIÁN</text>
+<rect x="2035.0" y="482.0" width="162.0" height="162.0" rx="5" fill="#18323e" stroke="#389dcc" stroke-width="2.5"/>
+<text x="2116.0" y="571.16" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Torre este</text>
+<rect x="1576.0" y="581.0" width="243.0" height="72.0" rx="5" fill="#18323e" stroke="#389dcc" stroke-width="2.5"/>
+<text x="1697.5" y="613.66" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Santuario</text>
+<text x="1697.5" y="636.38" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#81bfd8">DESCANSO / TIENDA</text>
+<rect x="1846.0" y="581.0" width="72.0" height="252.0" rx="5" fill="#18323e" stroke="#389dcc" stroke-width="2.5"/>
+<text x="1882.0" y="702.64" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" font-weight="normal" fill="#eef3ea">Pozo</text>
+<text x="1882.0" y="722.64" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" font-weight="normal" fill="#eef3ea">este</text>
+<rect x="865.0" y="671.0" width="585.0" height="72.0" rx="5" fill="#18323e" stroke="#389dcc" stroke-width="2.5"/>
+<text x="1157.5" y="715.16" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Camino oeste</text>
+<rect x="1666.0" y="680.0" width="153.0" height="153.0" rx="5" fill="#18323e" stroke="#389dcc" stroke-width="2.5"/>
+<text x="1742.5" y="740.16" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Cámara</text>
+<text x="1742.5" y="766.16" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">vital</text>
+<text x="1742.5" y="788.88" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#81bfd8">VIDA</text>
+<rect x="1387.0" y="770.0" width="252.0" height="72.0" rx="5" fill="#18323e" stroke="#389dcc" stroke-width="2.5"/>
+<text x="1513.0" y="814.16" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Galería baja</text>
+<rect x="1945.0" y="761.0" width="414.0" height="72.0" rx="5" fill="#18323e" stroke="#389dcc" stroke-width="2.5"/>
+<text x="2152.0" y="805.16" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Paso de Huesos</text>
+<rect x="964.0" y="869.0" width="486.0" height="72.0" rx="5" fill="#18323e" stroke="#389dcc" stroke-width="2.5"/>
+<text x="1207.0" y="913.16" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Camino de Hongos</text>
+<rect x="1477.0" y="869.0" width="261.0" height="72.0" rx="5" fill="#18323e" stroke="#389dcc" stroke-width="2.5"/>
+<text x="1607.5" y="901.66" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Cruce</text>
+<text x="1607.5" y="924.38" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#81bfd8">TESORO</text>
+<rect x="1765.0" y="869.0" width="162.0" height="162.0" rx="5" fill="#18323e" stroke="#389dcc" stroke-width="2.5"/>
+<text x="1846.0" y="958.16" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Torre baja</text>
+<rect x="1576.0" y="968.0" width="72.0" height="162.0" rx="5" fill="#18323e" stroke="#389dcc" stroke-width="2.5"/>
+<text x="1612.0" y="1044.64" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" font-weight="normal" fill="#eef3ea">Desc-</text>
+<text x="1612.0" y="1064.64" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" font-weight="normal" fill="#eef3ea">enso</text>
+<rect x="1846.0" y="1058.0" width="72.0" height="567.0" rx="5" fill="#18323e" stroke="#389dcc" stroke-width="2.5"/>
+<text x="1882.0" y="1327.14" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" font-weight="normal" fill="#eef3ea">Pozo</text>
+<text x="1882.0" y="1347.14" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" font-weight="normal" fill="#eef3ea">prof-</text>
+<text x="1882.0" y="1367.14" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" font-weight="normal" fill="#eef3ea">undo</text>
+<rect x="1954.0" y="968.0" width="333.0" height="117.0" rx="5" fill="#18323e" stroke="#389dcc" stroke-width="2.5"/>
+<text x="2120.5" y="1034.66" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Cavernas</text>
+<rect x="2314.0" y="1013.0" width="162.0" height="72.0" rx="5" fill="#18323e" stroke="#389dcc" stroke-width="2.5"/>
+<text x="2395.0" y="1057.16" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Puente este</text>
+<rect x="2503.0" y="1013.0" width="72.0" height="594.0" rx="5" fill="#18323e" stroke="#389dcc" stroke-width="2.5"/>
+<text x="2539.0" y="1295.64" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" font-weight="normal" fill="#eef3ea">Torre</text>
+<text x="2539.0" y="1315.64" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" font-weight="normal" fill="#eef3ea">del</text>
+<text x="2539.0" y="1335.64" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" font-weight="normal" fill="#eef3ea">este</text>
+<rect x="658.0" y="662.0" width="171.0" height="261.0" rx="5" fill="#233228" stroke="#729f58" stroke-width="2.5"/>
+<text x="743.5" y="787.66" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Puerta del</text>
+<text x="743.5" y="813.66" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">musgo</text>
+<rect x="676.0" y="968.0" width="243.0" height="108.0" rx="5" fill="#233228" stroke="#729f58" stroke-width="2.5"/>
+<text x="797.5" y="1018.66" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Refugio</text>
+<text x="797.5" y="1041.38" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#a4c192">DESCANSO / TIENDA</text>
+<rect x="946.0" y="977.0" width="90.0" height="432.0" rx="5" fill="#233228" stroke="#729f58" stroke-width="2.5"/>
+<text x="991.0" y="1199.9" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="normal" fill="#eef3ea">Tallo</text>
+<rect x="1063.0" y="1049.0" width="306.0" height="117.0" rx="5" fill="#233228" stroke="#efbf64" stroke-width="5"/>
+<text x="1216.0" y="1104.16" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Copa</text>
+<text x="1216.0" y="1126.88" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#efbf64">DOBLE SALTO</text>
+<rect x="1063.0" y="1229.0" width="306.0" height="153.0" rx="5" fill="#233228" stroke="#729f58" stroke-width="2.5"/>
+<text x="1216.0" y="1313.66" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Raíces</text>
+<rect x="1396.0" y="1175.0" width="270.0" height="126.0" rx="5" fill="#233228" stroke="#729f58" stroke-width="2.5"/>
+<text x="1531.0" y="1246.16" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Gruta</text>
+<rect x="1405.0" y="1337.0" width="90.0" height="315.0" rx="5" fill="#233228" stroke="#729f58" stroke-width="2.5"/>
+<text x="1450.0" y="1478.4" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="normal" fill="#eef3ea">Pozo</text>
+<text x="1450.0" y="1501.4" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="normal" fill="#eef3ea">de</text>
+<text x="1450.0" y="1524.4" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="normal" fill="#eef3ea">raíces</text>
+<rect x="1522.0" y="1535.0" width="288.0" height="117.0" rx="5" fill="#233228" stroke="#729f58" stroke-width="2.5"/>
+<text x="1666.0" y="1601.66" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Paso del sur</text>
+<rect x="955.0" y="1445.0" width="90.0" height="324.0" rx="5" fill="#233228" stroke="#729f58" stroke-width="2.5"/>
+<text x="1000.0" y="1590.9" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="normal" fill="#eef3ea">Senda</text>
+<text x="1000.0" y="1613.9" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="normal" fill="#eef3ea">enter-</text>
+<text x="1000.0" y="1636.9" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="normal" fill="#eef3ea">rada</text>
+<rect x="703.0" y="1796.0" width="342.0" height="180.0" rx="5" fill="#242a30" stroke="#797582" stroke-width="2.5"/>
+<text x="874.0" y="1882.66" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Abismo oeste</text>
+<text x="874.0" y="1905.38" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#a8a7ac">VIDA</text>
+<rect x="2395.0" y="662.0" width="171.0" height="198.0" rx="5" fill="#33332f" stroke="#caa17b" stroke-width="2.5"/>
+<text x="2480.5" y="756.16" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Puerta de</text>
+<text x="2480.5" y="782.16" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Huesos</text>
+<rect x="2602.0" y="608.0" width="252.0" height="252.0" rx="5" fill="#33332f" stroke="#caa17b" stroke-width="2.5"/>
+<text x="2728.0" y="730.66" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Osario</text>
+<text x="2728.0" y="753.38" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#d8c2a7">DESCANSO / TIENDA</text>
+<rect x="2890.0" y="608.0" width="261.0" height="252.0" rx="5" fill="#33332f" stroke="#caa17b" stroke-width="2.5"/>
+<text x="3020.5" y="742.16" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Costillar</text>
+<rect x="2602.0" y="473.0" width="549.0" height="99.0" rx="5" fill="#33332f" stroke="#caa17b" stroke-width="2.5"/>
+<text x="2876.5" y="519.16" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Corona</text>
+<text x="2876.5" y="541.88" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#d8c2a7">TESORO</text>
+<rect x="3187.0" y="608.0" width="261.0" height="252.0" rx="5" fill="#33332f" stroke="#caa17b" stroke-width="2.5"/>
+<text x="3317.5" y="730.66" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Príncipe de Huesos</text>
+<text x="3317.5" y="753.38" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#d8c2a7">GUARDIÁN</text>
+<rect x="2602.0" y="896.0" width="549.0" height="90.0" rx="5" fill="#33332f" stroke="#caa17b" stroke-width="2.5"/>
+<text x="2876.5" y="937.66" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Tesoro de Huesos</text>
+<text x="2876.5" y="960.38" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#d8c2a7">TESORO</text>
+<rect x="1702.0" y="1688.0" width="261.0" height="117.0" rx="5" fill="#272a3b" stroke="#8970bb" stroke-width="2.5"/>
+<text x="1832.5" y="1743.16" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Puerta de Ciudad</text>
+<text x="1832.5" y="1765.88" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#b1a4ce">DESCANSO / TIENDA</text>
+<rect x="1990.0" y="1688.0" width="297.0" height="189.0" rx="5" fill="#272a3b" stroke="#8970bb" stroke-width="2.5"/>
+<text x="2138.5" y="1790.66" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Depósito</text>
+<rect x="2296.0" y="1517.0" width="90.0" height="351.0" rx="5" fill="#272a3b" stroke="#efbf64" stroke-width="5"/>
+<text x="2341.0" y="1687.9" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="normal" fill="#eef3ea">Aguja</text>
+<text x="2341.0" y="1710.38" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#efbf64">IMPULSO</text>
+<rect x="2413.0" y="1697.0" width="288.0" height="171.0" rx="5" fill="#272a3b" stroke="#8970bb" stroke-width="2.5"/>
+<text x="2557.0" y="1790.66" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Plaza</text>
+<rect x="2611.0" y="1346.0" width="90.0" height="315.0" rx="5" fill="#272a3b" stroke="#8970bb" stroke-width="2.5"/>
+<text x="2656.0" y="1498.9" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="normal" fill="#eef3ea">Aguja</text>
+<text x="2656.0" y="1521.9" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="normal" fill="#eef3ea">este</text>
+<rect x="2728.0" y="1697.0" width="252.0" height="171.0" rx="5" fill="#272a3b" stroke="#8970bb" stroke-width="2.5"/>
+<text x="2854.0" y="1779.16" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Archivo</text>
+<text x="2854.0" y="1801.88" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#b1a4ce">TESORO</text>
+<rect x="2998.0" y="1355.0" width="126.0" height="315.0" rx="5" fill="#272a3b" stroke="#8970bb" stroke-width="2.5"/>
+<text x="3061.0" y="1496.4" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="normal" fill="#eef3ea">Aguja</text>
+<text x="3061.0" y="1519.4" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="normal" fill="#eef3ea">real</text>
+<text x="3061.0" y="1541.88" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#b1a4ce">GUARDIÁN</text>
+<rect x="3007.0" y="1886.0" width="360.0" height="99.0" rx="5" fill="#272a3b" stroke="#8970bb" stroke-width="2.5"/>
+<text x="3187.0" y="1932.16" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Tesoro de Ruinas</text>
+<text x="3187.0" y="1954.88" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#b1a4ce">TESORO</text>
+<rect x="2233.0" y="1913.0" width="144.0" height="270.0" rx="5" fill="#242a30" stroke="#797582" stroke-width="2.5"/>
+<text x="2305.0" y="2031.66" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Ciudad</text>
+<text x="2305.0" y="2057.66" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">profunda</text>
+<text x="2305.0" y="2080.38" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#a8a7ac">VIDA</text>
+<rect x="163.0" y="1058.0" width="378.0" height="108.0" rx="5" fill="#353d3f" stroke="#d4d8ce" stroke-width="2.5"/>
+<text x="352.0" y="1108.66" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Entrada del Palacio</text>
+<text x="352.0" y="1131.38" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#dee3d9">DESCANSO / TIENDA</text>
+<rect x="415.0" y="860.0" width="90.0" height="171.0" rx="5" fill="#353d3f" stroke="#d4d8ce" stroke-width="2.5"/>
+<text x="460.0" y="940.9" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="normal" fill="#eef3ea">Escal-</text>
+<text x="460.0" y="963.9" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="normal" fill="#eef3ea">inata</text>
+<rect x="514.0" y="671.0" width="81.0" height="162.0" rx="5" fill="#353d3f" stroke="#d4d8ce" stroke-width="2.5"/>
+<text x="554.5" y="757.64" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" font-weight="normal" fill="#eef3ea">Salón</text>
+<rect x="415.0" y="473.0" width="81.0" height="171.0" rx="5" fill="#353d3f" stroke="#d4d8ce" stroke-width="2.5"/>
+<text x="455.5" y="554.14" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" font-weight="normal" fill="#eef3ea">Torre</text>
+<text x="455.5" y="574.14" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" font-weight="normal" fill="#eef3ea">blanca</text>
+<rect x="415.0" y="374.0" width="81.0" height="72.0" rx="5" fill="#353d3f" stroke="#efbf64" stroke-width="5"/>
+<text x="455.5" y="404.14" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" font-weight="normal" fill="#eef3ea">Trono</text>
+<text x="455.5" y="426.38" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#efbf64">FINAL</text>
+<rect x="2350.0" y="302.0" width="252.0" height="108.0" rx="5" fill="#273d3d" stroke="#efbf64" stroke-width="5"/>
+<text x="2476.0" y="352.66" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Umbral del Alba</text>
+<text x="2476.0" y="375.38" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#efbf64">5 MISIONES</text>
+<rect x="2665.0" y="302.0" width="288.0" height="108.0" rx="5" fill="#273d3d" stroke="#87d7c3" stroke-width="2.5"/>
+<text x="2809.0" y="352.66" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Jardín del Alba</text>
+<text x="2809.0" y="375.38" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#b0e2d3">TESORO</text>
+<rect x="3016.0" y="302.0" width="342.0" height="108.0" rx="5" fill="#273d3d" stroke="#87d7c3" stroke-width="2.5"/>
+<text x="3187.0" y="352.66" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="normal" fill="#eef3ea">Santuario del Alba</text>
+<text x="3187.0" y="375.38" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#b0e2d3">GUARDIÁN</text>
+<rect x="1172" y="375" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1180" y="389.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="1226" y="429" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1234" y="443.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="1685" y="429" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1693" y="443.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="1037" y="645" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1045" y="659.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="1163" y="645" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1171" y="659.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="1208" y="555" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1216" y="569.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="1433" y="555" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1441" y="569.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="1478" y="735" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1486" y="749.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="1496" y="735" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1504" y="749.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="1514" y="735" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1522" y="749.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">3</text>
+<rect x="1532" y="735" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1540" y="749.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">4</text>
+<rect x="1577" y="555" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1585" y="569.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="1649" y="555" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1657" y="569.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="1730" y="555" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1738" y="569.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">3</text>
+<rect x="1802" y="555" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1810" y="569.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">4</text>
+<rect x="1847" y="555" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1855" y="569.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="1991" y="555" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1999" y="569.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="2036" y="645" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2044" y="659.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="2180" y="645" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2188" y="659.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="1577" y="654" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1585" y="668.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="1694" y="654" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1702" y="668.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="1802" y="654" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1810" y="668.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">3</text>
+<rect x="1847" y="834" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1855" y="848.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="1865" y="834" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1873" y="848.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="1883" y="834" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1891" y="848.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">3</text>
+<rect x="1901" y="834" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1909" y="848.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">4</text>
+<rect x="866" y="744" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="874" y="758.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="1154" y="744" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1162" y="758.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="1433" y="744" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1441" y="758.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">3</text>
+<rect x="1667" y="834" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1675" y="848.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="1802" y="834" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1810" y="848.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="1388" y="843" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1396" y="857.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="1505" y="843" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1513" y="857.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="1622" y="843" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1630" y="857.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">3</text>
+<rect x="1946" y="834" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1954" y="848.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="2342" y="834" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2350" y="848.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="965" y="942" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="973" y="956.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="1433" y="942" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1441" y="956.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="1478" y="942" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1486" y="956.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="1559" y="942" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1567" y="956.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="1640" y="942" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1648" y="956.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">3</text>
+<rect x="1721" y="942" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1729" y="956.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">4</text>
+<rect x="1766" y="1032" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1774" y="1046.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="1811" y="1032" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1819" y="1046.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="1865" y="1032" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1873" y="1046.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">3</text>
+<rect x="1910" y="1032" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1918" y="1046.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">4</text>
+<rect x="1577" y="1131" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1585" y="1145.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="1631" y="1131" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1639" y="1145.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="1847" y="1626" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1855" y="1640.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="1901" y="1626" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1909" y="1640.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="1955" y="1086" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1963" y="1100.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="2270" y="1086" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2278" y="1100.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="2315" y="1086" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2323" y="1100.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="2459" y="1086" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2467" y="1100.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="2504" y="1608" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2512" y="1622.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="2558" y="1608" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2566" y="1622.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="659" y="924" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="667" y="938.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="740" y="924" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="748" y="938.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="812" y="924" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="820" y="938.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">3</text>
+<rect x="677" y="1077" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="685" y="1091.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="794" y="1077" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="802" y="1091.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="902" y="1077" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="910" y="1091.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">3</text>
+<rect x="947" y="1410" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="955" y="1424.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="974" y="1410" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="982" y="1424.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="992" y="1410" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1000" y="1424.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">3</text>
+<rect x="1019" y="1410" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1027" y="1424.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">4</text>
+<rect x="1064" y="1167" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1072" y="1181.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="1352" y="1167" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1360" y="1181.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="1064" y="1383" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1072" y="1397.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="1208" y="1383" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1216" y="1397.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="1352" y="1383" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1360" y="1397.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">3</text>
+<rect x="1397" y="1302" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1405" y="1316.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="1523" y="1302" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1531" y="1316.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="1649" y="1302" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1657" y="1316.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">3</text>
+<rect x="1406" y="1653" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1414" y="1667.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="1478" y="1653" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1486" y="1667.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="1523" y="1653" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1531" y="1667.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="1793" y="1653" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1801" y="1667.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="956" y="1770" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="964" y="1784.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="1028" y="1770" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1036" y="1784.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="704" y="1977" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="712" y="1991.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="2396" y="861" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2404" y="875.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="2549" y="861" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2557" y="875.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="2603" y="861" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2611" y="875.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="2684" y="861" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2692" y="875.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="2756" y="861" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2764" y="875.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">3</text>
+<rect x="2837" y="861" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2845" y="875.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">4</text>
+<rect x="2891" y="861" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2899" y="875.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="3017" y="861" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="3025" y="875.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="3134" y="861" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="3142" y="875.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">3</text>
+<rect x="2603" y="573" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2611" y="587.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="3134" y="573" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="3142" y="587.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="3188" y="861" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="3196" y="875.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="3431" y="861" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="3439" y="875.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="2603" y="987" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2611" y="1001.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="3134" y="987" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="3142" y="1001.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="1703" y="1806" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1711" y="1820.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="1829" y="1806" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1837" y="1820.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="1946" y="1806" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1954" y="1820.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">3</text>
+<rect x="1991" y="1878" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="1999" y="1892.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="2135" y="1878" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2143" y="1892.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="2270" y="1878" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2278" y="1892.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">3</text>
+<rect x="2297" y="1869" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2305" y="1883.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="2369" y="1869" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2377" y="1883.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="2414" y="1869" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2422" y="1883.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="2549" y="1869" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2557" y="1883.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="2684" y="1869" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2692" y="1883.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">3</text>
+<rect x="2612" y="1662" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2620" y="1676.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="2684" y="1662" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2692" y="1676.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="2729" y="1869" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2737" y="1883.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="2963" y="1869" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2971" y="1883.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="2999" y="1671" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="3007" y="1685.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="3107" y="1671" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="3115" y="1685.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="3008" y="1986" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="3016" y="2000.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="2234" y="2184" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2242" y="2198.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="164" y="1167" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="172" y="1181.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="416" y="1032" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="424" y="1046.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="488" y="1032" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="496" y="1046.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="515" y="834" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="523" y="848.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="551" y="834" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="559" y="848.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="578" y="834" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="586" y="848.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">3</text>
+<rect x="416" y="645" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="424" y="659.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="479" y="645" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="487" y="659.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="416" y="447" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="424" y="461.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="479" y="447" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="487" y="461.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="2351" y="411" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2359" y="425.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="2585" y="411" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2593" y="425.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="2666" y="411" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2674" y="425.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<rect x="2936" y="411" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="2944" y="425.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">2</text>
+<rect x="3017" y="411" width="16" height="19" rx="0" fill="#10191d" stroke="none" stroke-width="1"/>
+<text x="3025" y="425.8" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#efbf64">1</text>
+<polyline points="96,2270 3584,2270" fill="none" stroke="#3a5055" stroke-width="2" stroke-linejoin="round"/>
+<text x="96" y="2333.0" text-anchor="start" font-family="Arial, sans-serif" font-size="25" font-weight="bold" fill="#efbf64">PARA ENCONTRAR LAS HABILIDADES</text>
+<text x="96" y="2381.24" text-anchor="start" font-family="Arial, sans-serif" font-size="22" font-weight="normal" fill="#eef3ea">DOBLE SALTO: cofre de la Copa, en Hongos.</text>
+<text x="96" y="2419.24" text-anchor="start" font-family="Arial, sans-serif" font-size="22" font-weight="normal" fill="#eef3ea">IMPULSO: cofre en lo alto de la Aguja, en Ruinas.</text>
+<text x="96" y="2457.24" text-anchor="start" font-family="Arial, sans-serif" font-size="22" font-weight="normal" fill="#eef3ea">Ruta dorada: Puerta de Ciudad → Depósito → Aguja.</text>
+<text x="96" y="2495.24" text-anchor="start" font-family="Arial, sans-serif" font-size="22" font-weight="normal" fill="#eef3ea">En ambas salas, sigue la puerta del centro.</text>
+<text x="96" y="2533.24" text-anchor="start" font-family="Arial, sans-serif" font-size="22" font-weight="normal" fill="#eef3ea">El nombre de la sala aparece al acercarte a la puerta.</text>
+<text x="96" y="2571.24" text-anchor="start" font-family="Arial, sans-serif" font-size="22" font-weight="normal" fill="#eef3ea">El HUD superior muestra el nombre de la zona.</text>
+<text x="1330" y="2333.0" text-anchor="start" font-family="Arial, sans-serif" font-size="25" font-weight="bold" fill="#efbf64">ACCESO A LAS REGIONES · CAMPAÑA</text>
+<text x="1330" y="2381.24" text-anchor="start" font-family="Arial, sans-serif" font-size="22" font-weight="normal" fill="#eef3ea">Pueblo / Cruces: medalla del cofre del Sendero.</text>
+<text x="1330" y="2419.24" text-anchor="start" font-family="Arial, sans-serif" font-size="22" font-weight="normal" fill="#eef3ea">Hongos: vence al Nido y cobra al guía del Pueblo.</text>
+<text x="1330" y="2457.24" text-anchor="start" font-family="Arial, sans-serif" font-size="22" font-weight="normal" fill="#eef3ea">Huesos: consigue el doble salto de la Copa.</text>
+<text x="1330" y="2495.24" text-anchor="start" font-family="Arial, sans-serif" font-size="22" font-weight="normal" fill="#eef3ea">Ruinas: recoge la llave del Príncipe de Huesos.</text>
+<text x="1330" y="2533.24" text-anchor="start" font-family="Arial, sans-serif" font-size="22" font-weight="normal" fill="#eef3ea">Palacio: impulso y llave real; entrada desde Hongos.</text>
+<text x="1330" y="2571.24" text-anchor="start" font-family="Arial, sans-serif" font-size="22" font-weight="normal" fill="#eef3ea">Alba: cinco misiones; puerta derecha del Trono.</text>
+<text x="2500" y="2333.0" text-anchor="start" font-family="Arial, sans-serif" font-size="25" font-weight="bold" fill="#efbf64">CONEXIONES CON REQUISITO</text>
+<text x="2500" y="2381.24" text-anchor="start" font-family="Arial, sans-serif" font-size="22" font-weight="normal" fill="#eef3ea">Línea coral discontinua: acceso condicionado.</text>
+<text x="2500" y="2419.24" text-anchor="start" font-family="Arial, sans-serif" font-size="22" font-weight="normal" fill="#eef3ea">Tallo → Senda enterrada: doble salto.</text>
+<text x="2500" y="2457.24" text-anchor="start" font-family="Arial, sans-serif" font-size="22" font-weight="normal" fill="#eef3ea">Depósito → Ciudad profunda: impulso.</text>
+<text x="2500" y="2495.24" text-anchor="start" font-family="Arial, sans-serif" font-size="22" font-weight="normal" fill="#eef3ea">Puerta del musgo → Salón: las dos llaves.</text>
+<text x="2500" y="2533.24" text-anchor="start" font-family="Arial, sans-serif" font-size="22" font-weight="normal" fill="#eef3ea">Tesoros de Huesos / Ruinas: vence a su guardián.</text>
+<text x="2500" y="2571.24" text-anchor="start" font-family="Arial, sans-serif" font-size="22" font-weight="normal" fill="#eef3ea">Trono → Umbral del Alba: cinco misiones.</text>
+<text x="96" y="2660.24" text-anchor="start" font-family="Arial, sans-serif" font-size="22" font-weight="normal" fill="#a7b9b8">Números: portales de izquierda a derecha, iguales al juego. Las líneas unen esos portales; sus cruces no crean salidas. Distancias esquemáticas.</text>
+<text x="96" y="2700.24" text-anchor="start" font-family="Arial, sans-serif" font-size="22" font-weight="normal" fill="#a7b9b8">Tras el final, las misiones reabren Hongos, Huesos, Ruinas y Palacio en orden. La quinta abre Jardines del Alba. Datos extraídos del juego.</text>
+</svg>

@@ -1,0 +1,416 @@
+{
+  "rooms": 55,
+  "links": 65,
+  "actual_directed_transitions": 130,
+  "connected": true,
+  "routes_avoid_rooms": true,
+  "portal_endpoints_match": true,
+  "labels": [
+    {
+      "id": "tutorial",
+      "lines": [
+        "Sendero"
+      ],
+      "badge": "INICIO"
+    },
+    {
+      "id": "town",
+      "lines": [
+        "Pueblo"
+      ],
+      "badge": "DESCANSO / TIENDA"
+    },
+    {
+      "id": "west_tower",
+      "lines": [
+        "Torre",
+        "oeste"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "upper_gallery",
+      "lines": [
+        "Galería alta"
+      ],
+      "badge": "TESORO"
+    },
+    {
+      "id": "central_shaft",
+      "lines": [
+        "Pozo",
+        "cent-",
+        "ral"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "well",
+      "lines": [
+        "Pozo"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "nest",
+      "lines": [
+        "Nido"
+      ],
+      "badge": "GUARDIÁN"
+    },
+    {
+      "id": "east_tower",
+      "lines": [
+        "Torre este"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "shrine",
+      "lines": [
+        "Santuario"
+      ],
+      "badge": "DESCANSO / TIENDA"
+    },
+    {
+      "id": "east_shaft",
+      "lines": [
+        "Pozo",
+        "este"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "west_road",
+      "lines": [
+        "Camino oeste"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "heart_room",
+      "lines": [
+        "Cámara",
+        "vital"
+      ],
+      "badge": "VIDA"
+    },
+    {
+      "id": "lower_gallery",
+      "lines": [
+        "Galería baja"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "bone_road",
+      "lines": [
+        "Paso de Huesos"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "fungal_road",
+      "lines": [
+        "Camino de Hongos"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "junction",
+      "lines": [
+        "Cruce"
+      ],
+      "badge": "TESORO"
+    },
+    {
+      "id": "lower_tower",
+      "lines": [
+        "Torre baja"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "fungal_drop",
+      "lines": [
+        "Desc-",
+        "enso"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "deep_well",
+      "lines": [
+        "Pozo",
+        "prof-",
+        "undo"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "caverns",
+      "lines": [
+        "Cavernas"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "east_bridge",
+      "lines": [
+        "Puente este"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "east_lift",
+      "lines": [
+        "Torre",
+        "del",
+        "este"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "moss_gate",
+      "lines": [
+        "Puerta del",
+        "musgo"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "spore_hall",
+      "lines": [
+        "Refugio"
+      ],
+      "badge": "DESCANSO / TIENDA"
+    },
+    {
+      "id": "fungal_stem",
+      "lines": [
+        "Tallo"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "canopy",
+      "lines": [
+        "Copa"
+      ],
+      "badge": "DOBLE SALTO"
+    },
+    {
+      "id": "roots",
+      "lines": [
+        "Raíces"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "moss_depths",
+      "lines": [
+        "Gruta"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "root_shaft",
+      "lines": [
+        "Pozo",
+        "de",
+        "raíces"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "fungal_exit",
+      "lines": [
+        "Paso del sur"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "buried_path",
+      "lines": [
+        "Senda",
+        "enter-",
+        "rada"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "deep_west",
+      "lines": [
+        "Abismo oeste"
+      ],
+      "badge": "VIDA"
+    },
+    {
+      "id": "bone_gate",
+      "lines": [
+        "Puerta de",
+        "Huesos"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "ossuary",
+      "lines": [
+        "Osario"
+      ],
+      "badge": "DESCANSO / TIENDA"
+    },
+    {
+      "id": "rib_hall",
+      "lines": [
+        "Costillar"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "bone_crown",
+      "lines": [
+        "Corona"
+      ],
+      "badge": "TESORO"
+    },
+    {
+      "id": "bone_lord",
+      "lines": [
+        "Príncipe de Huesos"
+      ],
+      "badge": "GUARDIÁN"
+    },
+    {
+      "id": "bone_return",
+      "lines": [
+        "Tesoro de Huesos"
+      ],
+      "badge": "TESORO"
+    },
+    {
+      "id": "city_gate",
+      "lines": [
+        "Puerta de Ciudad"
+      ],
+      "badge": "DESCANSO / TIENDA"
+    },
+    {
+      "id": "reservoir",
+      "lines": [
+        "Depósito"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "city_spire",
+      "lines": [
+        "Aguja"
+      ],
+      "badge": "IMPULSO"
+    },
+    {
+      "id": "city_square",
+      "lines": [
+        "Plaza"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "east_spire",
+      "lines": [
+        "Aguja",
+        "este"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "archive",
+      "lines": [
+        "Archivo"
+      ],
+      "badge": "TESORO"
+    },
+    {
+      "id": "royal_spire",
+      "lines": [
+        "Aguja",
+        "real"
+      ],
+      "badge": "GUARDIÁN"
+    },
+    {
+      "id": "city_end",
+      "lines": [
+        "Tesoro de Ruinas"
+      ],
+      "badge": "TESORO"
+    },
+    {
+      "id": "deep_city",
+      "lines": [
+        "Ciudad",
+        "profunda"
+      ],
+      "badge": "VIDA"
+    },
+    {
+      "id": "palace_gate",
+      "lines": [
+        "Entrada del Palacio"
+      ],
+      "badge": "DESCANSO / TIENDA"
+    },
+    {
+      "id": "palace_stairs",
+      "lines": [
+        "Escal-",
+        "inata"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "palace_hall",
+      "lines": [
+        "Salón"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "palace_tower",
+      "lines": [
+        "Torre",
+        "blanca"
+      ],
+      "badge": ""
+    },
+    {
+      "id": "throne",
+      "lines": [
+        "Trono"
+      ],
+      "badge": "FINAL"
+    },
+    {
+      "id": "aurora_gate",
+      "lines": [
+        "Umbral del Alba"
+      ],
+      "badge": "5 MISIONES"
+    },
+    {
+      "id": "aurora_garden",
+      "lines": [
+        "Jardín del Alba"
+      ],
+      "badge": "TESORO"
+    },
+    {
+      "id": "aurora_core",
+      "lines": [
+        "Santuario del Alba"
+      ],
+      "badge": "GUARDIÁN"
+    }
+  ]
+}

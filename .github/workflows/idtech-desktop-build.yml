@@ -26,7 +26,7 @@ jobs:
         run: python native/tools/prepare_desktop.py
       - name: Cache DirectX 2010 headers and import libraries
         id: legacy-sdk
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: ${{ runner.temp }}\dxsdk-jun10
           key: ashenmeridian-dxsdk-june2010-headers-libs-v1
@@ -41,6 +41,12 @@ jobs:
           New-Item -ItemType Directory -Force -Path $cache | Out-Null
           Copy-Item "$dx/Include" "$cache/Include" -Recurse -Force
           Copy-Item "$dx/Lib" "$cache/Lib" -Recurse -Force
+      - name: Preserve DirectX build dependencies for subsequent CI attempts
+        if: steps.legacy-sdk.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}\dxsdk-jun10
+          key: ashenmeridian-dxsdk-june2010-headers-libs-v1
       - name: Set original DirectX include and library locations
         shell: pwsh
         run: |

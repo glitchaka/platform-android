@@ -1,9 +1,21 @@
 // Embedded into idTech 4's Game_local.cpp by native/tools/prepare_desktop.py.
 // Runs in the engine's rendering context; not a separate graphics framework.
+// idTech 4 defines NULL as idNullPtr. Modern std::once_flag and STL constexpr
+// constructors cannot compile while that macro replaces null pointer constants.
+#ifdef NULL
+#pragma push_macro("NULL")
+#undef NULL
+#define NULL nullptr
+#define MERIDIAN_ENGINE_NULL_RESTORE
+#endif
 #include "../core/World.cpp"
 #include "../core/Combat.cpp"
 #include "../core/Game.cpp"
 #include "../generated/AtlasDimensions.hpp"
+#ifdef MERIDIAN_ENGINE_NULL_RESTORE
+#pragma pop_macro("NULL")
+#undef MERIDIAN_ENGINE_NULL_RESTORE
+#endif
 
 // Dedicated native mode: game state and UI come from Ashen Meridian,
 // not from the DOOM campaign, SWF shell, or a loaded map.

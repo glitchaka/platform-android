@@ -89,6 +89,11 @@ def main() -> None:
     text = text.replace('"SAVEGAMENAME', '" SAVEGAMENAME')
     text = text.replace('SAVEGAMENAME"', 'SAVEGAMENAME "')
     classic.write_text(text, encoding="utf-8")
+    # In C++11 string literals and macro names need a separating space.
+    syscmds = OUT / "neo" / "d3xp" / "gamesys" / "SysCmds.cpp"
+    sys_text = syscmds.read_text(encoding="utf-8")
+    sys_text = sys_text.replace('"S_COLOR_WHITE"', '" S_COLOR_WHITE "')
+    syscmds.write_text(sys_text, encoding="utf-8")
     # The original 2012 repository omits this generated introspection header;
     # these three includes do not require definitions beyond Class.h.
     typeinfo = OUT / "neo" / "d3xp" / "gamesys" / "TypeInfo.h"

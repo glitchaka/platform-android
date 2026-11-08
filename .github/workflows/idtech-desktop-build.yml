@@ -62,7 +62,7 @@ jobs:
           $vsdir = (& $vswhere -latest -products '*' -property installationPath).Trim()
           if (-not $vsdir) { throw 'Visual Studio not found' }
           $msbuild = Join-Path $vsdir 'MSBuild\Current\Bin\MSBuild.exe'
-          & $msbuild 'build/desktop-idtech4/neo/doom3.sln' '/m:2' '/p:Configuration=Release' '/p:Platform=Win32' '/p:PlatformToolset=v145' '/v:minimal' '/nologo'
+          & $msbuild 'build/desktop-idtech4/neo/doom3.sln' '/m:2' '/p:Configuration=Release' '/p:Platform=Win32' '/p:PlatformToolset=v145' '/p:GenerateDebugInformation=true' '/v:minimal' '/nologo'
           if ($LASTEXITCODE -ne 0) { throw 'idTech 4 engine compilation failed. Review compiler errors above.' }
       - name: Check generated game executable
         shell: pwsh
@@ -108,6 +108,50 @@ jobs:
             if (Test-Path $logErr) { Get-Content $logErr -Tail 80 }
             throw 'Executable exited before 12-second startup smoke completed.'
           }
+      - name: Resolve native crash through matching MSVC PDB symbols
+        if: failure()
+        shell: pwsh
+        run: |
+          $gameRoot = (Resolve-Path 'build/desktop-idtech4').Path
+          $exe = Join-Path $gameRoot 'build/Win32/Release/Doom3BFG.exe'
+          if (-not (Test-Path $exe)) { throw 'No executable available for crash analysis' }
+          $pdbs = @(Get-ChildItem $gameRoot -Recurse -Filter '*.pdb' -ErrorAction SilentlyContinue)
+          Write-Host "MSVC symbol databases found: $($pdbs.Count)"
+          $pdbs | Select-Object -First 20 | ForEach-Object { Write-Host "PDB: $($_.FullName)" }
+          $installer = Join-Path $env:RUNNER_TEMP 'winsdksetup.exe'
+          Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2272610' -OutFile $installer
+          $sig = Get-AuthenticodeSignature $installer
+          if ($sig.Status -ne 'Valid' -or $sig.SignerCertificate.Subject -notmatch 'Microsoft') { throw 'Debugger installer signature invalid' }
+          $install = Start-Process -FilePath $installer -ArgumentList '/features OptionId.WindowsDesktopDebuggers /quiet /norestart' -Wait -PassThru
+          if ($install.ExitCode -notin @(0,3010)) { throw "Debuggers installation failed: $($install.ExitCode)" }
+          $kits = Join-Path ([System.Environment]::GetFolderPath('ProgramFilesX86')) 'Windows Kits'
+          $cdb = Get-ChildItem $kits -Recurse -Filter cdb.exe -ErrorAction SilentlyContinue |
+            Where-Object { $_.FullName -match 'Debuggers\\x86' } | Select-Object -First 1
+          if (-not $cdb) { throw 'Windows x86 console debugger missing' }
+          $dumpDir = Join-Path $gameRoot 'crash-analysis'
+          New-Item -Path $dumpDir -ItemType Directory -Force | Out-Null
+          $procdump = Join-Path $env:RUNNER_TEMP 'procdump.exe'
+          Invoke-WebRequest 'https://live.sysinternals.com/procdump.exe' -OutFile $procdump
+          $pdSig = Get-AuthenticodeSignature $procdump
+          if ($pdSig.Status -ne 'Valid' -or $pdSig.SignerCertificate.Subject -notmatch 'Microsoft') { throw 'ProcDump signature invalid' }
+          & $procdump -accepteula -e -mm -x $dumpDir $exe +set fs_basepath $gameRoot +set r_fullscreen 0 +set logFile 2
+          $dump = Get-ChildItem $dumpDir -Filter '*.dmp' -ErrorAction SilentlyContinue | Select-Object -First 1
+          if (-not $dump) { throw 'No process crash dump captured' }
+          $pdbDirs = @($pdbs | ForEach-Object { $_.DirectoryName } | Sort-Object -Unique)
+          $symDir = Join-Path $env:RUNNER_TEMP 'symbols'
+          $symbolPath = ($pdbDirs -join ';') + ';srv*' + $symDir + '*https://msdl.microsoft.com/download/symbols'
+          $commands = '.reload /f Doom3BFG.exe; !analyze -v; .ecxr; kv 55; q'
+          & $cdb.FullName -z $dump.FullName -i (Split-Path $exe) -y $symbolPath -c $commands
+      - name: Upload matching PDBs and crash analysis
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: meridian-debug-symbols-and-crash
+          retention-days: 7
+          if-no-files-found: warn
+          path: |
+            build/desktop-idtech4/build/**/*.pdb
+            build/desktop-idtech4/crash-analysis/*.dmp
       - name: Upload native Windows build and startup diagnostics
         if: always()
         uses: actions/upload-artifact@v4

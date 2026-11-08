@@ -89,7 +89,7 @@ void Meridian_Tick(){
     in.jump=MeridianKey(K_SPACE)||MeridianKey(K_UPARROW)||MeridianKey('w');
     in.fire=MeridianKey('j');
     in.interact=MeridianKey('e')||MeridianKey(K_DOWNARROW);
-    in.dash=MeridianKey(K_SHIFT)||MeridianKey('k');
+    in.dash=(MeridianKey(K_LSHIFT)||MeridianKey(K_RSHIFT))||MeridianKey('k');
     in.pause=MeridianKey(K_ESCAPE);
     in.save=MeridianKey('p');
     g_meridian.Tick(dt,in);

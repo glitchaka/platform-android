@@ -1,10 +1,21 @@
 #pragma once
+// The 2012 engine redefines NULL as a user-defined idNullPtr. That macro
+// breaks constexpr constructors in current MSVC STL; hide it while importing STL.
+#if defined(_MSC_VER) && defined(NULL)
+#pragma push_macro("NULL")
+#undef NULL
+#define MERIDIAN_RESTORE_NULL
+#endif
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
 #include <string>
 #include <set>
 #include <vector>
+#ifdef MERIDIAN_RESTORE_NULL
+#pragma pop_macro("NULL")
+#undef MERIDIAN_RESTORE_NULL
+#endif
 
 namespace meridian {
 struct Vec2 {

@@ -89,6 +89,11 @@ def main() -> None:
     text = text.replace('"SAVEGAMENAME', '" SAVEGAMENAME')
     text = text.replace('SAVEGAMENAME"', 'SAVEGAMENAME "')
     classic.write_text(text, encoding="utf-8")
+    # The original 2012 repository omits this generated introspection header;
+    # these three includes do not require definitions beyond Class.h.
+    typeinfo = OUT / "neo" / "d3xp" / "gamesys" / "TypeInfo.h"
+    if not typeinfo.exists():
+        typeinfo.write_text("#pragma once\\n// Optional generated introspection metadata is unavailable in the source release.\\n", encoding="ascii")
     pack_assets(ROOT / "Resource", OUT / "base", staged / "generated" / "AtlasDimensions.hpp")
     print(f"Desktop staging ready: {OUT}")
     print("Engine hooks: idGameLocal, idCommonLocal::Draw and CreateMainMenu; native standalone startup.")

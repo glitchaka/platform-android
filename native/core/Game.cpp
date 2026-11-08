@@ -10,7 +10,7 @@ namespace meridian {
 namespace {
 float clampValue(float x,float lo,float hi){return std::min(hi,std::max(lo,x));}
 float absValue(float x){return x<0?-x:x;}
-bool near(const Vec2 &a,const Vec2 &b,float limit){
+bool nearbyPoint(const Vec2 &a,const Vec2 &b,float limit){
     const float dx=a.x-b.x,dy=a.y-b.y;
     return dx*dx+dy*dy<limit*limit;
 }
@@ -135,7 +135,7 @@ void Game::UpdateEnemies(float dt){
     for(size_t i=0;i<room.enemies.size();++i){
         Enemy &e=room.enemies[i];
         if(!e.alive)continue;
-        if(near(hero.position,e.position,e.boss?14.0f:9.0f))DamageHero();
+        if(nearbyPoint(hero.position,e.position,e.boss?14.0f:9.0f))DamageHero();
     }
 }
 void Game::DamageHero(){
@@ -157,7 +157,7 @@ void Game::OnBossDefeated(){
 void Game::Collect(){
     for(size_t i=0;i<room.pickups.size();++i){
         Pickup &p=room.pickups[i];
-        if(p.taken||p.kind!="coin"||!near(hero.position,p.position,10.0f))continue;
+        if(p.taken||p.kind!="coin"||!nearbyPoint(hero.position,p.position,10.0f))continue;
         p.taken=true;collected.insert(p.id);++hero.coins;
     }
 }
@@ -165,7 +165,7 @@ void Game::Interact(){
     // Doors have priority only when no accessible object occupies the same space.
     for(size_t i=0;i<room.pickups.size();++i){
         Pickup &p=room.pickups[i];
-        if(!near(hero.position,p.position,14))continue;
+        if(!nearbyPoint(hero.position,p.position,14))continue;
         if(p.kind=="bench"){hero.health=hero.maxHealth;Save("meridian-native.save");notice="DESCANSO Y GUARDADO";return;}
         if(p.kind=="shop"){notice="TIENDA: 12 MONEDAS PARA CURAR";if(hero.coins>=12&&hero.health<hero.maxHealth){hero.coins-=12;hero.health=hero.maxHealth;}return;}
         if(p.kind=="guide"){notice="LIBERA EL NIDO Y REGRESA";return;}
@@ -188,7 +188,7 @@ void Game::Interact(){
     }
     for(size_t i=0;i<room.doors.size();++i){
         const Door d=room.doors[i];
-        if(!near(hero.position,Vec2(d.x,d.y),17))continue;
+        if(!nearbyPoint(hero.position,Vec2(d.x,d.y),17))continue;
         if(!GateOpen(d)){notice="ACCESO BLOQUEADO";return;}
         const std::string fromRoom=roomId;
         EnterRoom(d.target,fromRoom);

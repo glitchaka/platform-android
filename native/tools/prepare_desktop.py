@@ -74,6 +74,18 @@ def main() -> None:
         '\tif ( cvarSystem->GetCVarBool("meridian_native") ) { return; }',
         'Common.cpp/native-shell')
     common.write_text(text, encoding="utf-8")
+    # The original code targets WINVER 0x0501 (Windows XP). Visual Studio
+    # 2026 ATL requires newer Windows APIs such as LCMapStringEx.
+    win_headers = OUT / "neo" / "idlib" / "sys" / "sys_includes.h"
+    win_text = win_headers.read_text(encoding="utf-8")
+    win_text, count = re.subn(
+        r"(?m)^#define[ \t]+WINVER[ \t]+0x501[ \t]*$",
+        "#define WINVER 0x0601\n#define _WIN32_WINNT 0x0601",
+        win_text,
+    )
+    if count != 1:
+        raise RuntimeError(f"Expected Windows XP target macro once, found {count}")
+    win_headers.write_text(win_text, encoding="utf-8")
     # Modern VS emits different warnings than VS2010. Keep legacy flags
     # out of staged builds, without modifying the original engine repository.
     import re

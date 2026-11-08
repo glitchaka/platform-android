@@ -1,6 +1,6 @@
 #include "Weapons.hpp"
 #include <algorithm>
-#include <cstring>
+// Avoid strcmp: the 2012 idTech headers redefine that token as a macro.
 namespace meridian {
 namespace {
 const WeaponInfo kWeapons[kWeaponCount]={
@@ -17,7 +17,11 @@ const WeaponInfo &Arsenal::Info(int index){
 }
 int Arsenal::IndexOf(const char *id){
     if(!id)return -1;
-    for(int i=0;i<kWeaponCount;++i)if(std::strcmp(id,kWeapons[i].id)==0)return i;
+    for(int i=0;i<kWeaponCount;++i){
+        const char *a=id,*b=kWeapons[i].id;
+        while(*a && *b && *a==*b){++a;++b;}
+        if(*a==0 && *b==0)return i;
+    }
     return -1;
 }
 WeaponStats Arsenal::Stats(int index,int level){

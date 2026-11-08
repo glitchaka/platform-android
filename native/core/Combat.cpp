@@ -15,10 +15,19 @@ float Combat::Fraction(const Vec2 &a,const Vec2 &b,const Vec2 &center,float radi
     const float t=(-bb-std::sqrt(disc))/(2*aa);
     return (t>=0&&t<=1)?t:-1;
 }
-void Combat::TickPatrol(float dt,std::vector<Enemy> &enemies){
+void Combat::TickPatrol(float dt,std::vector<Enemy> &enemies,int &coins){
     for(size_t i=0;i<enemies.size();++i){
         Enemy &e=enemies[i];
         if(!e.alive)continue;
+        if(e.burnRemaining>0){
+            e.burnRemaining=std::max(0.0f,e.burnRemaining-dt);
+            e.burnTick-=dt;
+            if(e.burnTick<=0){
+                e.burnTick+=0.4f;
+                e.hp-=e.burnDamage;
+                if(e.hp<=0){e.alive=false;if(!e.boss)++coins;continue;}
+            }
+        }
         e.position.x+=e.speed*dt;
         if(e.position.x<e.patrolMin){
             e.position.x=e.patrolMin;e.speed=std::fabs(e.speed);
@@ -30,28 +39,42 @@ void Combat::TickPatrol(float dt,std::vector<Enemy> &enemies){
 void Combat::TickShots(float dt,std::vector<Bullet> &shots,std::vector<Enemy> &enemies,int &coins){
     for(size_t si=0;si<shots.size();){
         Bullet &shot=shots[si];
+        float travelTime=dt;
+        if(shot.delay>0){
+            shot.delay-=dt;
+            if(shot.delay>=0){++si;continue;}
+            travelTime=-shot.delay;shot.delay=0;
+        }
         const Vec2 old=shot.position;
-        const Vec2 next(old.x+shot.velocity.x*dt,old.y+shot.velocity.y*dt);
+        const float speed=std::sqrt(shot.velocity.x*shot.velocity.x+shot.velocity.y*shot.velocity.y);
+        const float distance=std::min(shot.remaining,speed*travelTime);
+        const float fraction=speed>0?distance/speed:0.0f;
+        const Vec2 next(old.x+shot.velocity.x*fraction,old.y+shot.velocity.y*fraction);
         shot.position=next;
-        shot.remaining-=std::sqrt(shot.velocity.x*shot.velocity.x+shot.velocity.y*shot.velocity.y)*dt;
+        shot.remaining=std::max(0.0f,shot.remaining-distance);
         struct Contact {float fraction;size_t index;};
         std::vector<Contact> impacts;
         for(size_t i=0;i<enemies.size();++i){
             const Enemy &e=enemies[i];
             if(!e.alive||shot.hitIndices.count(i)!=0)continue;
             const Vec2 center(e.position.x,e.position.y-(e.boss?4.0f:0.0f));
-            const float fraction=Fraction(old,next,center,e.boss?11.0f:6.0f);
+            const float fraction=Fraction(old,next,center,(e.boss?11.0f:6.0f)+shot.radius);
             if(fraction>=0){Contact hit={fraction,i};impacts.push_back(hit);}
         }
         for(size_t i=0;i<impacts.size();++i)
             for(size_t j=i+1;j<impacts.size();++j)
                 if(impacts[j].fraction<impacts[i].fraction)std::swap(impacts[i],impacts[j]);
-        bool finished=shot.remaining<=0;
+        bool finished=false;
         for(size_t i=0;i<impacts.size()&&!finished;++i){
             Enemy &e=enemies[impacts[i].index];
             if(!e.alive)continue;
             shot.hitIndices.insert(impacts[i].index);
             e.hp-=shot.damage;
+            if(shot.burn>0){
+                e.burnDamage=std::max(e.burnDamage,shot.burn);
+                if(e.burnRemaining<=0)e.burnTick=0.4f;
+                e.burnRemaining=1.25f;
+            }
             if(e.hp<=0){
                 e.alive=false;
                 if(!e.boss)++coins;
@@ -59,7 +82,7 @@ void Combat::TickShots(float dt,std::vector<Bullet> &shots,std::vector<Enemy> &e
             --shot.pierce;
             if(shot.pierce<0)finished=true;
         }
-        if(finished)shots.erase(shots.begin()+si);
+        if(finished||shot.remaining<=0)shots.erase(shots.begin()+si);
         else ++si;
     }
 }

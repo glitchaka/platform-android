@@ -16,6 +16,7 @@
 #include <sstream>
 #include "../core/World.cpp"
 #include "../core/Combat.cpp"
+#include "../core/Weapons.cpp"
 #include "../core/Game.cpp"
 #include "../generated/AtlasDimensions.hpp"
 #ifdef MERIDIAN_ENGINE_NULL_RESTORE
@@ -110,6 +111,7 @@ void Meridian_Tick(){
     in.dash=(MeridianKey(K_LSHIFT)||MeridianKey(K_RSHIFT))||MeridianKey('k');
     in.pause=MeridianKey(K_ESCAPE);
     in.save=MeridianKey('p');
+    in.weaponNext=MeridianKey('q');
     g_meridian.Tick(dt,in);
 }
 void Meridian_Draw(){
@@ -183,8 +185,8 @@ void Meridian_Draw(){
         MERIDIAN_PLAYER_W,MERIDIAN_PLAYER_H,MeridianColor(1,1,1));
     MeridianFill(0,0,640,50,MeridianColor(0.08f,0.08f,0.11f));
     MeridianText(12,12,va("ASHEN MERIDIAN | %s",room.record->name),MeridianColor(0.87f,0.98f,0.92f));
-    MeridianText(12,29,va("VIDA %d/%d  MONEDAS %d  LLAVES %d",h.health,h.maxHealth,h.coins,h.keys),MeridianColor(0.98f,0.92f,0.73f));
-    MeridianText(12,434,"A/D MOVER  ESPACIO SALTAR  J DISPARAR  E USAR  SHIFT IMPULSO  P GUARDAR",MeridianColor(0.75f,0.85f,0.81f));
+    MeridianText(12,29,va("VIDA %d/%d  MONEDAS %d  LLAVES %d  %s",h.health,h.maxHealth,h.coins,h.keys,g_meridian.EquippedWeapon().name),MeridianColor(0.98f,0.92f,0.73f));
+    MeridianText(12,434,"A/D MOVER  ESPACIO SALTAR  J DISPARAR  E USAR  Q ARMA  SHIFT IMPULSO",MeridianColor(0.75f,0.85f,0.81f));
     if(!g_meridian.Notice().empty())
         MeridianText(12,453,g_meridian.Notice().c_str(),MeridianColor(1,0.76f,0.43f));
     if(g_meridian.IsPaused())MeridianText(245,225,"EN PAUSA",MeridianColor(1,1,1));

@@ -47,7 +47,7 @@ La compilacion NO se ha realizado en esta sesion. En un ejecutable del motor que
    compilacion y datos base. No hay binario comprobado.
 2. Se ha incorporado un arranque alternativo y directo en `idCommonLocal::Draw`\n   y se omite el menu original en modo nativo. Sigue sin estar compilado ni\n   probado en un ejecutable Windows; pueden existir dependencias iniciales del motor.
 3. El mapa, movimiento, combate basico y progreso estan portados, pero la tienda,
-   las seis armas completas, postgame, todas las variantes de enemigos, HUD, audio
+   las mejoras y el menu completo de las seis armas, postgame, todas las variantes de enemigos, HUD, audio
    y contenido de las 55 salas siguen necesitando paridad con el juego original.
 4. Los sprites se convierten al formato del motor, pero el render visual actual
    utiliza geometria coloreada y el primer fotograma del jugador. Faltan
@@ -62,3 +62,7 @@ La compilacion NO se ha realizado en esta sesion. En un ejecutable del motor que
 ## Runtime en Windows
 
 El motor BFG legado enlaza contra DLL de DirectX de junio de 2010, especialmente XAudio 2.7, XInput 1.3 y X3DAudio 1.7. El SDK usado para compilar **no** instala necesariamente el runtime en una maquina destino. Se requiere instalar el paquete oficial **Microsoft DirectX End-User Runtimes (June 2010)** desde https://www.microsoft.com/en-us/download/details.aspx?id=8109. No se distribuyen DLL de Microsoft copiadas en el repositorio. La prueba CI instala el runtime en Windows antes de arrancar el ejecutable.
+
+### Arsenal nativo (fase en curso)
+
+La base C++ contiene ahora las seis armas y sus estadisticas originales (nivel, cadencia, alcance, rafaga, penetracion, quemadura y desgaste). Q alterna las armas disponibles. Se guarda propiedad, nivel y durabilidad en la revision 2 del archivo nativo, manteniendo lectura de la revision 1. La tienda permite acceder a escopeta y lanzallamas mediante interaccion directa si se cumplen los requisitos de progreso. Las armas unicas siguen pendientes de sus respectivas pruebas de posjuego. El menu completo de la tienda, mejoras y titulos no estan migrados.

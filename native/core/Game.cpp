@@ -19,7 +19,7 @@ Game::Game():started(false),paused(false),completed(false),postgame(false),weapo
 void Game::NewGame(){
     visited.clear();collected.clear();defeated.clear();shots.clear();
     hero=Hero();previous=Input();completed=false;postgame=false;paused=false;
-    weaponIndex=0;started=true;notice="NUEVA PARTIDA";
+    weaponIndex=0;Arsenal::Reset(weapons);started=true;notice="NUEVA PARTIDA";
     EnterRoom("tutorial","");
 }
 void Game::EnterRoom(const std::string &id,const std::string &from){
@@ -60,8 +60,10 @@ void Game::Tick(float dt,const Input &input){
     hero.dashTimer=std::max(0.0f,hero.dashTimer-dt);
     hero.dashCooldown=std::max(0.0f,hero.dashCooldown-dt);
     noticeTime=std::max(0.0f,noticeTime-dt);
+    if(input.weaponNext&&!previous.weaponNext)NextWeapon();
     Move(dt,input);
-    if(input.fire&&hero.shotCooldown<=0)Fire();
+    const WeaponStats stats=Arsenal::Stats(weaponIndex,weapons[weaponIndex].level);
+    if(input.fire&&hero.shotCooldown<=0&&(!previous.fire||stats.automatic))Fire();
     UpdateEnemies(dt);
     Attack(dt);
     Collect();
@@ -107,19 +109,49 @@ void Game::Move(float dt,const Input &input){
         notice="REAPARECES EN EL TUTORIAL";
     }
 }
-void Game::Fire(){
-    hero.shotCooldown=weaponIndex==1?0.63f:weaponIndex==2?0.12f:0.27f;
-    Bullet b;
-    b.position=Vec2(hero.position.x+6*hero.facing,hero.position.y-1);
-    b.velocity=Vec2(hero.facing*(weaponIndex==2?140.0f:290.0f),0);
-    b.remaining=weaponIndex==1?105.0f:weaponIndex==2?64.0f:195.0f;
-    b.damage=weaponIndex==1?2:1;
-    b.pierce=weaponIndex==2?6:0;
-    shots.push_back(b);
-    if(weaponIndex==1){
-        Bullet up=b;up.velocity.y=-40;shots.push_back(up);
-        Bullet down=b;down.velocity.y=40;shots.push_back(down);
+bool Game::GrantWeapon(int index){
+    if(index<0||index>=kWeaponCount||weapons[index].owned)return false;
+    weapons[index].owned=true;
+    weapons[index].durability=static_cast<float>(Arsenal::Info(index).capacity);
+    weapons[index].level=0;
+    weaponIndex=index;
+    notice=Arsenal::Info(index).name;
+    return true;
+}
+void Game::NextWeapon(){
+    for(int next=1;next<=kWeaponCount;++next){
+        const int candidate=(weaponIndex+next)%kWeaponCount;
+        if(!weapons[candidate].owned)continue;
+        weaponIndex=candidate;
+        notice=Arsenal::Info(weaponIndex).name;
+        break;
     }
+}
+void Game::Fire(){
+    if(weapons[weaponIndex].durability<=0&&weaponIndex!=0){
+        weaponIndex=0;notice="ARMA AGOTADA. EQUIPADA PISTOLA";return;
+    }
+    WeaponStats stats=Arsenal::Stats(weaponIndex,weapons[weaponIndex].level);
+    if(weaponIndex==0&&weapons[0].durability<=0){
+        stats.damage=1;stats.interval=0.55f;stats.pierce=0;stats.range=130.0f;
+    }
+    hero.shotCooldown=stats.interval;
+    const float f=hero.facing;
+    for(int burst=0;burst<stats.burst;++burst){
+        for(int pellet=0;pellet<stats.pellets;++pellet){
+            const float ratio=stats.pellets>1?float(pellet)/float(stats.pellets-1):0.5f;
+            const float angle=-stats.spread+2.0f*stats.spread*ratio;
+            Bullet b;
+            b.position=Vec2(hero.position.x+f*6.0f,hero.position.y-1);
+            b.velocity=Vec2(f*std::cos(angle)*stats.speed,
+                             f*std::sin(angle)*stats.speed);
+            b.remaining=stats.range;b.damage=stats.damage;
+            b.pierce=stats.pierce;b.burn=stats.burn;
+            b.radius=stats.radius;b.delay=float(burst)*0.055f;
+            shots.push_back(b);
+        }
+    }
+    weapons[weaponIndex].durability=std::max(0.0f,weapons[weaponIndex].durability-1.0f);
 }
 void Game::Attack(float dt){
     Combat::TickShots(dt,shots,room.enemies,hero.coins);
@@ -131,7 +163,7 @@ void Game::Attack(float dt){
     }
 }
 void Game::UpdateEnemies(float dt){
-    Combat::TickPatrol(dt,room.enemies);
+    Combat::TickPatrol(dt,room.enemies,hero.coins);
     for(size_t i=0;i<room.enemies.size();++i){
         Enemy &e=room.enemies[i];
         if(!e.alive)continue;
@@ -167,7 +199,21 @@ void Game::Interact(){
         Pickup &p=room.pickups[i];
         if(!nearbyPoint(hero.position,p.position,14))continue;
         if(p.kind=="bench"){hero.health=hero.maxHealth;Save("meridian-native.save");notice="DESCANSO Y GUARDADO";return;}
-        if(p.kind=="shop"){notice="TIENDA: 12 MONEDAS PARA CURAR";if(hero.coins>=12&&hero.health<hero.maxHealth){hero.coins-=12;hero.health=hero.maxHealth;}return;}
+        if(p.kind=="shop"){
+            if(defeated.count("nest")!=0&&!weapons[1].owned){
+                if(hero.coins<42){notice="ESCOPETA: 42 MONEDAS";return;}
+                hero.coins-=42;GrantWeapon(1);return;
+            }
+            if(defeated.count("bone_lord")!=0&&!weapons[2].owned){
+                if(hero.coins<60){notice="LANZALLAMAS: 60 MONEDAS";return;}
+                hero.coins-=60;GrantWeapon(2);return;
+            }
+            notice="CURACION: 12 MONEDAS";
+            if(hero.coins>=12&&hero.health<hero.maxHealth){
+                hero.coins-=12;hero.health=hero.maxHealth;notice="CURACION COMPLETA";
+            }
+            return;
+        }
         if(p.kind=="guide"){notice="LIBERA EL NIDO Y REGRESA";return;}
         if(p.taken)continue;
         if(p.kind=="chest"){
@@ -199,7 +245,7 @@ bool Game::Save(const std::string &path)const{
     if(!started)return false;
     std::ofstream f(path.c_str(),std::ios::out|std::ios::trunc);
     if(!f)return false;
-    f<<"MERIDIAN_NATIVE_1\n"<<roomId<<"\n"<<hero.coins<<" "<<hero.health<<" "
+    f<<"MERIDIAN_NATIVE_2\n"<<roomId<<"\n"<<hero.coins<<" "<<hero.health<<" "
         <<hero.maxHealth<<" "<<hero.keys<<" "<<hero.doubleJump<<" "<<hero.dashUnlocked<<" "
         <<completed<<" "<<postgame<<" "<<weaponIndex<<"\n";
     const std::set<std::string>* groups[]={&visited,&collected,&defeated};
@@ -207,12 +253,16 @@ bool Game::Save(const std::string &path)const{
         f<<groups[i]->size()<<"\n";
         for(std::set<std::string>::const_iterator it=groups[i]->begin();it!=groups[i]->end();++it)f<<*it<<"\n";
     }
+    for(int i=0;i<kWeaponCount;++i)
+        f<<weapons[i].owned<<" "<<weapons[i].level<<" "<<weapons[i].durability<<"\n";
     return f.good();
 }
 bool Game::Load(const std::string &path){
     std::ifstream f(path.c_str());
     std::string magic,roomName;
-    if(!std::getline(f,magic)||magic!="MERIDIAN_NATIVE_1")return false;
+    if(!std::getline(f,magic)||
+        (magic!="MERIDIAN_NATIVE_1"&&magic!="MERIDIAN_NATIVE_2"))return false;
+    const bool newer=(magic=="MERIDIAN_NATIVE_2");
     if(!std::getline(f,roomName)||!FindRoom(roomName))return false;
     Hero loaded;
     int doubleJumpFlag,dashFlag,completedFlag,postgameFlag,newWeapon;
@@ -230,11 +280,27 @@ bool Game::Load(const std::string &path){
             groups[i].insert(item);
         }
     }
+    WeaponState restored[kWeaponCount];
+    Arsenal::Reset(restored);
+    if(newer){
+        for(int i=0;i<kWeaponCount;++i){
+            int owned=0,level=0;float durability=0;
+            if(!(f>>owned>>level>>durability))return false;
+            if(owned<0||owned>1||level<0||level>3||
+                !(durability>=0)||durability>Arsenal::Info(i).capacity)return false;
+            restored[i].owned=(owned!=0);
+            restored[i].level=level;
+            restored[i].durability=durability;
+        }
+        if(!restored[0].owned)return false;
+    }
     started=true;paused=false;hero=loaded;
+    for(int i=0;i<kWeaponCount;++i)weapons[i]=restored[i];
     hero.doubleJump=doubleJumpFlag!=0;
     hero.dashUnlocked=dashFlag!=0;
     completed=completedFlag!=0;postgame=postgameFlag!=0;
-    weaponIndex=std::max(0,std::min(2,newWeapon));
+    weaponIndex=std::max(0,std::min(kWeaponCount-1,newWeapon));
+    if(!weapons[weaponIndex].owned)weaponIndex=0;
     visited=groups[0];collected=groups[1];defeated=groups[2];
     EnterRoom(roomName,"");
     notice="PARTIDA CARGADA";

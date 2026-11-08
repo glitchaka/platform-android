@@ -1,5 +1,6 @@
 #include "../core/Game.hpp"
 #include "../core/Combat.hpp"
+#include "../core/Weapons.hpp"
 #include <cstdio>
 #include <cstdlib>
 #include <set>
@@ -22,6 +23,13 @@ int main(){
     Game game;
     game.NewGame();
     require(game.IsStarted(),"New game starts");
+    require(Arsenal::IndexOf("phoenix")==5,"All six original weapons are enumerated");
+    require(Arsenal::Stats(1,3).pellets==5,"Upgraded shotgun fires five pellets");
+    require(Arsenal::Stats(4,2).burst==3,"Tempest fires three-bullet bursts");
+    require(Arsenal::Stats(5,3).burn==5,"Phoenix has the original maximum burn");
+    require(game.GrantWeapon(1),"Unlocking shotgun succeeds");
+    require(game.WeaponIndex()==1,"New weapon is equipped");
+    require(game.Weapon(1).owned,"Granted weapon is owned");
     require(game.RoomId()=="tutorial","New game starts in tutorial");
     Input input;input.right=true;
     const float x=game.Player().position.x;
@@ -35,6 +43,7 @@ int main(){
     require(reload.Load("native_smoke.save"),"Save reload succeeds");
     require(reload.RoomId()==game.RoomId(),"Save restores the room");
     require(reload.Player().coins==game.Player().coins,"Save restores coin count");
+    require(reload.Weapon(1).owned&&reload.WeaponIndex()==1,"Save restores unlocked weapon and selection");
     std::remove("native_smoke.save");
     std::puts("Native core: 55 rooms, 65 links, physics, shooting and save/load OK.");
     return 0;

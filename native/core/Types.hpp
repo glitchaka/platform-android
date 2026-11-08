@@ -40,9 +40,11 @@ struct Door {
 struct Enemy {
     Vec2 position;
     float patrolMin,patrolMax,speed;
-    int hp;
+    int hp,burnDamage;
+    float burnRemaining,burnTick;
     bool boss,flyer,alive;
-    Enemy():patrolMin(0),patrolMax(0),speed(24),hp(1),boss(false),flyer(false),alive(true){}
+    Enemy():patrolMin(0),patrolMax(0),speed(24),hp(1),burnDamage(0),
+        burnRemaining(0),burnTick(0),boss(false),flyer(false),alive(true){}
 };
 struct Pickup {
     Vec2 position;
@@ -52,10 +54,10 @@ struct Pickup {
 };
 struct Bullet {
     Vec2 position,velocity;
-    float remaining;
-    int damage,pierce;
+    float remaining,delay,radius;
+    int damage,pierce,burn;
     std::set<size_t> hitIndices;
-    Bullet():remaining(0),damage(1),pierce(0){}
+    Bullet():remaining(0),delay(0),radius(2),damage(1),pierce(0),burn(0){}
 };
 struct Room {
     const RoomRecord *record;
@@ -67,7 +69,7 @@ struct Room {
     Room():record(NULL),floorY(0){}
 };
 struct Input {
-    bool left,right,jump,fire,interact,dash,pause,save;
-    Input():left(false),right(false),jump(false),fire(false),interact(false),dash(false),pause(false),save(false){}
+    bool left,right,jump,fire,interact,dash,pause,save,weaponNext;
+    Input():left(false),right(false),jump(false),fire(false),interact(false),dash(false),pause(false),save(false),weaponNext(false){}
 };
 }

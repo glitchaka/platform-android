@@ -1,5 +1,6 @@
 #pragma once
 #include "World.hpp"
+#include "Weapons.hpp"
 #include <set>
 #include <string>
 namespace meridian {
@@ -31,6 +32,10 @@ public:
     bool IsCompleted()const{return completed;}
     bool IsPostgame()const{return postgame;}
     int WeaponIndex()const{return weaponIndex;}
+    const WeaponState &Weapon(int index)const{return weapons[index>=0&&index<kWeaponCount?index:0];}
+    const WeaponInfo &EquippedWeapon()const{return Arsenal::Info(weaponIndex);}
+    bool GrantWeapon(int index);
+    void NextWeapon();
 private:
     void EnterRoom(const std::string &id,const std::string &from);
     void Move(float dt,const Input &input);
@@ -44,6 +49,7 @@ private:
     void DamageHero();
     bool started,paused,completed,postgame;
     int weaponIndex;
+    WeaponState weapons[kWeaponCount];
     std::string roomId,notice;
     Room room;
     Hero hero;

@@ -1,0 +1,38 @@
+name: idTech 4 desktop staging (Windows)
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'native/idtech/**'
+      - 'native/tools/**'
+      - 'native/generated/**'
+      - '.github/workflows/idtech-desktop-stage.yml'
+  workflow_dispatch:
+
+jobs:
+  desktop-stage:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Prepare PNG converter
+        shell: pwsh
+        run: python -m pip install pillow
+      - name: Stage idTech 4 source and original game assets
+        shell: pwsh
+        run: python native/tools/prepare_desktop.py
+      - name: Verify native hooks and converted materials
+        shell: pwsh
+        run: |
+          $root = 'build/desktop-idtech4'
+          $game = Get-Content "$root/neo/d3xp/Game_local.cpp" -Raw
+          $frame = Get-Content "$root/neo/framework/common_frame.cpp" -Raw
+          if (-not $game.Contains('MeridianRegisterCommands()')) { throw 'Game entrypoint is missing' }
+          if (-not $frame.Contains('game->Draw(-1)')) { throw 'Native renderer hook missing' }
+          $files = @('player','enemies','tiles','collectables','ui')
+          foreach ($name in $files) {
+            if (-not (Test-Path "$root/base/textures/meridian/$name.tga")) { throw "Missing original texture $name" }
+          }
+          Write-Host 'idTech staging, native entrypoint and all five sprite atlases are present.'

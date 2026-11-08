@@ -1,0 +1,56 @@
+name: Analizar volcado de arranque idTech 4
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/idtech-dump-analysis.yml']
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  dump-analysis:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: meridian-access-violation-report
+          run-id: 42536880431
+          github-token: ${{ github.token }}
+          path: crash
+      - uses: actions/download-artifact@v4
+        with:
+          name: meridian-idtech4-win32
+          run-id: 42535907344
+          github-token: ${{ github.token }}
+          path: executable
+      - name: Instalar solo los depuradores oficiales del SDK de Microsoft
+        shell: pwsh
+        run: |
+          $installer = Join-Path $env:RUNNER_TEMP 'winsdksetup.exe'
+          Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2272610' -OutFile $installer
+          $signature = Get-AuthenticodeSignature $installer
+          if ($signature.Status -ne 'Valid' -or $signature.SignerCertificate.Subject -notmatch 'Microsoft') {
+            throw 'Firma digital incorrecta en el instalador del SDK de Microsoft.'
+          }
+          $p = Start-Process -FilePath $installer -ArgumentList '/features OptionId.WindowsDesktopDebuggers /quiet /norestart' -Wait -PassThru
+          Write-Host "Instalacion depurador Microsoft: exit $($p.ExitCode)"
+          if ($p.ExitCode -ne 0 -and $p.ExitCode -ne 3010) { throw 'Fallo al instalar WinDbg/CDB' }
+      - name: Analizar excepcion y pila del proceso
+        shell: pwsh
+        run: |
+          $dump = Get-ChildItem crash -Filter '*.dmp' -Recurse | Select-Object -First 1
+          $exe = Get-ChildItem executable -Filter 'Doom3BFG.exe' -Recurse | Select-Object -First 1
+          if (-not $dump -or -not $exe) { throw 'Falta un volcado o el ejecutable correspondiente' }
+          $kits = Join-Path ([System.Environment]::GetFolderPath('ProgramFilesX86')) 'Windows Kits'
+          $debugger = Get-ChildItem $kits -Recurse -Filter 'cdb.exe' -ErrorAction SilentlyContinue |
+            Where-Object { $_.FullName -match 'Debuggers\\x86' } | Select-Object -First 1
+          if (-not $debugger) { throw 'CDB de 32 bits no disponible tras instalar SDK' }
+          $symbolPath = 'srv*' + (Join-Path $env:RUNNER_TEMP 'symbols') + '*https://msdl.microsoft.com/download/symbols'
+          $commands = '.symfix; .reload; !analyze -v; .ecxr; kv 50; lm; q'
+          Write-Host "Executable: $($exe.FullName)"
+          Write-Host "Dump: $($dump.FullName)"
+          Write-Host "Debugger: $($debugger.FullName)"
+          & $debugger.FullName -z $dump.FullName -i (Split-Path $exe.FullName) -y $symbolPath -c $commands

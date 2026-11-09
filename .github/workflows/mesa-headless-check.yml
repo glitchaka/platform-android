@@ -1,0 +1,31 @@
+name: Check Mesa OpenGL x86 software package for Windows CI
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/mesa-headless-check.yml']
+  workflow_dispatch:
+jobs:
+  mesa:
+    runs-on: windows-latest
+    timeout-minutes: 8
+    steps:
+      - name: Download and inspect pinned Mesa x86 build
+        shell: pwsh
+        run: |
+          $ProgressPreference='SilentlyContinue'
+          $archive=Join-Path $env:RUNNER_TEMP 'mesa3d-26.2.6-release-msvc.7z'
+          $link='https://github.com/pal1000/mesa-dist-win/releases/download/26.2.6/mesa3d-26.2.6-release-msvc.7z'
+          Invoke-WebRequest $link -OutFile $archive
+          Write-Host "Downloaded: $((Get-Item $archive).Length) bytes"
+          $hash=(Get-FileHash $archive -Algorithm SHA256).Hash.ToLowerInvariant()
+          Write-Host "Archive SHA256: $hash"
+          if($hash -ne 'b2e00615feaba45942343c265cc8c5f576142ca682c1ac6661922d4b72492877'){ throw 'Hash mismatch' }
+          $seven=(Get-Command 7z.exe -ErrorAction SilentlyContinue)
+          if(-not $seven){$seven=(Get-Item 'C:/Program Files/7-Zip/7z.exe' -ErrorAction SilentlyContinue)}
+          if(-not $seven){throw '7z not found on Windows runner'}
+          Write-Host "7z: $($seven.Source ?? $seven.FullName)"
+          $root=Join-Path $env:RUNNER_TEMP 'mesa-check'
+          New-Item -ItemType Directory -Force -Path $root | Out-Null
+          & ($seven.Source ?? $seven.FullName) x -y $archive "-o$root" | Select-Object -Last 12
+          Write-Host "Exit: $LASTEXITCODE"
+          Get-ChildItem $root -Recurse -File -Include 'opengl32.dll','libgallium_wgl.dll','mesadrv.dll' | Select-Object FullName,Length | Format-Table

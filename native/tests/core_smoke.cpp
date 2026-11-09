@@ -4,6 +4,7 @@
 #include "../core/Shop.hpp"
 #include "../core/Progression.hpp"
 #include "../core/Postgame.hpp"
+#include "../core/Trials.hpp"
 #include <cstdio>
 #include <cstdlib>
 #include <set>
@@ -13,6 +14,8 @@ static void require(bool value,const char *message){
 }
 int main(){
     require(RoomCount()==55,"The native room catalog contains all 55 rooms");
+    require(Trials::IsTrialRoom("nest")&&Trials::IsTrialRoom("throne"),
+            "Three trials and final marathon have physical rooms");
     require(Postgame::Quest(0).roomCount==11&&Postgame::Quest(4).roomCount==10,
             "Postgame has five complete physical objective lists");
     require(Postgame::Stage(std::set<std::string>())==0,"Postgame starts at first quest");
@@ -21,6 +24,30 @@ int main(){
         finished0.insert(Postgame::Token(0,Postgame::Quest(0).rooms[i]));
     require(Postgame::Stage(finished0)==1,"Eleven recovered physical objectives advance mission stage");
     require(LinkCount()==65,"The native graph contains all 65 actual links");
+    std::set<std::string> trophies;
+    Trials trial;
+    Room trialRoom=CreateRoom("nest",trophies,std::set<std::string>{"nest"});
+    require(trial.Start(trialRoom,"nest"),"Nest echo trial starts in its room");
+    trial.Tick(10.0f);
+    for(Enemy &enemy:trialRoom.enemies)if(enemy.tag=="trial:active")enemy.alive=false;
+    int trialCoins=0;std::string resultNotice;
+    require(trial.Advance(trialRoom,trophies,trialCoins,resultNotice),"Defeating echo ends trial");
+    require(trialCoins==8&&trophies.count("trial:clean:nest")&&trophies.count("trial:speed:nest"),
+            "Clean and fast echo rewards persist and eight coins are granted");
+    for(const std::string &site:{"bone_lord","royal_spire"}){
+        trophies.insert("trial:clean:"+site);trophies.insert("trial:speed:"+site);
+    }
+    require(Trials::HasThreeClean(trophies)&&Trials::HasThreeFast(trophies),
+            "Completing three trials unlocks original needle and tempest criteria");
+    Room throne=CreateRoom("throne",std::set<std::string>(),std::set<std::string>());
+    Trials finalTrial;
+    require(finalTrial.Start(throne,"throne"),"Three-wave final marathon starts");
+    for(int wave=0;wave<3;++wave){
+       for(Enemy &enemy:throne.enemies)if(enemy.tag=="trial:active")enemy.alive=false;
+       finalTrial.Advance(throne,trophies,trialCoins,resultNotice);
+    }
+    require(Trials::HasMarathon(trophies)&&!finalTrial.Active(),
+            "Three final waves without healing unlock Phoenix");
     std::set<std::string> empty;
     Room tutorial=CreateRoom("tutorial",empty,empty);
     require(tutorial.record!=NULL,"Tutorial exists");

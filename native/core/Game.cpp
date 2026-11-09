@@ -19,13 +19,14 @@ Game::Game():started(false),paused(false),completed(false),postgame(false),weapo
 void Game::NewGame(){
     visited.clear();collected.clear();defeated.clear();shots.clear();
     hero=Hero();previous=Input();completed=false;postgame=false;paused=false;
-    weaponIndex=0;Arsenal::Reset(weapons);shop=ShopState();shopOpen=false;shopCursor=0;started=true;notice="NUEVA PARTIDA";
+    weaponIndex=0;Arsenal::Reset(weapons);shop=ShopState();challenges.Reset();shopOpen=false;shopCursor=0;started=true;notice="NUEVA PARTIDA";
     EnterRoom("tutorial","");
 }
 void Game::EnterRoom(const std::string &id,const std::string &from){
     const RoomRecord *rec=FindRoom(id);
     if(!rec)return;
     roomId=id;
+    challenges.Reset();
     visited.insert(id);
     room=CreateRoom(id,collected,defeated);
     Postgame::EnterRoom(room,completed,collected);
@@ -66,6 +67,7 @@ void Game::Tick(float dt,const Input &input){
     if(input.save&&!previous.save){Save("meridian-native.save");notice="PARTIDA GUARDADA";}
     if(paused){previous=input;return;}
     if(input.heal&&!previous.heal)Heal();
+    challenges.Tick(dt);
     hero.shotCooldown=std::max(0.0f,hero.shotCooldown-dt);
     hero.invulnerability=std::max(0.0f,hero.invulnerability-dt);
     hero.dashTimer=std::max(0.0f,hero.dashTimer-dt);
@@ -171,6 +173,13 @@ void Game::Fire(){
 }
 void Game::Attack(float dt){
     Combat::TickShots(dt,shots,room.enemies,hero.coins);
+    const bool trialResolved=challenges.Advance(room,collected,hero.coins,notice);
+    if(trialResolved){
+        if(Trials::HasThreeClean(collected))GrantWeapon(3);
+        if(Trials::HasThreeFast(collected))GrantWeapon(4);
+        if(Trials::HasMarathon(collected))GrantWeapon(5);
+        Save("meridian-native.save");
+    }
     for(size_t i=0;i<room.enemies.size();++i){
         Enemy &e=room.enemies[i];
         if(e.elite&&!e.alive&&!e.tag.empty()&&collected.insert(e.tag).second)
@@ -205,6 +214,7 @@ void Game::UpdateEnemies(float dt){
 void Game::DamageHero(int amount){
     if(hero.invulnerability>0)return;
     hero.invulnerability=1.2f;
+    challenges.OnHit();
     if(shop.Has("guard")&&shop.guardCharged){
         shop.guardCharged=false;notice="EL AMULETO ABSORBIO EL GOLPE";return;
     }
@@ -244,6 +254,12 @@ void Game::Interact(){
         }
         if(p.kind=="shop"){
             shopOpen=true;shopCursor=0;notice="TIENDA: A/D ELEGIR  E COMPRAR  Q SALIR";
+            return;
+        }
+        if(p.kind=="trial"){
+            if(challenges.Start(room,roomId)){
+                notice=roomId=="throne"?"PRUEBA FINAL: TRES ECOS SIN CURAS":"PRUEBA DEL ECO: SIN GOLPES O EN 12 SEGUNDOS";
+            }else notice="VENCE A LOS GUARDIANES PRIMERO";
             return;
         }
         if(p.kind=="quest"){
@@ -319,8 +335,14 @@ ShopAccess Game::AvailableShop()const{
 }
 void Game::Heal(){
     if(hero.health>=hero.maxHealth)return;
-    if(shop.flaskCharges>0){--shop.flaskCharges;hero.health=std::min(hero.maxHealth,hero.health+2);notice="FRASCO CURATIVO";return;}
-    if(shop.tonics>0){--shop.tonics;hero.health=std::min(hero.maxHealth,hero.health+2);notice="TONICO DE VIAJE";}
+    if(shop.flaskCharges>0){
+        challenges.OnHeal();--shop.flaskCharges;hero.health=std::min(hero.maxHealth,hero.health+2);
+        notice="FRASCO CURATIVO";return;
+    }
+    if(shop.tonics>0){
+        challenges.OnHeal();--shop.tonics;hero.health=std::min(hero.maxHealth,hero.health+2);
+        notice="TONICO DE VIAJE";
+    }
 }
 bool Game::BuySelected(){
     if(!shopOpen)return false;
@@ -352,7 +374,7 @@ bool Game::BuySelected(){
     else if(id=="forge"){++weapons[weaponIndex].level;weapons[weaponIndex].durability=(float)Arsenal::Info(weaponIndex).capacity;}
     else if(id=="repair"){weapons[weaponIndex].durability=(float)Arsenal::Info(weaponIndex).capacity;}
     else if(id=="heart"){++shop.heartPurchases;++hero.maxHealth;hero.health=hero.maxHealth;}
-    else if(id=="heal")hero.health=hero.maxHealth;
+    else if(id=="heal"){challenges.OnHeal();hero.health=hero.maxHealth;}
     else if(id=="tonic")++shop.tonics;
     else if(id=="flask"){shop.flaskCharges=1;shop.owned.insert(id);}
     else if(id=="guard"){shop.guardCharged=true;shop.owned.insert(id);}
@@ -443,7 +465,7 @@ bool Game::Load(const std::string &path){
             restoredShop.owned.insert(id);
         }
     }
-    started=true;paused=false;hero=loaded;shop=restoredShop;shopOpen=false;shopCursor=0;
+    started=true;paused=false;hero=loaded;shop=restoredShop;challenges.Reset();shopOpen=false;shopCursor=0;
     for(int i=0;i<kWeaponCount;++i)weapons[i]=restored[i];
     hero.doubleJump=doubleJumpFlag!=0;
     hero.dashUnlocked=dashFlag!=0;

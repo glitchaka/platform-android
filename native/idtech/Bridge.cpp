@@ -19,6 +19,7 @@
 #include "../core/Weapons.cpp"
 #include "../core/Shop.cpp"
 #include "../core/Postgame.cpp"
+#include "../core/Trials.cpp"
 #include "../core/Progression.cpp"
 #include "../core/Game.cpp"
 #include "../generated/AtlasDimensions.hpp"
@@ -157,6 +158,8 @@ void Meridian_Draw(){
             MeridianAtlas("meridian/collectables",x-8,y-8,16,16,8,0,8,8,MERIDIAN_COLLECTABLES_W,MERIDIAN_COLLECTABLES_H,MeridianColor(1,1,1));
         else if(p.kind=="chest")
             MeridianAtlas("meridian/tiles",x-8,y-8,16,16,16,792,8,8,MERIDIAN_TILES_W,MERIDIAN_TILES_H,MeridianColor(1,1,1));
+        else if(p.kind=="trial")
+            MeridianFill(x-8,y-18,16,20,MeridianColor(0.73f,0.40f,0.92f));
         else if(p.kind=="quest")
             MeridianFill(x-10,y-14,20,20,MeridianColor(0.95f,0.74f,0.22f));
         else if(p.kind=="switch")
@@ -213,6 +216,11 @@ void Meridian_Draw(){
                          i==current?MeridianColor(1,0.94f,0.45f):MeridianColor(0.71f,0.87f,0.77f));
         }
         MeridianText(72,366,"A/D ELEGIR  E/ESPACIO COMPRAR  Q SALIR",MeridianColor(1,1,1));
+    }
+    if(g_meridian.Challenges().Active()){
+        MeridianText(12,396,va("PRUEBA %s  %.1f S  OLA %d",g_meridian.Challenges().Location().c_str(),
+            g_meridian.Challenges().Elapsed(),g_meridian.Challenges().Round()+1),
+            MeridianColor(0.95f,0.56f,0.90f));
     }
     if(g_meridian.IsPostgame()&&g_meridian.PostgameStage()<5){
         const int q=g_meridian.PostgameStage();

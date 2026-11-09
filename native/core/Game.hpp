@@ -4,6 +4,7 @@
 #include "Shop.hpp"
 #include "Progression.hpp"
 #include "Postgame.hpp"
+#include "Trials.hpp"
 #include <set>
 #include <string>
 namespace meridian {
@@ -41,6 +42,7 @@ public:
     int ShopCursor()const{return shopCursor;}
     const ShopState &Purchases()const{return shop;}
     int TonicCount()const{return shop.tonics;}
+    const Trials &Challenges()const{return challenges;}
     int PostgameStage()const{return Postgame::Stage(collected);}
     int PostgameTargetsDone()const{
         const int stage=PostgameStage();
@@ -66,6 +68,7 @@ private:
     int weaponIndex;
     WeaponState weapons[kWeaponCount];
     ShopState shop;
+    Trials challenges;
     bool shopOpen;
     int shopCursor;
     std::string roomId,notice;

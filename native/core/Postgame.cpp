@@ -54,7 +54,15 @@ void Postgame::EnterRoom(Room &room,bool completed,const std::set<std::string> &
  if(!completed||!room.record)return;
  const int stage=Stage(collected);
  const std::string id=room.record->id;
- if(stage>=5||!IsTarget(stage,id)||collected.count(Token(stage,id)))return;
+ if(stage>=5||!IsTarget(stage,id)||collected.count(Token(stage,id))){
+   const bool site=(id=="nest"||id=="bone_lord"||id=="royal_spire");
+   if(site||(id=="throne"&&stage>=5)){
+      Pickup trial;trial.id="trial:"+id;trial.kind="trial";
+      trial.position=Vec2(static_cast<float>(room.record->width)*0.42f,room.floorY-4);
+      room.pickups.push_back(trial);
+   }
+   return;
+ }
  const float width=static_cast<float>(room.record->width);
  const bool safe=std::string(room.record->reward)=="rest";
  Vec2 cache(width*0.42f,room.floorY-4.0f);

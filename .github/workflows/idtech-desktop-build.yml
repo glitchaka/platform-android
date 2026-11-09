@@ -133,8 +133,13 @@ jobs:
             Write-Host "Native engine quit during startup: exit code $($process.ExitCode)"
             if (Test-Path $logOut) { Get-Content $logOut -Tail 80 }
             if (Test-Path $logErr) { Get-Content $logErr -Tail 80 }
+            'MERIDIAN_EARLY_EXIT=true' >> $env:GITHUB_ENV
             throw 'Executable exited before 12-second startup smoke completed.'
           }
+          Write-Host '---- Native startup stdout ----'
+          if (Test-Path $logOut) { Get-Content $logOut -Tail 80 }
+          Write-Host '---- Native startup stderr ----'
+          if (Test-Path $logErr) { Get-Content $logErr -Tail 80 }
           $healthFile = Join-Path $gameRoot 'meridian-native-health.txt'
           if (-not (Test-Path $healthFile)) { throw 'Process lived but never drew Meridian gameplay.' }
           $health = Get-Content $healthFile -Raw
@@ -152,7 +157,7 @@ jobs:
             throw 'Native movement and shooting did not execute in the renderer loop.'
           }
       - name: Resolve native crash through matching MSVC PDB symbols
-        if: failure()
+        if: failure() && env.MERIDIAN_EARLY_EXIT == 'true'
         shell: pwsh
         run: |
           $gameRoot = (Resolve-Path 'build/desktop-idtech4').Path
@@ -196,13 +201,15 @@ jobs:
             build/desktop-idtech4/build/**/*.pdb
             build/desktop-idtech4/crash-analysis/*.dmp
       - name: Assemble standalone native game package
-        if: success()
+        if: always()
         shell: pwsh
         run: |
           $root = (Resolve-Path 'build/desktop-idtech4').Path
           $package = Join-Path $root 'game-package'
           New-Item -ItemType Directory -Path $package -Force | Out-Null
-          Copy-Item (Join-Path $root 'build/Win32/Release/Doom3BFG.exe') (Join-Path $package 'Doom3BFG.exe') -Force
+          $exe = Join-Path $root 'build/Win32/Release/Doom3BFG.exe'
+          if (-not (Test-Path $exe)) { Write-Warning 'No native EXE for packaging'; exit 0 }
+          Copy-Item $exe (Join-Path $package 'Doom3BFG.exe') -Force
           Copy-Item (Join-Path $root 'base') (Join-Path $package 'base') -Recurse -Force
           Copy-Item 'native/packaging/Ejecutar_Ashen_Meridian.bat' (Join-Path $package 'Ejecutar_Ashen_Meridian.bat') -Force
           Write-Host "Native Windows package: $package"

@@ -100,10 +100,10 @@ def main() -> None:
         ("startmenu", "StartMenu( true )"),
         ("finish-files", "fileSystem->EndLevelLoad()"),
     ):
-        token = "\\t\\t" + call + ";"
+        token = chr(9) * 2 + call + ";"
         text = replace_once(text, token,
-            "        MeridianEngineStage(\\\"before." + label + "\\");\\n" + token +
-            "\\n        MeridianEngineStage(\\\"after." + label + "\\");",
+            '        MeridianEngineStage("before.' + label + '");' + chr(10) + token +
+            chr(10) + '        MeridianEngineStage("after.' + label + '");',
             "Common.cpp/" + label)
     text = replace_once(text,
         'void idCommonLocal::Init( int argc, const char * const * argv, const char *cmdline ) {',

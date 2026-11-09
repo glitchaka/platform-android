@@ -160,14 +160,6 @@ def main() -> None:
         'static int GLW_ChoosePixelFormat( const HDC hdc, const int multisamples, const bool stereo3D ) {\n'
         '\tif ( wglChoosePixelFormatARB == NULL ) { return -1; }',
         'win_glimp.cpp/guard-ARB-pixel-format')
-    # GLW_CreateWindow also performs an unconditional stereo capability probe
-    # before GLW_InitDriver. Its old path bypasses the extension-pointer check.
-    # Without this guard it still jumps through a missing/stale WGL function.
-    text = replace_once(text,
-        'if ( GLW_ChoosePixelFormat( win32.hDC, parms.multiSamples, true ) != -1 ) {',
-        'if ( wglChoosePixelFormatARB != NULL && '
-        'GLW_ChoosePixelFormat( win32.hDC, parms.multiSamples, true ) != -1 ) {',
-        'win_glimp.cpp/stereo-probe-guard')
     glimp.write_text(text, encoding="utf-8")
     pack_assets(ROOT / "Resource", OUT / "base", staged / "generated" / "AtlasDimensions.hpp")
     # Bring the original world references and exported maps into the native base.

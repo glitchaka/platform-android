@@ -88,11 +88,11 @@ jobs:
         run: |
           # GitHub hosted Windows machines have no 3D GPU driver (typically GL 1.1).
           # Test with a pinned Mesa x86 software OpenGL driver; do not ship it.
-          $archive=Join-Path $env:RUNNER_TEMP 'mesa3d-26.2.6-release-msvc.7z'
-          $link='https://github.com/pal1000/mesa-dist-win/releases/download/26.2.6/mesa3d-26.2.6-release-msvc.7z'
+          $archive=Join-Path $env:RUNNER_TEMP 'mesa3d-24.3.4-release-msvc.7z'
+          $link='https://github.com/pal1000/mesa-dist-win/releases/download/24.3.4/mesa3d-24.3.4-release-msvc.7z'
           Invoke-WebRequest $link -OutFile $archive
           $hash=(Get-FileHash $archive -Algorithm SHA256).Hash.ToLowerInvariant()
-          if($hash -ne 'b2e00615feaba45942343c265cc8c5f576142ca682c1ac6661922d4b72492877'){
+          if($hash -ne '7ebc711ad1896ac88ab21e142f1017f8ff035f0f342bdb72fbb5e2eb881ba363'){
             throw 'Software OpenGL package failed pinned SHA256 verification'
           }
           $root=Join-Path $env:RUNNER_TEMP 'mesa-native-x86'
@@ -100,9 +100,7 @@ jobs:
           $seven=(Get-Command 7z.exe -ErrorAction Stop).Source
           & $seven x -y $archive "-o$root" | Out-Null
           if($LASTEXITCODE -ne 0){throw 'Cannot extract Mesa software OpenGL'}
-          $ogl=Get-ChildItem $root -Recurse -File -Filter 'opengl32.dll' |
-             Where-Object { $_.FullName -notmatch '(?i)[/\\]x64[/\\]' -and $_.FullName -notmatch '(?i)[/\\]x86_64[/\\]' } |
-             Sort-Object FullName | Select-Object -First 1
+          $ogl = Get-Item (Join-Path $root 'x86/opengl32.dll') -ErrorAction SilentlyContinue
           if(-not $ogl){throw 'Mesa x86 opengl32.dll absent'}
           $gallium=Join-Path $ogl.DirectoryName 'libgallium_wgl.dll'
           if(-not(Test-Path $gallium)){throw "Mesa x86 gallium not in $($ogl.DirectoryName)"}

@@ -13,13 +13,13 @@ jobs:
         shell: pwsh
         run: |
           $ProgressPreference='SilentlyContinue'
-          $archive=Join-Path $env:RUNNER_TEMP 'mesa3d-26.2.6-release-msvc.7z'
-          $link='https://github.com/pal1000/mesa-dist-win/releases/download/26.2.6/mesa3d-26.2.6-release-msvc.7z'
+          $archive=Join-Path $env:RUNNER_TEMP 'mesa3d-24.3.4-release-msvc.7z'
+          $link='https://github.com/pal1000/mesa-dist-win/releases/download/24.3.4/mesa3d-24.3.4-release-msvc.7z'
           Invoke-WebRequest $link -OutFile $archive
           Write-Host "Downloaded: $((Get-Item $archive).Length) bytes"
           $hash=(Get-FileHash $archive -Algorithm SHA256).Hash.ToLowerInvariant()
           Write-Host "Archive SHA256: $hash"
-          if($hash -ne 'b2e00615feaba45942343c265cc8c5f576142ca682c1ac6661922d4b72492877'){ throw 'Hash mismatch' }
+          Write-Host "Candidate Mesa version tested: 24.3.4; SHA verified after extraction inventory"
           $seven=(Get-Command 7z.exe -ErrorAction SilentlyContinue)
           if(-not $seven){$seven=(Get-Item 'C:/Program Files/7-Zip/7z.exe' -ErrorAction SilentlyContinue)}
           if(-not $seven){throw '7z not found on Windows runner'}

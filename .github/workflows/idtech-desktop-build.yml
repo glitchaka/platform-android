@@ -123,13 +123,13 @@ jobs:
           $arguments = '+set fs_basepath "' + $gameRoot + '" +set r_fullscreen 0 +set com_allowConsole 1'
           Write-Host "Launching built idTech executable from $gameRoot"
           $process = Start-Process -FilePath $gameExe -ArgumentList $arguments -WorkingDirectory $gameRoot -PassThru -RedirectStandardOutput $logOut -RedirectStandardError $logErr
-          $deadline = (Get-Date).AddSeconds(12)
+          $deadline = (Get-Date).AddSeconds(45)
           while (-not $process.HasExited -and (Get-Date) -lt $deadline) {
             Start-Sleep -Milliseconds 200
             $process.Refresh()
           }
           if (-not $process.HasExited) {
-            Write-Host 'Native engine remained running for startup smoke duration.'
+            Write-Host 'Native engine remained running for extended startup smoke duration.'
             Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue
           } else {
             Write-Host "Native engine quit during startup: exit code $($process.ExitCode)"

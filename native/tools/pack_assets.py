@@ -87,7 +87,74 @@ def pack_assets(resources: Path, base_dir: Path, header: Path) -> None:
 
     material_dir = base_dir / "materials"
     material_dir.mkdir(parents=True, exist_ok=True)
-    (material_dir / "meridian.mtr").write_text("\n".join(materials), encoding="utf-8")
+    # The GPL source tree contains the renderer programs but NOT the
+    # proprietary DOOM 3 BFG base material data. The renderer requires an
+    # explicit _default declaration and also asks for these other materials
+    # before the first Ashen Meridian frame.
+    # These definitions reference engine-generated images and our own atlas.
+    builtin_materials = """
+_default
+{
+    {
+        blend blend
+        map _white
+    }
+}
+_white
+{
+    {
+        blend blend
+        map _white
+    }
+}
+lights/defaultPointLight
+{
+    {
+        blend add
+        map _white
+    }
+}
+lights/defaultProjectedLight
+{
+    {
+        blend add
+        map _white
+    }
+}
+textures/bigchars
+{
+    translucent
+    nonsolid
+    {
+        blend blend
+        map textures/meridian/ui
+    }
+}
+guis/assets/splash/legal_english
+{
+    {
+        blend blend
+        map _white
+    }
+}
+guis/assets/splash/legal_french
+{
+    {
+        blend blend
+        map _white
+    }
+}
+guis/assets/splash/legal_figs
+{
+    {
+        blend blend
+        map _white
+    }
+}
+"""
+    (material_dir / "meridian.mtr").write_text(
+        builtin_materials + chr(10).join(materials), encoding="utf-8")
+
     sound_dir = base_dir / "sound"
     (sound_dir / "meridian.sndshd").write_text("\n".join(shaders), encoding="utf-8")
     (original / "asset_manifest.json").write_text(

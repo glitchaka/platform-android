@@ -10,4 +10,12 @@ if (-not $Msbuild) {
 }
 & $Msbuild.Source $Source '/m' '/p:Configuration=Release' '/p:Platform=Win32'
 if ($LASTEXITCODE -ne 0) { throw "Native idTech 4 compilation failed. See compiler output." }
-Write-Host "Build succeeded. Check the generated executable and game data before declaring the game playable."
+$GameRoot = Join-Path $Root 'build/desktop-idtech4'
+$Bundle = Join-Path $GameRoot 'game-package'
+$Bin = Join-Path $GameRoot 'build/Win32/Release/Doom3BFG.exe'
+if (-not (Test-Path $Bin)) { throw "Build produced no native executable: $Bin" }
+New-Item -Path $Bundle -ItemType Directory -Force | Out-Null
+Copy-Item $Bin (Join-Path $Bundle 'Doom3BFG.exe') -Force
+Copy-Item (Join-Path $GameRoot 'base') (Join-Path $Bundle 'base') -Recurse -Force
+Copy-Item (Join-Path $Root 'native/packaging/Ejecutar_Ashen_Meridian.bat') $Bundle -Force
+Write-Host "Native Windows game assembled at: $Bundle"

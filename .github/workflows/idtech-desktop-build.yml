@@ -195,6 +195,17 @@ jobs:
           path: |
             build/desktop-idtech4/build/**/*.pdb
             build/desktop-idtech4/crash-analysis/*.dmp
+      - name: Assemble standalone native game package
+        if: success()
+        shell: pwsh
+        run: |
+          $root = (Resolve-Path 'build/desktop-idtech4').Path
+          $package = Join-Path $root 'game-package'
+          New-Item -ItemType Directory -Path $package -Force | Out-Null
+          Copy-Item (Join-Path $root 'build/Win32/Release/Doom3BFG.exe') (Join-Path $package 'Doom3BFG.exe') -Force
+          Copy-Item (Join-Path $root 'base') (Join-Path $package 'base') -Recurse -Force
+          Copy-Item 'native/packaging/Ejecutar_Ashen_Meridian.bat' (Join-Path $package 'Ejecutar_Ashen_Meridian.bat') -Force
+          Write-Host "Native Windows package: $package"
       - name: Upload native Windows build and startup diagnostics
         if: always()
         uses: actions/upload-artifact@v4
@@ -203,7 +214,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
           path: |
-            build/desktop-idtech4/build/Win32/Release/Doom3BFG.exe
-            build/desktop-idtech4/base/
+            build/desktop-idtech4/game-package/
+            build/desktop-idtech4/meridian-native-health.txt
             build/desktop-idtech4/meridian-startup.stdout.log
             build/desktop-idtech4/meridian-startup.stderr.log

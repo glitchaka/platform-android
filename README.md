@@ -1,6 +1,20 @@
 # Ashen Meridian
 
-Proyecto Godot 4.7. Abrir `project.godot` o ejecutar `Launchers/Ejecutar_Juego.bat`.
+## Version nativa Windows (motor idTech 4)
+
+`platform-android` es el destino de la migracion y `DOOM-3-BFG-GES`
+es el motor de origen. `Launchers/Ejecutar_Juego.bat` inicia exclusivamente
+el ejecutable C++ idTech 4. Debe estar en
+`Builds/Desktop/AshenMeridian/` (con `Doom3BFG.exe` y `base/`)
+o en `build/desktop-idtech4/game-package/` tras compilar localmente.
+
+GitHub Actions genera el paquete Windows. La validacion automatica
+comprueba compilacion, arranque, cuadros del tutorial y movimiento/disparo
+durante la ejecucion nativa. No sustituye una partida completa humana.
+Las secciones siguientes describen la version original; el APK existente
+no utiliza el motor idTech.
+
+## Proyecto original
 
 ## Zonas en el editor y nuevos tilesets (0.4.0)
 

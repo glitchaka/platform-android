@@ -2,7 +2,10 @@
 
 ## Estado
 
-**Migracion en desarrollo; no hay un juego nativo ejecutable verificado.** Este directorio
+**Migracion en desarrollo.** CI compila el ejecutable Windows y verifica
+arranque; el chequeo ampliado exige cuadros reales del tutorial, simulacion
+de movimiento y disparos. Una partida completa y Android idTech todavia no
+estan certificados. Este directorio
 contiene una implementacion C++ independiente de la escena original, un adaptador que
 se compila dentro de `Game_local.cpp` y una preparacion de recursos para el renderizador
 idTech 4. El motor de la fuente original NO incluye los datos comerciales de DOOM 3 BFG.
@@ -38,7 +41,8 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File Launchers/Construir_idTe
 ```
 
 La preparacion crea `build/desktop-idtech4/`, fuera del control de versiones.
-La compilacion NO se ha realizado en esta sesion. En un ejecutable del motor que consiga arrancar, se inicia la partida nativa\nautomaticamente; los comandos de consola disponibles son `meridian_start`,
+GitHub Actions compila la version Windows y crea `game-package/` con
+`Doom3BFG.exe`, `base/` y un lanzador nativo. En un ejecutable del motor que consiga arrancar, se inicia la partida nativa\nautomaticamente; los comandos de consola disponibles son `meridian_start`,
 `meridian_load` y `meridian_stop`. No es necesario abrir una sesion de DOOM: `common_frame.cpp` presenta la capa\nnativa aun sin un mapa comercial cargado.
 
 ## Limitaciones que impiden afirmar que esta terminado

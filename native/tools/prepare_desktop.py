@@ -59,6 +59,19 @@ def main() -> None:
 
     common_frame = OUT / "neo" / "framework" / "common_frame.cpp"
     text = common_frame.read_text(encoding="utf-8")
+    trace_header = "#include <cstdio>\n#include <cstdlib>\nstatic void MeridianEngineStage(const char *stage) {\n    const char *path = std::getenv(\"MERIDIAN_NATIVE_TRACE\");\n    if (path == NULL || path[0] == '\\0') return;\n    FILE *f = std::fopen(path, \"a\");\n    if (f != NULL) { std::fputs(stage, f); std::fputc('\\n', f); std::fclose(f); }\n}"
+    text = replace_once(text, '#pragma hdrstop',
+        '#pragma hdrstop\n' + trace_header, 'common_frame.cpp/trace-header')
+    text = replace_once(text, 'void idCommonLocal::Draw() {',
+        'void idCommonLocal::Draw() {\n'
+        '    static bool traced = false;\n'
+        '    if (!traced) { traced = true; MeridianEngineStage("common.Draw"); }',
+        'common_frame.cpp/trace-draw')
+    text = replace_once(text, 'void idCommonLocal::Frame() {',
+        'void idCommonLocal::Frame() {\n'
+        '    static bool traced = false;\n'
+        '    if (!traced) { traced = true; MeridianEngineStage("common.Frame"); }',
+        'common_frame.cpp/trace-frame')
     text = replace_once(text,
         'if ( loadGUI != NULL ) {',
         'if ( cvarSystem->GetCVarBool("meridian_native") && game != NULL ) {\n'
@@ -69,6 +82,18 @@ def main() -> None:
 
     common = OUT / "neo" / "framework" / "Common.cpp"
     text = common.read_text(encoding="utf-8")
+    text = replace_once(text, '#pragma hdrstop',
+        '#pragma hdrstop\n' + trace_header, 'Common.cpp/trace-header')
+    text = replace_once(text,
+        'void idCommonLocal::Init( int argc, const char * const * argv, const char *cmdline ) {',
+        'void idCommonLocal::Init( int argc, const char * const * argv, const char *cmdline ) {\n'
+        '    MeridianEngineStage("common.Init");',
+        'Common.cpp/trace-init')
+    text = replace_once(text, '\t\tgame->Init();',
+        '\t\tMeridianEngineStage("game.Init.begin");\n'
+        '\t\tgame->Init();\n'
+        '\t\tMeridianEngineStage("game.Init.end");',
+        'Common.cpp/trace-game-init')
     text = replace_once(text,
         'void idCommonLocal::CreateMainMenu() {',
         'void idCommonLocal::CreateMainMenu() {\n'

@@ -147,6 +147,19 @@ def main() -> None:
         '\t\treturn qwglCreateContext( hdc );\n'
         '\t}\n',
         'win_glimp.cpp/legacy-compat-context')
+    # A separate stereo probe calls GLW_ChoosePixelFormat unconditionally
+    # even when WGL_ARB_pixel_format is unavailable. This was the immediate
+    # call site in the second Windows minidump (GLW_ChoosePixelFormat+0x99).
+    text = replace_once(text,
+        'if ( GLW_ChoosePixelFormat( win32.hDC, parms.multiSamples, true ) != -1 ) {',
+        'if ( wglChoosePixelFormatARB != NULL && '
+        'GLW_ChoosePixelFormat( win32.hDC, parms.multiSamples, true ) != -1 ) {',
+        'win_glimp.cpp/guard-stereo-query')
+    text = replace_once(text,
+        'static int GLW_ChoosePixelFormat( const HDC hdc, const int multisamples, const bool stereo3D ) {',
+        'static int GLW_ChoosePixelFormat( const HDC hdc, const int multisamples, const bool stereo3D ) {\n'
+        '\tif ( wglChoosePixelFormatARB == NULL ) { return -1; }',
+        'win_glimp.cpp/guard-ARB-pixel-format')
     glimp.write_text(text, encoding="utf-8")
     pack_assets(ROOT / "Resource", OUT / "base", staged / "generated" / "AtlasDimensions.hpp")
     # Bring the original world references and exported maps into the native base.

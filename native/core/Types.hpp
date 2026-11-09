@@ -71,7 +71,7 @@ struct Room {
     Room():record(NULL),floorY(0),rewardPosition(),restPosition(){}
 };
 struct Input {
-    bool left,right,jump,fire,interact,dash,pause,save,weaponNext;
-    Input():left(false),right(false),jump(false),fire(false),interact(false),dash(false),pause(false),save(false),weaponNext(false){}
+    bool left,right,jump,fire,interact,dash,pause,save,weaponNext,heal;
+    Input():left(false),right(false),jump(false),fire(false),interact(false),dash(false),pause(false),save(false),weaponNext(false),heal(false){}
 };
 }

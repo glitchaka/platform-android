@@ -17,6 +17,7 @@
 #include "../core/World.cpp"
 #include "../core/Combat.cpp"
 #include "../core/Weapons.cpp"
+#include "../core/Shop.cpp"
 #include "../core/Game.cpp"
 #include "../generated/AtlasDimensions.hpp"
 #ifdef MERIDIAN_ENGINE_NULL_RESTORE
@@ -112,6 +113,7 @@ void Meridian_Tick(){
     in.pause=MeridianKey(K_ESCAPE);
     in.save=MeridianKey('p');
     in.weaponNext=MeridianKey('q');
+    in.heal=MeridianKey('f');
     g_meridian.Tick(dt,in);
 }
 void Meridian_Draw(){
@@ -186,9 +188,26 @@ void Meridian_Draw(){
     MeridianFill(0,0,640,50,MeridianColor(0.08f,0.08f,0.11f));
     MeridianText(12,12,va("ASHEN MERIDIAN | %s",room.record->name),MeridianColor(0.87f,0.98f,0.92f));
     MeridianText(12,29,va("VIDA %d/%d  MONEDAS %d  LLAVES %d  %s",h.health,h.maxHealth,h.coins,h.keys,g_meridian.EquippedWeapon().name),MeridianColor(0.98f,0.92f,0.73f));
-    MeridianText(12,434,"A/D MOVER  ESPACIO SALTAR  J DISPARAR  E USAR  Q ARMA  SHIFT IMPULSO",MeridianColor(0.75f,0.85f,0.81f));
+    MeridianText(12,434,"A/D MOVER  ESPACIO SALTAR  J TIRO  E USAR  Q ARMA  F CURAR",MeridianColor(0.75f,0.85f,0.81f));
     if(!g_meridian.Notice().empty())
         MeridianText(12,453,g_meridian.Notice().c_str(),MeridianColor(1,0.76f,0.43f));
+    if(g_meridian.IsShopOpen()){
+        MeridianFill(50,75,540,342,MeridianColor(0.06f,0.08f,0.13f,0.95f));
+        MeridianText(78,89,"TIENDA DEL PUEBLO",MeridianColor(1,0.87f,0.50f));
+        const int current=g_meridian.ShopCursor();
+        const int first=std::max(0,std::min(current-3,meridian::kShopItemCount-8));
+        const meridian::ShopAccess access=g_meridian.AvailableShop();
+        for(int n=0;n<8;++n){
+            const int i=first+n;
+            const meridian::ShopItem &item=meridian::ShopCatalog::Item(i);
+            const int price=meridian::ShopCatalog::Price(item,g_meridian.Purchases(),
+                              g_meridian.Weapon(g_meridian.WeaponIndex()),g_meridian.WeaponIndex());
+            const bool unlocked=meridian::ShopCatalog::GateOpen(item,access);
+            MeridianText(72,123+n*28,va("%c %-23s %3d %s",i==current?'>':' ',item.name,price,unlocked?"":"BLOQ"),
+                         i==current?MeridianColor(1,0.94f,0.45f):MeridianColor(0.71f,0.87f,0.77f));
+        }
+        MeridianText(72,366,"A/D ELEGIR  E/ESPACIO COMPRAR  Q SALIR",MeridianColor(1,1,1));
+    }
     if(g_meridian.IsPaused())MeridianText(245,225,"EN PAUSA",MeridianColor(1,1,1));
     renderSystem->SetColor(MeridianColor(1,1,1));
 }

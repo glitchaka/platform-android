@@ -15,11 +15,11 @@ bool nearbyPoint(const Vec2 &a,const Vec2 &b,float limit){
     return dx*dx+dy*dy<limit*limit;
 }
 }
-Game::Game():started(false),paused(false),completed(false),postgame(false),weaponIndex(0),enemyTime(0),noticeTime(0){}
+Game::Game():started(false),paused(false),completed(false),postgame(false),weaponIndex(0),shopOpen(false),shopCursor(0),enemyTime(0),noticeTime(0){}
 void Game::NewGame(){
     visited.clear();collected.clear();defeated.clear();shots.clear();
     hero=Hero();previous=Input();completed=false;postgame=false;paused=false;
-    weaponIndex=0;Arsenal::Reset(weapons);started=true;notice="NUEVA PARTIDA";
+    weaponIndex=0;Arsenal::Reset(weapons);shop=ShopState();shopOpen=false;shopCursor=0;started=true;notice="NUEVA PARTIDA";
     EnterRoom("tutorial","");
 }
 void Game::EnterRoom(const std::string &id,const std::string &from){
@@ -52,9 +52,17 @@ bool Game::GateOpen(const Door &d)const{
 void Game::Tick(float dt,const Input &input){
     if(!started||dt<=0)return;
     dt=std::min(dt,0.04f);
+    if(shopOpen){
+        if(input.weaponNext&&!previous.weaponNext){shopOpen=false;notice="TIENDA CERRADA";}
+        else if(input.left&&!previous.left)shopCursor=(shopCursor+kShopItemCount-1)%kShopItemCount;
+        else if(input.right&&!previous.right)shopCursor=(shopCursor+1)%kShopItemCount;
+        else if((input.interact&&!previous.interact)||(input.jump&&!previous.jump))BuySelected();
+        previous=input;return;
+    }
     if(input.pause&&!previous.pause)paused=!paused;
     if(input.save&&!previous.save){Save("meridian-native.save");notice="PARTIDA GUARDADA";}
     if(paused){previous=input;return;}
+    if(input.heal&&!previous.heal)Heal();
     hero.shotCooldown=std::max(0.0f,hero.shotCooldown-dt);
     hero.invulnerability=std::max(0.0f,hero.invulnerability-dt);
     hero.dashTimer=std::max(0.0f,hero.dashTimer-dt);
@@ -63,7 +71,7 @@ void Game::Tick(float dt,const Input &input){
     if(input.weaponNext&&!previous.weaponNext)NextWeapon();
     Move(dt,input);
     const WeaponStats stats=Arsenal::Stats(weaponIndex,weapons[weaponIndex].level);
-    if(input.fire&&hero.shotCooldown<=0&&(!previous.fire||stats.automatic))Fire();
+    if(input.fire&&hero.shotCooldown<=0&&(!previous.fire||stats.automatic||shop.Has("rapid")))Fire();
     UpdateEnemies(dt);
     Attack(dt);
     Collect();
@@ -135,6 +143,8 @@ void Game::Fire(){
     if(weaponIndex==0&&weapons[0].durability<=0){
         stats.damage=1;stats.interval=0.55f;stats.pierce=0;stats.range=130.0f;
     }
+    stats.damage+=(shop.Has("power")?1:0);
+    if(shop.Has("rapid"))stats.interval*=0.5f;
     hero.shotCooldown=stats.interval;
     const float f=hero.facing;
     for(int burst=0;burst<stats.burst;++burst){
@@ -175,6 +185,9 @@ void Game::UpdateEnemies(float dt){
 void Game::DamageHero(int amount){
     if(hero.invulnerability>0)return;
     hero.invulnerability=1.2f;
+    if(shop.Has("guard")&&shop.guardCharged){
+        shop.guardCharged=false;notice="EL AMULETO ABSORBIO EL GOLPE";return;
+    }
     hero.health=std::max(0,hero.health-std::max(1,amount));
     notice="GOLPE RECIBIDO";
 }
@@ -191,7 +204,7 @@ void Game::OnBossDefeated(){
 void Game::Collect(){
     for(size_t i=0;i<room.pickups.size();++i){
         Pickup &p=room.pickups[i];
-        if(p.taken||p.kind!="coin"||!nearbyPoint(hero.position,p.position,10.0f))continue;
+        if(p.taken||p.kind!="coin"||!nearbyPoint(hero.position,p.position,shop.Has("magnet")?30.0f:10.0f))continue;
         p.taken=true;collected.insert(p.id);++hero.coins;
     }
 }
@@ -200,20 +213,15 @@ void Game::Interact(){
     for(size_t i=0;i<room.pickups.size();++i){
         Pickup &p=room.pickups[i];
         if(!nearbyPoint(hero.position,p.position,14))continue;
-        if(p.kind=="bench"){hero.health=hero.maxHealth;Save("meridian-native.save");notice="DESCANSO Y GUARDADO";return;}
+        if(p.kind=="bench"){
+            hero.health=hero.maxHealth;
+            weapons[0].durability=(float)Arsenal::Info(0).capacity;
+            if(shop.Has("flask"))shop.flaskCharges=1;
+            if(shop.Has("guard"))shop.guardCharged=true;
+            Save("meridian-native.save");notice="DESCANSO Y GUARDADO";return;
+        }
         if(p.kind=="shop"){
-            if(defeated.count("nest")!=0&&!weapons[1].owned){
-                if(hero.coins<42){notice="ESCOPETA: 42 MONEDAS";return;}
-                hero.coins-=42;GrantWeapon(1);return;
-            }
-            if(defeated.count("bone_lord")!=0&&!weapons[2].owned){
-                if(hero.coins<60){notice="LANZALLAMAS: 60 MONEDAS";return;}
-                hero.coins-=60;GrantWeapon(2);return;
-            }
-            notice="CURACION: 12 MONEDAS";
-            if(hero.coins>=12&&hero.health<hero.maxHealth){
-                hero.coins-=12;hero.health=hero.maxHealth;notice="CURACION COMPLETA";
-            }
+            shopOpen=true;shopCursor=0;notice="TIENDA: A/D ELEGIR  E COMPRAR  Q SALIR";
             return;
         }
         if(p.kind=="guide"){notice="LIBERA EL NIDO Y REGRESA";return;}
@@ -243,11 +251,66 @@ void Game::Interact(){
         return;
     }
 }
+ShopAccess Game::AvailableShop()const{
+    ShopAccess a;a.nest=defeated.count("nest")!=0;
+    a.bone=defeated.count("bone_lord")!=0;
+    a.royal=defeated.count("royal_spire")!=0;
+    a.ending=completed;a.explorer=visited.size()>=18;
+    a.dash=hero.dashUnlocked;
+    return a;
+}
+void Game::Heal(){
+    if(hero.health>=hero.maxHealth)return;
+    if(shop.flaskCharges>0){--shop.flaskCharges;hero.health=std::min(hero.maxHealth,hero.health+2);notice="FRASCO CURATIVO";return;}
+    if(shop.tonics>0){--shop.tonics;hero.health=std::min(hero.maxHealth,hero.health+2);notice="TONICO DE VIAJE";}
+}
+bool Game::BuySelected(){
+    if(!shopOpen)return false;
+    const ShopItem &item=ShopCatalog::Item(shopCursor);
+    const std::string id=item.id;
+    const ShopAccess a=AvailableShop();
+    if(!ShopCatalog::GateOpen(item,a)){notice="AUN NO DISPONIBLE";return false;}
+    if(ShopCatalog::IsOneTime(item.id)&&shop.Has(id)){notice="YA ADQUIRIDO";return false;}
+    if(id=="shotgun"&&weapons[1].owned){notice="ESCOPETA ADQUIRIDA";return false;}
+    if(id=="flame"&&weapons[2].owned){notice="LANZALLAMAS ADQUIRIDO";return false;}
+    if(id=="heart"&&(shop.heartPurchases>=2||hero.maxHealth>=8)){notice="MAXIMO DE CORAZONES";return false;}
+    if(id=="tonic"&&shop.tonics>=shop.TonicCapacity()){notice="BOLSA LLENA";return false;}
+    if(id=="heal"&&hero.health>=hero.maxHealth){notice="SALUD COMPLETA";return false;}
+    if(id=="forge"){
+        const int level=weapons[weaponIndex].level;
+        if(level>=3){notice="NIVEL MAXIMO";return false;}
+        if((level==0&&!a.bone)||(level==1&&!a.royal)||(level==2&&!completed)){
+            notice="MEJORA BLOQUEADA";return false;
+        }
+    }
+    if(id=="repair"&&weapons[weaponIndex].durability>=Arsenal::Info(weaponIndex).capacity){
+        notice="ARMA REPARADA";return false;
+    }
+    const int price=ShopCatalog::Price(item,shop,weapons[weaponIndex],weaponIndex);
+    if(hero.coins<price){notice="MONEDAS INSUFICIENTES";return false;}
+    hero.coins-=price;
+    if(id=="shotgun")GrantWeapon(1);
+    else if(id=="flame")GrantWeapon(2);
+    else if(id=="forge"){++weapons[weaponIndex].level;weapons[weaponIndex].durability=(float)Arsenal::Info(weaponIndex).capacity;}
+    else if(id=="repair"){weapons[weaponIndex].durability=(float)Arsenal::Info(weaponIndex).capacity;}
+    else if(id=="heart"){++shop.heartPurchases;++hero.maxHealth;hero.health=hero.maxHealth;}
+    else if(id=="heal")hero.health=hero.maxHealth;
+    else if(id=="tonic")++shop.tonics;
+    else if(id=="flask"){shop.flaskCharges=1;shop.owned.insert(id);}
+    else if(id=="guard"){shop.guardCharged=true;shop.owned.insert(id);}
+    else if(id=="ember"){shop.style=1;shop.owned.insert(id);}
+    else if(id=="storm"){shop.style=2;shop.owned.insert(id);}
+    else if(id=="starlight"){shop.style=3;shop.owned.insert(id);}
+    else shop.owned.insert(id);
+    notice=std::string("COMPRADO: ")+item.name;
+    Save("meridian-native.save");
+    return true;
+}
 bool Game::Save(const std::string &path)const{
     if(!started)return false;
     std::ofstream f(path.c_str(),std::ios::out|std::ios::trunc);
     if(!f)return false;
-    f<<"MERIDIAN_NATIVE_2\n"<<roomId<<"\n"<<hero.coins<<" "<<hero.health<<" "
+    f<<"MERIDIAN_NATIVE_3\n"<<roomId<<"\n"<<hero.coins<<" "<<hero.health<<" "
         <<hero.maxHealth<<" "<<hero.keys<<" "<<hero.doubleJump<<" "<<hero.dashUnlocked<<" "
         <<completed<<" "<<postgame<<" "<<weaponIndex<<"\n";
     const std::set<std::string>* groups[]={&visited,&collected,&defeated};
@@ -257,14 +320,18 @@ bool Game::Save(const std::string &path)const{
     }
     for(int i=0;i<kWeaponCount;++i)
         f<<weapons[i].owned<<" "<<weapons[i].level<<" "<<weapons[i].durability<<"\n";
+    f<<shop.heartPurchases<<" "<<shop.tonics<<" "<<shop.flaskCharges<<" "<<shop.style<<" "<<shop.guardCharged<<"\n";
+    f<<shop.owned.size()<<"\n";
+    for(std::set<std::string>::const_iterator it=shop.owned.begin();it!=shop.owned.end();++it)f<<*it<<"\n";
     return f.good();
 }
 bool Game::Load(const std::string &path){
     std::ifstream f(path.c_str());
     std::string magic,roomName;
     if(!std::getline(f,magic)||
-        (magic!="MERIDIAN_NATIVE_1"&&magic!="MERIDIAN_NATIVE_2"))return false;
-    const bool newer=(magic=="MERIDIAN_NATIVE_2");
+        (magic!="MERIDIAN_NATIVE_1"&&magic!="MERIDIAN_NATIVE_2"&&magic!="MERIDIAN_NATIVE_3"))return false;
+    const bool newer=(magic!="MERIDIAN_NATIVE_1");
+    const bool shopSaved=(magic=="MERIDIAN_NATIVE_3");
     if(!std::getline(f,roomName)||!FindRoom(roomName))return false;
     Hero loaded;
     int doubleJumpFlag,dashFlag,completedFlag,postgameFlag,newWeapon;
@@ -296,7 +363,29 @@ bool Game::Load(const std::string &path){
         }
         if(!restored[0].owned)return false;
     }
-    started=true;paused=false;hero=loaded;
+    ShopState restoredShop;
+    if(shopSaved){
+        int guard=0;
+        if(!(f>>restoredShop.heartPurchases>>restoredShop.tonics>>restoredShop.flaskCharges
+             >>restoredShop.style>>guard))return false;
+        if(restoredShop.heartPurchases<0||restoredShop.heartPurchases>2||
+           restoredShop.tonics<0||restoredShop.tonics>5||
+           restoredShop.flaskCharges<0||restoredShop.flaskCharges>1||
+           restoredShop.style<0||restoredShop.style>3||
+           guard<0||guard>1)return false;
+        restoredShop.guardCharged=(guard!=0);
+        unsigned count=0;
+        if(!(f>>count)||count>kShopItemCount)return false;
+        for(unsigned i=0;i<count;++i){
+            std::string id;
+            if(!(f>>id)||id.size()>64)return false;
+            bool valid=false;
+            for(int k=0;k<kShopItemCount;++k)if(id==ShopCatalog::Item(k).id)valid=true;
+            if(!valid)return false;
+            restoredShop.owned.insert(id);
+        }
+    }
+    started=true;paused=false;hero=loaded;shop=restoredShop;shopOpen=false;shopCursor=0;
     for(int i=0;i<kWeaponCount;++i)weapons[i]=restored[i];
     hero.doubleJump=doubleJumpFlag!=0;
     hero.dashUnlocked=dashFlag!=0;

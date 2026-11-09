@@ -1,6 +1,7 @@
 #include "../core/Game.hpp"
 #include "../core/Combat.hpp"
 #include "../core/Weapons.hpp"
+#include "../core/Shop.hpp"
 #include <cstdio>
 #include <cstdlib>
 #include <set>
@@ -47,6 +48,14 @@ int main(){
     require(game.GrantWeapon(1),"Unlocking shotgun succeeds");
     require(game.WeaponIndex()==1,"New weapon is equipped");
     require(game.Weapon(1).owned,"Granted weapon is owned");
+    ShopState store;
+    ShopAccess access;
+    require(!ShopCatalog::GateOpen(ShopCatalog::Item(12),access),"Shotgun gated before Nest");
+    access.nest=true;
+    require(ShopCatalog::GateOpen(ShopCatalog::Item(12),access),"Shotgun unlocks after Nest");
+    require(ShopCatalog::Price(ShopCatalog::Item(6),store,game.Weapon(1),1)==65,"First heart costs 65");
+    store.heartPurchases=1;
+    require(ShopCatalog::Price(ShopCatalog::Item(6),store,game.Weapon(1),1)==100,"Second heart costs 100");
     require(game.RoomId()=="tutorial","New game starts in tutorial");
     Input input;input.right=true;
     const float x=game.Player().position.x;

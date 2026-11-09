@@ -1,6 +1,7 @@
 #pragma once
 #include "World.hpp"
 #include "Weapons.hpp"
+#include "Shop.hpp"
 #include <set>
 #include <string>
 namespace meridian {
@@ -34,6 +35,11 @@ public:
     int WeaponIndex()const{return weaponIndex;}
     const WeaponState &Weapon(int index)const{return weapons[index>=0&&index<kWeaponCount?index:0];}
     const WeaponInfo &EquippedWeapon()const{return Arsenal::Info(weaponIndex);}
+    bool IsShopOpen()const{return shopOpen;}
+    int ShopCursor()const{return shopCursor;}
+    const ShopState &Purchases()const{return shop;}
+    int TonicCount()const{return shop.tonics;}
+    ShopAccess AvailableShop()const;
     bool GrantWeapon(int index);
     void NextWeapon();
 private:
@@ -42,6 +48,8 @@ private:
     void Fire();
     void Attack(float dt);
     void Interact();
+    bool BuySelected();
+    void Heal();
     void Collect();
     void UpdateEnemies(float dt);
     bool GateOpen(const Door &door)const;
@@ -50,6 +58,9 @@ private:
     bool started,paused,completed,postgame;
     int weaponIndex;
     WeaponState weapons[kWeaponCount];
+    ShopState shop;
+    bool shopOpen;
+    int shopCursor;
     std::string roomId,notice;
     Room room;
     Hero hero;

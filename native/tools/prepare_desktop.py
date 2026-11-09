@@ -219,6 +219,30 @@ def main() -> None:
         '\t\tcommon->FatalError("Ashen Meridian requires an OpenGL 2.0+ driver with GLSL. Windows CI must use Mesa llvmpipe.");\n'
         '\t}',
         'RenderSystem_init.cpp/validate-GLSL')
+    # Trace the render initialization separately. Mesa LLVMpipe may spend
+    # significant time compiling shaders on a hosted Windows worker.
+    text = replace_once(text, '#pragma hdrstop', '#pragma hdrstop' + chr(10) + trace_header,
+                        'RenderSystem_init.cpp/trace-header')
+    marker = 'void idRenderSystemLocal::Init() {'
+    start = text.index(marker)
+    stop = text.index('void idRenderSystemLocal::Shutdown()', start)
+    section = text[start:stop]
+    for label, call in (
+        ("cvars", "R_InitCvars()"),
+        ("commands", "R_InitCommands()"),
+        ("images", "globalImages->Init()"),
+        ("cinema", "idCinematic::InitCinematic( )"),
+        ("materials", "R_InitMaterials()"),
+        ("models", "renderModelManager->Init()"),
+        ("swap", "SwapCommandBuffers( NULL, NULL, NULL, NULL )"),
+    ):
+        token = call + ";"
+        section = replace_once(section, token,
+            'MeridianEngineStage("renderer.before.' + label + '");' + chr(10) +
+            chr(9) + token + chr(10) +
+            'MeridianEngineStage("renderer.after.' + label + '");',
+            "RenderSystem_init.cpp/" + label)
+    text = text[:start] + section + text[stop:]
     renderer.write_text(text, encoding="utf-8")
     pack_assets(ROOT / "Resource", OUT / "base", staged / "generated" / "AtlasDimensions.hpp")
     # Bring the original world references and exported maps into the native base.

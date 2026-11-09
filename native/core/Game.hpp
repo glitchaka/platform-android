@@ -2,6 +2,7 @@
 #include "World.hpp"
 #include "Weapons.hpp"
 #include "Shop.hpp"
+#include "Progression.hpp"
 #include <set>
 #include <string>
 namespace meridian {

@@ -2,6 +2,7 @@
 #include "../core/Combat.hpp"
 #include "../core/Weapons.hpp"
 #include "../core/Shop.hpp"
+#include "../core/Progression.hpp"
 #include <cstdio>
 #include <cstdlib>
 #include <set>
@@ -48,6 +49,13 @@ int main(){
     require(game.GrantWeapon(1),"Unlocking shotgun succeeds");
     require(game.WeaponIndex()==1,"New weapon is equipped");
     require(game.Weapon(1).owned,"Granted weapon is owned");
+    std::set<std::string> questState,bossState;
+    require(!Progression::CanEnter(1,questState,bossState,false,false,false),"Town gated by tutorial medal");
+    questState.insert("tutorial:chest");
+    require(Progression::CanEnter(1,questState,bossState,false,false,false),"Tutorial medal unlocks Town");
+    require(Progression::AttackBonus(questState,bossState,false,false)==1,"First medal improves attack");
+    bossState.insert("bone_lord");
+    require(Progression::ArmorBonus(questState,bossState,true,false)==3,"Permanent relic armor accumulates");
     ShopState store;
     ShopAccess access;
     require(!ShopCatalog::GateOpen(ShopCatalog::Item(12),access),"Shotgun gated before Nest");

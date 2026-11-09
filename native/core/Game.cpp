@@ -40,6 +40,8 @@ void Game::EnterRoom(const std::string &id,const std::string &from){
     notice=rec->name;noticeTime=2.0f;
 }
 bool Game::GateOpen(const Door &d)const{
+    if(!Progression::CanEnter(RoomRank(d.target),collected,defeated,
+        hero.doubleJump,hero.dashUnlocked,false))return false;
     if(d.gate.empty())return true;
     if(d.gate=="double_jump")return hero.doubleJump;
     if(d.gate=="dash")return hero.dashUnlocked;
@@ -143,7 +145,10 @@ void Game::Fire(){
     if(weaponIndex==0&&weapons[0].durability<=0){
         stats.damage=1;stats.interval=0.55f;stats.pierce=0;stats.range=130.0f;
     }
-    stats.damage+=(shop.Has("power")?1:0);
+    const int relicStrength=Progression::AttackBonus(collected,defeated,
+                                      hero.doubleJump,hero.dashUnlocked);
+    stats.damage+=(shop.Has("power")?1:0)+relicStrength;
+    if(stats.burn>0)stats.burn+=relicStrength/2;
     if(shop.Has("rapid"))stats.interval*=0.5f;
     hero.shotCooldown=stats.interval;
     const float f=hero.facing;
@@ -188,7 +193,9 @@ void Game::DamageHero(int amount){
     if(shop.Has("guard")&&shop.guardCharged){
         shop.guardCharged=false;notice="EL AMULETO ABSORBIO EL GOLPE";return;
     }
-    hero.health=std::max(0,hero.health-std::max(1,amount));
+    const int armor=Progression::ArmorBonus(collected,defeated,
+                                  hero.doubleJump,hero.dashUnlocked);
+    hero.health=std::max(0,hero.health-std::max(1,amount-armor));
     notice="GOLPE RECIBIDO";
 }
 void Game::OnBossDefeated(){
@@ -224,9 +231,21 @@ void Game::Interact(){
             shopOpen=true;shopCursor=0;notice="TIENDA: A/D ELEGIR  E COMPRAR  Q SALIR";
             return;
         }
-        if(p.kind=="guide"){notice="LIBERA EL NIDO Y REGRESA";return;}
+        if(p.kind=="guide"){
+            if(collected.count("quest:started")==0){
+                collected.insert("quest:started");
+                notice="LIBERA EL NIDO. RECOMPENSA: 6 MONEDAS";
+            }else if(defeated.count("nest")!=0&&collected.count("quest:paid")==0){
+                collected.insert("quest:paid");hero.coins+=6;
+                notice="AMULETO DEL NIDO Y 6 MONEDAS";
+            }else notice="LIBERA EL NIDO Y REGRESA";
+            return;
+        }
         if(p.taken)continue;
         if(p.kind=="chest"){
+            if(roomId=="tutorial"&&collected.count("tutorial:lever")==0){
+                notice="ACTIVA PRIMERO EL MECANISMO";return;
+            }
             bool bossAlive=false;
             for(size_t k=0;k<room.enemies.size();++k)
                 if(room.enemies[k].boss&&room.enemies[k].alive)bossAlive=true;
@@ -236,6 +255,7 @@ void Game::Interact(){
             if(reward=="double_jump"){hero.doubleJump=true;notice="DOBLE SALTO"; }
             else if(reward=="dash"){hero.dashUnlocked=true;notice="IMPULSO DESBLOQUEADO";}
             else if(reward=="ending"){completed=true;postgame=true;notice="AVENTURA COMPLETADA";}
+            else if(reward=="heart"){hero.maxHealth=std::min(8,hero.maxHealth+1);hero.health=hero.maxHealth;notice="CORAZON VITAL";}
             else notice="COFRE ABIERTO";
             return;
         }

@@ -18,6 +18,7 @@
 #include "../core/Combat.cpp"
 #include "../core/Weapons.cpp"
 #include "../core/Shop.cpp"
+#include "../core/Progression.cpp"
 #include "../core/Game.cpp"
 #include "../generated/AtlasDimensions.hpp"
 #ifdef MERIDIAN_ENGINE_NULL_RESTORE

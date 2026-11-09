@@ -84,6 +84,27 @@ def main() -> None:
     text = common.read_text(encoding="utf-8")
     text = replace_once(text, '#pragma hdrstop',
         '#pragma hdrstop\n' + trace_header, 'Common.cpp/trace-header')
+    for label, call in (
+        ("commands", "cmdSystem->Init()"),
+        ("cvars", "cvarSystem->Init()"),
+        ("system", "Sys_Init()"),
+        ("filesystem", "fileSystem->Init()"),
+        ("decls", "declManager->Init()"),
+        ("opengl", "renderSystem->InitOpenGL()"),
+        ("sound", "soundSystem->Init()"),
+        ("renderer", "renderSystem->Init()"),
+        ("decls2", "declManager->Init2()"),
+        ("gameDLL", "LoadGameDLL()"),
+        ("session", "session->Initialize()"),
+        ("shell", "CreateMainMenu()"),
+        ("startmenu", "StartMenu( true )"),
+        ("finish-files", "fileSystem->EndLevelLoad()"),
+    ):
+        token = "\\t\\t" + call + ";"
+        text = replace_once(text, token,
+            "        MeridianEngineStage(\\\"before." + label + "\\");\\n" + token +
+            "\\n        MeridianEngineStage(\\\"after." + label + "\\");",
+            "Common.cpp/" + label)
     text = replace_once(text,
         'void idCommonLocal::Init( int argc, const char * const * argv, const char *cmdline ) {',
         'void idCommonLocal::Init( int argc, const char * const * argv, const char *cmdline ) {\n'

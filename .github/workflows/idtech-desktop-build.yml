@@ -117,6 +117,7 @@ jobs:
           $logOut = Join-Path $gameRoot 'meridian-startup.stdout.log'
           $logErr = Join-Path $gameRoot 'meridian-startup.stderr.log'
           if (-not (Test-Path $gameExe)) { throw "Native executable is missing: $gameExe" }
+          $env:MERIDIAN_NATIVE_SMOKE = '1'
           $arguments = '+set fs_basepath "' + $gameRoot + '" +set r_fullscreen 0 +set com_allowConsole 1'
           Write-Host "Launching built idTech executable from $gameRoot"
           $process = Start-Process -FilePath $gameExe -ArgumentList $arguments -WorkingDirectory $gameRoot -PassThru -RedirectStandardOutput $logOut -RedirectStandardError $logErr
@@ -133,6 +134,22 @@ jobs:
             if (Test-Path $logOut) { Get-Content $logOut -Tail 80 }
             if (Test-Path $logErr) { Get-Content $logErr -Tail 80 }
             throw 'Executable exited before 12-second startup smoke completed.'
+          }
+          $healthFile = Join-Path $gameRoot 'meridian-native-health.txt'
+          if (-not (Test-Path $healthFile)) { throw 'Process lived but never drew Meridian gameplay.' }
+          $health = Get-Content $healthFile -Raw
+          Write-Host "Native renderer and gameplay diagnostics: $health"
+          if (-not $health.Contains('renderer=idTech4') -or -not $health.Contains('room=tutorial')) {
+            throw 'No native Meridian tutorial frame was confirmed.'
+          }
+          $draws = [regex]::Match($health, 'draws=(\d+)')
+          $ticks = [regex]::Match($health, 'ticks=(\d+)')
+          if (-not $draws.Success -or -not $ticks.Success -or
+              [int]$draws.Groups[1].Value -lt 1 -or [int]$ticks.Groups[1].Value -lt 1) {
+            throw 'Renderer or gameplay loop did not advance.'
+          }
+          if (-not $health.Contains('smoke_moved=true') -or -not $health.Contains('smoke_fired=true')) {
+            throw 'Native movement and shooting did not execute in the renderer loop.'
           }
       - name: Resolve native crash through matching MSVC PDB symbols
         if: failure()

@@ -46,7 +46,7 @@ private:
     void UpdateEnemies(float dt);
     bool GateOpen(const Door &door)const;
     void OnBossDefeated();
-    void DamageHero();
+    void DamageHero(int amount=1);
     bool started,paused,completed,postgame;
     int weaponIndex;
     WeaponState weapons[kWeaponCount];

@@ -40,11 +40,12 @@ struct Door {
 struct Enemy {
     Vec2 position;
     float patrolMin,patrolMax,speed;
-    int hp,burnDamage;
-    float burnRemaining,burnTick;
-    bool boss,flyer,alive;
-    Enemy():patrolMin(0),patrolMax(0),speed(24),hp(1),burnDamage(0),
-        burnRemaining(0),burnTick(0),boss(false),flyer(false),alive(true){}
+    int hp,maxHp,contactDamage,burnDamage;
+    float burnRemaining,burnTick,time,baseY,chargeDirection;
+    bool boss,flyer,alive,elite;
+    Enemy():patrolMin(0),patrolMax(0),speed(24),hp(1),maxHp(1),contactDamage(1),
+        burnDamage(0),burnRemaining(0),burnTick(0),time(0),baseY(0),
+        chargeDirection(-1),boss(false),flyer(false),alive(true),elite(false){}
 };
 struct Pickup {
     Vec2 position;
@@ -66,7 +67,8 @@ struct Room {
     std::vector<Enemy> enemies;
     std::vector<Pickup> pickups;
     float floorY;
-    Room():record(NULL),floorY(0){}
+    Vec2 rewardPosition,restPosition;
+    Room():record(NULL),floorY(0),rewardPosition(),restPosition(){}
 };
 struct Input {
     bool left,right,jump,fire,interact,dash,pause,save,weaponNext;

@@ -15,6 +15,23 @@ int main(){
     Room tutorial=CreateRoom("tutorial",empty,empty);
     require(tutorial.record!=NULL,"Tutorial exists");
     require(tutorial.platforms.size()>=4,"Tutorial collision platforms exist");
+    require(RoomRank("nest")==1&&RoomRank("bone_lord")==3&&RoomRank("aurora_core")==6,
+            "Original enemy difficulty ranks are preserved");
+    require(tutorial.rewardPosition.x==264.0f,
+            "Tutorial reward is on the actual raised platform");
+    bool tutorialChest=false;
+    for(const Pickup &p:tutorial.pickups)if(p.kind=="chest"&&p.id=="tutorial:chest")tutorialChest=true;
+    require(tutorialChest,"Tutorial chest exists for campaign progression");
+    Room bone=CreateRoom("bone_lord",empty,empty);
+    require(bone.enemies.size()==1&&bone.enemies[0].hp==72,
+            "Bone guardian has fixed campaign HP and no arbitrary scaling");
+    Room town=CreateRoom("town",empty,empty);
+    bool townChest=false,merchant=false;
+    for(const Pickup &p:town.pickups){
+        if(p.id=="town:chest")townChest=true;
+        if(p.kind=="shop")merchant=true;
+    }
+    require(townChest&&merchant,"Town contains both merchant and original reward chest");
     require(tutorial.doors.size()==1,"Tutorial has one outward door");
     require(tutorial.doors[0].target=="town","Tutorial connects to Town");
     require(!tutorial.enemies.empty(),"Tutorial has a playable enemy");

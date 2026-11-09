@@ -163,17 +163,19 @@ void Game::Attack(float dt){
     }
 }
 void Game::UpdateEnemies(float dt){
-    Combat::TickPatrol(dt,room.enemies,hero.coins);
+    Combat::TickPatrol(dt,room.enemies,hero.coins,hero.position);
     for(size_t i=0;i<room.enemies.size();++i){
         Enemy &e=room.enemies[i];
         if(!e.alive)continue;
-        if(nearbyPoint(hero.position,e.position,e.boss?14.0f:9.0f))DamageHero();
+        if(std::fabs(hero.position.x-e.position.x)<(e.boss?12.0f:8.0f) &&
+           std::fabs(hero.position.y-e.position.y)<(e.boss?14.0f:8.0f))
+            DamageHero(e.contactDamage);
     }
 }
-void Game::DamageHero(){
+void Game::DamageHero(int amount){
     if(hero.invulnerability>0)return;
     hero.invulnerability=1.2f;
-    --hero.health;
+    hero.health=std::max(0,hero.health-std::max(1,amount));
     notice="GOLPE RECIBIDO";
 }
 void Game::OnBossDefeated(){

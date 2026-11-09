@@ -15,10 +15,11 @@ float Combat::Fraction(const Vec2 &a,const Vec2 &b,const Vec2 &center,float radi
     const float t=(-bb-std::sqrt(disc))/(2*aa);
     return (t>=0&&t<=1)?t:-1;
 }
-void Combat::TickPatrol(float dt,std::vector<Enemy> &enemies,int &coins){
+void Combat::TickPatrol(float dt,std::vector<Enemy> &enemies,int &coins,const Vec2 &playerPosition){
     for(size_t i=0;i<enemies.size();++i){
         Enemy &e=enemies[i];
         if(!e.alive)continue;
+        e.time+=dt;
         if(e.burnRemaining>0){
             e.burnRemaining=std::max(0.0f,e.burnRemaining-dt);
             e.burnTick-=dt;
@@ -28,11 +29,26 @@ void Combat::TickPatrol(float dt,std::vector<Enemy> &enemies,int &coins){
                 if(e.hp<=0){e.alive=false;if(!e.boss)++coins;continue;}
             }
         }
+        if(e.boss){
+            const float phase=std::fmod(e.time,2.7f);
+            if(phase<0.8f){
+                e.speed=0;
+                const float dx=playerPosition.x-e.position.x;
+                if(dx!=0)e.chargeDirection=(dx>0)?1.0f:-1.0f;
+            }else if(phase<1.65f){
+                e.speed=e.chargeDirection*((e.elite||e.hp<e.maxHp/2)?125.0f:100.0f);
+            }else{
+                e.speed=e.chargeDirection*18.0f;
+            }
+        }else if(e.flyer){
+            e.speed=e.speed>0?33.0f:-33.0f;
+            e.position.y=e.baseY+std::sin(e.time*2.4f)*10.0f;
+        }
         e.position.x+=e.speed*dt;
-        if(e.position.x<e.patrolMin){
-            e.position.x=e.patrolMin;e.speed=std::fabs(e.speed);
-        } else if(e.position.x>e.patrolMax){
-            e.position.x=e.patrolMax;e.speed=-std::fabs(e.speed);
+        if(e.position.x<=e.patrolMin || e.position.x>=e.patrolMax){
+            e.position.x=std::max(e.patrolMin,std::min(e.position.x,e.patrolMax));
+            e.speed=-e.speed;
+            e.chargeDirection=-e.chargeDirection;
         }
     }
 }

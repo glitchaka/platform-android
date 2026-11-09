@@ -43,6 +43,7 @@ struct Enemy {
     int hp,maxHp,contactDamage,burnDamage;
     float burnRemaining,burnTick,time,baseY,chargeDirection;
     bool boss,flyer,alive,elite;
+    std::string tag;
     Enemy():patrolMin(0),patrolMax(0),speed(24),hp(1),maxHp(1),contactDamage(1),
         burnDamage(0),burnRemaining(0),burnTick(0),time(0),baseY(0),
         chargeDirection(-1),boss(false),flyer(false),alive(true),elite(false){}

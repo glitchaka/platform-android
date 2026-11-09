@@ -28,6 +28,7 @@ void Game::EnterRoom(const std::string &id,const std::string &from){
     roomId=id;
     visited.insert(id);
     room=CreateRoom(id,collected,defeated);
+    Postgame::EnterRoom(room,completed,collected);
     shots.clear();
     hero.position=Vec2(24,room.floorY-4);
     for(size_t i=0;i<room.doors.size();++i)
@@ -41,12 +42,12 @@ void Game::EnterRoom(const std::string &id,const std::string &from){
 }
 bool Game::GateOpen(const Door &d)const{
     if(!Progression::CanEnter(RoomRank(d.target),collected,defeated,
-        hero.doubleJump,hero.dashUnlocked,false))return false;
+        hero.doubleJump,hero.dashUnlocked,Postgame::Complete(collected)))return false;
     if(d.gate.empty())return true;
     if(d.gate=="double_jump")return hero.doubleJump;
     if(d.gate=="dash")return hero.dashUnlocked;
     if(d.gate=="keys")return hero.keys>=2;
-    if(d.gate=="postgame")return postgame;
+    if(d.gate=="postgame")return postgame&&Postgame::Complete(collected);
     if(d.gate=="boss:bone_lord")return defeated.count("bone_lord")!=0;
     if(d.gate=="boss:royal_spire")return defeated.count("royal_spire")!=0;
     return false;
@@ -170,6 +171,20 @@ void Game::Fire(){
 }
 void Game::Attack(float dt){
     Combat::TickShots(dt,shots,room.enemies,hero.coins);
+    for(size_t i=0;i<room.enemies.size();++i){
+        Enemy &e=room.enemies[i];
+        if(e.elite&&!e.alive&&!e.tag.empty()&&collected.insert(e.tag).second)
+            hero.coins+=e.boss?4:2;
+    }
+    for(size_t i=0;i<room.pickups.size();++i){
+        Pickup &p=room.pickups[i];
+        if(p.taken||p.kind!="switch")continue;
+        for(size_t k=0;k<shots.size();++k)
+            if(nearbyPoint(shots[k].position,p.position,11.0f)){
+                p.taken=true;collected.insert(p.id);
+                notice="MECANISMO AZUL ACTIVADO";break;
+            }
+    }
     if(room.record&&std::string(room.record->reward)=="boss"){
         bool alive=false;
         for(size_t i=0;i<room.enemies.size();++i)
@@ -229,6 +244,29 @@ void Game::Interact(){
         }
         if(p.kind=="shop"){
             shopOpen=true;shopCursor=0;notice="TIENDA: A/D ELEGIR  E COMPRAR  Q SALIR";
+            return;
+        }
+        if(p.kind=="quest"){
+            const int stage=Postgame::Stage(collected);
+            if(stage>=5||!Postgame::IsTarget(stage,roomId))return;
+            bool guards=false;
+            for(size_t k=0;k<room.enemies.size();++k)
+                if(room.enemies[k].elite&&room.enemies[k].alive)guards=true;
+            if(guards){notice="PRIMERO VENCE A LOS GUARDIANES";return;}
+            if(stage==3&&collected.count(Postgame::SwitchToken(stage,roomId))==0){
+                notice="DISPARA AL MECANISMO AZUL";return;
+            }
+            p.taken=true;collected.insert(Postgame::Token(stage,roomId));
+            const int nextStage=Postgame::Stage(collected);
+            if(nextStage>stage){
+                hero.coins+=Postgame::Quest(stage).reward;
+                notice=nextStage>=5?"CORONA DEL MERIDIANO. JARDINES DESBLOQUEADOS":
+                       std::string("MISION COMPLETA: ")+Postgame::Quest(stage).name;
+                Postgame::EnterRoom(room,completed,collected);
+            }else{
+                notice="OBJETIVO RECUPERADO";
+            }
+            Save("meridian-native.save");
             return;
         }
         if(p.kind=="guide"){

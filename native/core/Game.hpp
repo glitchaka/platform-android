@@ -3,6 +3,7 @@
 #include "Weapons.hpp"
 #include "Shop.hpp"
 #include "Progression.hpp"
+#include "Postgame.hpp"
 #include <set>
 #include <string>
 namespace meridian {
@@ -40,6 +41,11 @@ public:
     int ShopCursor()const{return shopCursor;}
     const ShopState &Purchases()const{return shop;}
     int TonicCount()const{return shop.tonics;}
+    int PostgameStage()const{return Postgame::Stage(collected);}
+    int PostgameTargetsDone()const{
+        const int stage=PostgameStage();
+        return stage<5?Postgame::Recovered(stage,collected):0;
+    }
     ShopAccess AvailableShop()const;
     bool GrantWeapon(int index);
     void NextWeapon();

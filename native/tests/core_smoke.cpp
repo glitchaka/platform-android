@@ -3,6 +3,7 @@
 #include "../core/Weapons.hpp"
 #include "../core/Shop.hpp"
 #include "../core/Progression.hpp"
+#include "../core/Postgame.hpp"
 #include <cstdio>
 #include <cstdlib>
 #include <set>
@@ -12,6 +13,13 @@ static void require(bool value,const char *message){
 }
 int main(){
     require(RoomCount()==55,"The native room catalog contains all 55 rooms");
+    require(Postgame::Quest(0).roomCount==11&&Postgame::Quest(4).roomCount==10,
+            "Postgame has five complete physical objective lists");
+    require(Postgame::Stage(std::set<std::string>())==0,"Postgame starts at first quest");
+    std::set<std::string> finished0;
+    for(int i=0;i<Postgame::Quest(0).roomCount;++i)
+        finished0.insert(Postgame::Token(0,Postgame::Quest(0).rooms[i]));
+    require(Postgame::Stage(finished0)==1,"Eleven recovered physical objectives advance mission stage");
     require(LinkCount()==65,"The native graph contains all 65 actual links");
     std::set<std::string> empty;
     Room tutorial=CreateRoom("tutorial",empty,empty);

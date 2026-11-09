@@ -18,6 +18,7 @@
 #include "../core/Combat.cpp"
 #include "../core/Weapons.cpp"
 #include "../core/Shop.cpp"
+#include "../core/Postgame.cpp"
 #include "../core/Progression.cpp"
 #include "../core/Game.cpp"
 #include "../generated/AtlasDimensions.hpp"
@@ -156,6 +157,10 @@ void Meridian_Draw(){
             MeridianAtlas("meridian/collectables",x-8,y-8,16,16,8,0,8,8,MERIDIAN_COLLECTABLES_W,MERIDIAN_COLLECTABLES_H,MeridianColor(1,1,1));
         else if(p.kind=="chest")
             MeridianAtlas("meridian/tiles",x-8,y-8,16,16,16,792,8,8,MERIDIAN_TILES_W,MERIDIAN_TILES_H,MeridianColor(1,1,1));
+        else if(p.kind=="quest")
+            MeridianFill(x-10,y-14,20,20,MeridianColor(0.95f,0.74f,0.22f));
+        else if(p.kind=="switch")
+            MeridianFill(x-7,y-12,14,14,MeridianColor(0.18f,0.76f,0.98f));
         else if(p.kind=="crate")
             MeridianAtlas("meridian/tiles",x-8,y-8,16,16,0,792,8,8,MERIDIAN_TILES_W,MERIDIAN_TILES_H,MeridianColor(1,1,1));
         else if(p.kind=="bench")
@@ -208,6 +213,12 @@ void Meridian_Draw(){
                          i==current?MeridianColor(1,0.94f,0.45f):MeridianColor(0.71f,0.87f,0.77f));
         }
         MeridianText(72,366,"A/D ELEGIR  E/ESPACIO COMPRAR  Q SALIR",MeridianColor(1,1,1));
+    }
+    if(g_meridian.IsPostgame()&&g_meridian.PostgameStage()<5){
+        const int q=g_meridian.PostgameStage();
+        const meridian::PostQuest &quest=meridian::Postgame::Quest(q);
+        MeridianText(12,410,va("MISION %d: %s %d DE %d",q+1,quest.name,
+              g_meridian.PostgameTargetsDone(),quest.roomCount),MeridianColor(0.92f,0.86f,0.52f));
     }
     if(g_meridian.IsPaused())MeridianText(245,225,"EN PAUSA",MeridianColor(1,1,1));
     renderSystem->SetColor(MeridianColor(1,1,1));

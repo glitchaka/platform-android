@@ -43,7 +43,8 @@ float g_meridianSmokeStartX=0.0f;
 int g_meridianTicks=0, g_meridianDraws=0;
 void MeridianWriteHealth(){
     if(!g_meridianVisible || !g_meridian.CurrentRoom().record)return;
-    std::ofstream out("meridian-native-health.txt",std::ios::trunc);
+    const char *healthPath=std::getenv("MERIDIAN_NATIVE_HEALTH");
+    std::ofstream out(healthPath!=NULL && healthPath[0]!='\0'?healthPath:"meridian-native-health.txt",std::ios::trunc);
     if(!out)return;
     out<<"renderer=idTech4\nroom="<<g_meridian.RoomId()<<"\n";
     out<<"ticks="<<g_meridianTicks<<"\ndraws="<<g_meridianDraws<<"\n";

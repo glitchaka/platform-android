@@ -118,6 +118,8 @@ jobs:
           $logErr = Join-Path $gameRoot 'meridian-startup.stderr.log'
           if (-not (Test-Path $gameExe)) { throw "Native executable is missing: $gameExe" }
           $env:MERIDIAN_NATIVE_SMOKE = '1'
+          $env:MERIDIAN_NATIVE_HEALTH = Join-Path $gameRoot 'meridian-native-health.txt'
+          $env:MERIDIAN_NATIVE_TRACE = Join-Path $gameRoot 'meridian-engine-trace.txt'
           $arguments = '+set fs_basepath "' + $gameRoot + '" +set r_fullscreen 0 +set com_allowConsole 1'
           Write-Host "Launching built idTech executable from $gameRoot"
           $process = Start-Process -FilePath $gameExe -ArgumentList $arguments -WorkingDirectory $gameRoot -PassThru -RedirectStandardOutput $logOut -RedirectStandardError $logErr
@@ -136,6 +138,9 @@ jobs:
             'MERIDIAN_EARLY_EXIT=true' >> $env:GITHUB_ENV
             throw 'Executable exited before 12-second startup smoke completed.'
           }
+          Write-Host '---- Engine phase trace ----'
+          $traceFile = Join-Path $gameRoot 'meridian-engine-trace.txt'
+          if (Test-Path $traceFile) { Get-Content $traceFile -Tail 80 } else { Write-Host 'No engine phase markers.' }
           Write-Host '---- Native startup stdout ----'
           if (Test-Path $logOut) { Get-Content $logOut -Tail 80 }
           Write-Host '---- Native startup stderr ----'
@@ -223,5 +228,6 @@ jobs:
           path: |
             build/desktop-idtech4/game-package/
             build/desktop-idtech4/meridian-native-health.txt
+            build/desktop-idtech4/meridian-engine-trace.txt
             build/desktop-idtech4/meridian-startup.stdout.log
             build/desktop-idtech4/meridian-startup.stderr.log

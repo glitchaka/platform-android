@@ -14,6 +14,7 @@
 #include <functional>
 #include <fstream>
 #include <sstream>
+#include <cstdlib>
 #include "../core/World.cpp"
 #include "../core/Combat.cpp"
 #include "../core/Weapons.cpp"
@@ -36,6 +37,19 @@ namespace {
 meridian::Game g_meridian;
 bool g_meridianVisible=false;
 int g_meridianLastMs=0;
+// CI-only input: disabled in ordinary sessions.
+bool g_meridianSmoke=false, g_meridianSmokeMoved=false, g_meridianSmokeFired=false;
+float g_meridianSmokeStartX=0.0f;
+int g_meridianTicks=0, g_meridianDraws=0;
+void MeridianWriteHealth(){
+    if(!g_meridianVisible || !g_meridian.CurrentRoom().record)return;
+    std::ofstream out("meridian-native-health.txt",std::ios::trunc);
+    if(!out)return;
+    out<<"renderer=idTech4\nroom="<<g_meridian.RoomId()<<"\n";
+    out<<"ticks="<<g_meridianTicks<<"\ndraws="<<g_meridianDraws<<"\n";
+    out<<"smoke_moved="<<(g_meridianSmokeMoved?"true":"false")<<"\n";
+    out<<"smoke_fired="<<(g_meridianSmokeFired?"true":"false")<<"\n";
+}
 
 bool MeridianKey(int key){return idKeyInput::IsDown(key);}
 idVec4 MeridianColor(float r,float g,float b,float a=1.0f){return idVec4(r,g,b,a);}
@@ -85,6 +99,11 @@ void MeridianStart_f(const idCmdArgs &args){
     g_meridianVisible=true;
     meridian_native.SetBool(true);
     g_meridian.NewGame();
+    g_meridianTicks=0;g_meridianDraws=0;
+    g_meridianSmokeMoved=false;g_meridianSmokeFired=false;
+    const char *smoke=std::getenv("MERIDIAN_NATIVE_SMOKE");
+    g_meridianSmoke=(smoke!=NULL && smoke[0]=='1' && smoke[1]=='\0');
+    g_meridianSmokeStartX=g_meridian.Player().position.x;
     g_meridianLastMs=Sys_Milliseconds();
     common->Printf("Ashen Meridian: new native session started.\\n");
 }
@@ -117,7 +136,16 @@ void Meridian_Tick(){
     in.save=MeridianKey('p');
     in.weaponNext=MeridianKey('q');
     in.heal=MeridianKey('f');
+    if(g_meridianSmoke){
+        in.left=false;in.right=true;
+        in.fire=(g_meridianTicks>=2 && g_meridianTicks<8);
+    }
     g_meridian.Tick(dt,in);
+    ++g_meridianTicks;
+    if(g_meridianSmoke){
+        if(g_meridian.Player().position.x>g_meridianSmokeStartX+2.0f)g_meridianSmokeMoved=true;
+        if(!g_meridian.Shots().empty())g_meridianSmokeFired=true;
+    }
 }
 void Meridian_Draw(){
     if(!g_meridianVisible)return;
@@ -230,5 +258,7 @@ void Meridian_Draw(){
     }
     if(g_meridian.IsPaused())MeridianText(245,225,"EN PAUSA",MeridianColor(1,1,1));
     renderSystem->SetColor(MeridianColor(1,1,1));
+    ++g_meridianDraws;
+    if(g_meridianDraws<=8 || g_meridianDraws%30==0)MeridianWriteHealth();
 }
 } // namespace

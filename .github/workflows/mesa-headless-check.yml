@@ -28,4 +28,6 @@ jobs:
           New-Item -ItemType Directory -Force -Path $root | Out-Null
           & ($seven.Source ?? $seven.FullName) x -y $archive "-o$root" | Select-Object -Last 12
           Write-Host "Exit: $LASTEXITCODE"
-          Get-ChildItem $root -Recurse -File -Include 'opengl32.dll','libgallium_wgl.dll','mesadrv.dll' | Select-Object FullName,Length | Format-Table
+          Get-ChildItem $root -Recurse -File | ForEach-Object { Write-Host "ARCHIVE: $($_.FullName) $($_.Length)" }
+          $ogl=@(Get-ChildItem $root -Recurse -File | Where-Object { $_.Name -ieq 'opengl32.dll' })
+          Write-Host "OpenGL DLL candidates: $($ogl.Count)"

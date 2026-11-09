@@ -16,7 +16,7 @@ const PostQuest quests[]={
  {"FORJA DE LA CIUDAD",140,9,quest3},
  {"ULTIMA GUARDIA",180,10,quest4}
 };
-static bool near(const Vec2 &a,const Vec2 &b,float limit){
+static bool postgameNear(const Vec2 &a,const Vec2 &b,float limit){
  const float dx=a.x-b.x,dy=a.y-b.y;return dx*dx+dy*dy<limit*limit;
 }
 }
@@ -65,9 +65,9 @@ void Postgame::EnterRoom(Room &room,bool completed,const std::set<std::string> &
      const Vec2 candidate(static_cast<float>(x),room.floorY-4.0f);
      bool clear=true;
      for(size_t i=0;i<room.doors.size();++i)
-       if(near(candidate,Vec2(room.doors[i].x,room.doors[i].y),26.0f)){clear=false;break;}
+       if(postgameNear(candidate,Vec2(room.doors[i].x,room.doors[i].y),26.0f)){clear=false;break;}
      for(size_t i=0;i<room.pickups.size();++i)
-       if(near(candidate,room.pickups[i].position,26.0f)){clear=false;break;}
+       if(postgameNear(candidate,room.pickups[i].position,26.0f)){clear=false;break;}
      if(clear){cache=candidate;placed=true;break;}
    }
    if(!placed)cache=Vec2(std::max(48.0f,std::min(width-48.0f,cache.x)),room.floorY-4);

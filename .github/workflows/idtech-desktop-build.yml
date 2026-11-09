@@ -83,6 +83,34 @@ jobs:
             if (-not (Test-Path $path)) { throw "Required 32-bit DirectX runtime missing: $dll" }
             Write-Host "Legacy DirectX runtime available: $dll"
           }
+      - name: Enable Mesa LLVMpipe OpenGL for headless Windows CI
+        shell: pwsh
+        run: |
+          # GitHub hosted Windows machines have no 3D GPU driver (typically GL 1.1).
+          # Test with a pinned Mesa x86 software OpenGL driver; do not ship it.
+          $archive=Join-Path $env:RUNNER_TEMP 'mesa3d-26.2.6-release-msvc.7z'
+          $link='https://github.com/pal1000/mesa-dist-win/releases/download/26.2.6/mesa3d-26.2.6-release-msvc.7z'
+          Invoke-WebRequest $link -OutFile $archive
+          $hash=(Get-FileHash $archive -Algorithm SHA256).Hash.ToLowerInvariant()
+          if($hash -ne 'b2e00615feaba45942343c265cc8c5f576142ca682c1ac6661922d4b72492877'){
+            throw 'Software OpenGL package failed pinned SHA256 verification'
+          }
+          $root=Join-Path $env:RUNNER_TEMP 'mesa-native-x86'
+          New-Item -ItemType Directory -Force -Path $root | Out-Null
+          $seven=(Get-Command 7z.exe -ErrorAction Stop).Source
+          & $seven x -y $archive "-o$root" | Out-Null
+          if($LASTEXITCODE -ne 0){throw 'Cannot extract Mesa software OpenGL'}
+          $ogl=Get-ChildItem $root -Recurse -File -Filter 'opengl32.dll' |
+             Where-Object { $_.FullName -notmatch '(?i)[/\\]x64[/\\]' -and $_.FullName -notmatch '(?i)[/\\]x86_64[/\\]' } |
+             Sort-Object FullName | Select-Object -First 1
+          if(-not $ogl){throw 'Mesa x86 opengl32.dll absent'}
+          $gallium=Join-Path $ogl.DirectoryName 'libgallium_wgl.dll'
+          if(-not(Test-Path $gallium)){throw "Mesa x86 gallium not in $($ogl.DirectoryName)"}
+          $target=(Resolve-Path 'build/desktop-idtech4/build/Win32/Release').Path
+          Copy-Item (Join-Path $ogl.DirectoryName '*.dll') -Destination $target -Force
+          'GALLIUM_DRIVER=llvmpipe' >> $env:GITHUB_ENV
+          'LIBGL_ALWAYS_SOFTWARE=1' >> $env:GITHUB_ENV
+          Write-Host "Headless OpenGL supplied via Mesa LLVMpipe x86: $($ogl.DirectoryName)"
       - name: Start native game and check for an immediate crash
         shell: pwsh
         run: |

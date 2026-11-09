@@ -161,6 +161,19 @@ def main() -> None:
         '\tif ( wglChoosePixelFormatARB == NULL ) { return -1; }',
         'win_glimp.cpp/guard-ARB-pixel-format')
     glimp.write_text(text, encoding="utf-8")
+    # A missing shader-language string means there is no usable OpenGL 2+
+    # context. Report the graphics requirement before the 2012 renderer passes
+    # a NULL pointer to atof() and terminates with c0000409.
+    renderer = OUT / "neo" / "renderer" / "RenderSystem_init.cpp"
+    text = renderer.read_text(encoding="utf-8")
+    text = replace_once(text,
+        '\tglConfig.extensions_string = (const char *)qglGetString( GL_EXTENSIONS );',
+        '\tglConfig.extensions_string = (const char *)qglGetString( GL_EXTENSIONS );\n'
+        '\tif ( glConfig.version_string == NULL || glConfig.shading_language_string == NULL ) {\n'
+        '\t\tcommon->FatalError("Ashen Meridian requires an OpenGL 2.0+ driver with GLSL. Windows CI must use Mesa llvmpipe.");\n'
+        '\t}',
+        'RenderSystem_init.cpp/validate-GLSL')
+    renderer.write_text(text, encoding="utf-8")
     pack_assets(ROOT / "Resource", OUT / "base", staged / "generated" / "AtlasDimensions.hpp")
     # Bring the original world references and exported maps into the native base.
     references = OUT / "base" / "meridian-source" / "maps"

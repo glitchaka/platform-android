@@ -5,6 +5,8 @@
 #include "../core/Progression.hpp"
 #include "../core/Postgame.hpp"
 #include "../core/Trials.hpp"
+#include "../core/Navigation.hpp"
+#include "../core/Map.hpp"
 #include <cstdio>
 #include <cstdlib>
 #include <set>
@@ -13,6 +15,38 @@ static void require(bool value,const char *message){
     if(!value){std::fprintf(stderr,"FAIL: %s\n",message);std::exit(1);}
 }
 int main(){
+    require(Map::Count()==55,"Native atlas contains 55 exported room rectangles");
+    require(Map::Find("tutorial")!=nullptr&&Map::Find("town")!=nullptr,
+            "Source room coordinates are available without Godot");
+    require(Map::Find("tutorial")->x==105&&Map::Find("tutorial")->y==8,
+            "C++ atlas preserves original tutorial position");
+    Navigation nav;
+    nav.Boot(true);
+    MenuKeys down;
+    down.down=true;
+    nav.Step(down);
+    MenuKeys release;
+    nav.Step(release);
+    MenuKeys accept;
+    accept.accept=true;
+    require(nav.Step(accept)==MenuAction::LoadGame,"Continue is an actual native menu action");
+    nav.Playing();
+    MenuKeys back;
+    back.back=true;
+    nav.Step(back);
+    require(nav.Page()==Screen::Pause,"Escape opens native pause");
+    nav.Step(release);
+    nav.Step(back);
+    require(nav.Page()==Screen::Game,"Escape resumes native gameplay");
+    nav.Step(release);
+    MenuKeys atlas;
+    atlas.atlas=true;
+    nav.Step(atlas);
+    require(nav.Page()==Screen::Atlas,"Native atlas opens");
+    nav.Step(release);
+    nav.Step(back);
+    require(nav.Page()==Screen::Game,"Native atlas closes");
+
     require(RoomCount()==55,"The native room catalog contains all 55 rooms");
     require(Trials::IsTrialRoom("nest")&&Trials::IsTrialRoom("throne"),
             "Three trials and final marathon have physical rooms");

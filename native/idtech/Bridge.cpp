@@ -99,6 +99,29 @@ void MeridianAtlas(const char *material,float px,float py,float w,float h,float 
     renderSystem->DrawStretchPic(px,py,w,h,sx/texW,sy/texH,(sx+sw)/texW,(sy+sh)/texH,MeridianMaterial(material));
     renderSystem->SetColor(MeridianColor(1,1,1));
 }
+// Nine-slice frames from Resource/UI.png, matching the original bitmap UI.
+void MeridianPanel(float x,float y,float w,float h,const idVec4 &tint){
+    if(w<6||h<6)return;
+    const float sizesX[]={3.0f,w-6.0f,3.0f};
+    const float sizesY[]={3.0f,h-6.0f,3.0f};
+    const float cuts[]={0.0f,3.0f,21.0f};
+    const float lengths[]={3.0f,18.0f,3.0f};
+    float py=y;
+    for(int row=0;row<3;++row){
+        float px=x;
+        for(int col=0;col<3;++col){
+            MeridianAtlas("meridian/ui",px,py,sizesX[col],sizesY[row],
+                64+cuts[col],cuts[row],lengths[col],lengths[row],
+                MERIDIAN_UI_W,MERIDIAN_UI_H,tint);
+            px+=sizesX[col];
+        }
+        py+=sizesY[row];
+    }
+}
+void MeridianIcon(float x,float y,float sourceX,const idVec4 &tint){
+    MeridianAtlas("meridian/ui",x,y,16,16,sourceX,40,8,8,
+                  MERIDIAN_UI_W,MERIDIAN_UI_H,tint);
+}
 // The UI uses the exact 8x8 bitmap alphabet from Resource/UI.png.
 void MeridianText(int x,int y,const char *text,const idVec4 &color){
     int cursor=x;
@@ -243,7 +266,7 @@ void Meridian_Tick(){
 }
 void MeridianDrawTitle(){
     MeridianFill(0,0,640,480,MeridianColor(0.07f,0.09f,0.13f));
-    MeridianFill(74,76,492,324,MeridianColor(0.15f,0.20f,0.24f));
+    MeridianPanel(74,76,492,324,MeridianColor(1,1,1));
     MeridianText(165,121,"ASHEN MERIDIAN",MeridianColor(0.98f,0.90f,0.65f));
     MeridianText(143,151,"MOTOR NATIVO IDTECH 4",MeridianColor(0.65f,0.84f,0.82f));
     const char *items[]={"NUEVA PARTIDA","CONTINUAR","SALIR"};
@@ -260,6 +283,7 @@ void MeridianDrawOverlay(){
     const meridian::Screen page=g_navigation.Page();
     if(page==meridian::Screen::Game)return;
     MeridianFill(32,57,576,366,MeridianColor(0.07f,0.10f,0.14f,0.96f));
+    MeridianPanel(32,57,576,366,MeridianColor(1,1,1));
     if(page==meridian::Screen::Pause){
         MeridianText(250,103,"PAUSA",MeridianColor(1,0.89f,0.60f));
         const char *items[]={"CONTINUAR","GUARDAR Y VOLVER AL INICIO","GUARDAR Y SALIR"};
@@ -452,13 +476,20 @@ void Meridian_Draw(){
     MeridianAtlas("meridian/player",px-8,py-8,16,16,sourceX,row,h.facing<0?-8.0f:8.0f,8,
         MERIDIAN_PLAYER_W,MERIDIAN_PLAYER_H,MeridianColor(1,1,1));
     MeridianFill(0,0,640,50,MeridianColor(0.08f,0.08f,0.11f));
+    MeridianPanel(2,2,636,46,MeridianColor(0.88f,0.92f,0.88f));
     MeridianText(12,12,va("ASHEN MERIDIAN | %s",room.record->name),MeridianColor(0.87f,0.98f,0.92f));
-    MeridianText(12,29,va("VIDA %d/%d  MONEDAS %d  LLAVES %d  %s",h.health,h.maxHealth,h.coins,h.keys,g_meridian.EquippedWeapon().name),MeridianColor(0.98f,0.92f,0.73f));
+    MeridianIcon(11,28,0,MeridianColor(1,1,1));
+    MeridianText(31,29,va("%d/%d",h.health,h.maxHealth),MeridianColor(0.98f,0.92f,0.73f));
+    MeridianIcon(106,28,64,MeridianColor(1,1,1));
+    MeridianText(125,29,va("%d",h.coins),MeridianColor(0.98f,0.92f,0.73f));
+    MeridianIcon(183,28,56,MeridianColor(1,1,1));
+    MeridianText(202,29,va("%d  %s",h.keys,g_meridian.EquippedWeapon().name),MeridianColor(0.98f,0.92f,0.73f));
     MeridianText(12,434,"A/D MOVER  ESPACIO SALTAR  J TIRO  E USAR  R ARMA  F CURAR",MeridianColor(0.75f,0.85f,0.81f));
     if(!g_meridian.Notice().empty())
         MeridianText(12,453,g_meridian.Notice().c_str(),MeridianColor(1,0.76f,0.43f));
     if(g_meridian.IsShopOpen()){
         MeridianFill(50,75,540,342,MeridianColor(0.06f,0.08f,0.13f,0.95f));
+        MeridianPanel(50,75,540,342,MeridianColor(1,1,1));
         MeridianText(78,89,"TIENDA DEL PUEBLO",MeridianColor(1,0.87f,0.50f));
         const int current=g_meridian.ShopCursor();
         const int first=std::max(0,std::min(current-3,meridian::kShopItemCount-8));

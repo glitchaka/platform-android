@@ -9,6 +9,7 @@
 #include "../core/Map.hpp"
 #include "../core/Audio.hpp"
 #include "../core/Terrain.hpp"
+#include "../core/Milestones.hpp"
 #include <cstdio>
 #include <cstdlib>
 #include <set>
@@ -17,6 +18,9 @@ static void require(bool value,const char *message){
     if(!value){std::fprintf(stderr,"FAIL: %s\n",message);std::exit(1);}
 }
 int main(){
+    require(Milestones::Count()==20,"All twenty achievements are native");
+    require(std::string(Milestones::At(0).id)=="first_chest",
+            "Original achievement catalogue order remains stable");
     require(Map::Count()==55,"Native atlas contains 55 exported room rectangles");
     require(Terrain::RoomStyle("moss_depths")==TerrainStyle::Moss,
             "Moss room uses original moss texture rather than placeholder geometry");
@@ -122,6 +126,9 @@ int main(){
     game.NewGame();
     require(game.IsStarted(),"New game starts");
     require(std::string(Audio::Track(game))=="tutorial","Native audio selects tutorial theme");
+    require(Milestones::Progress(game,Milestones::At(3))==1,
+            "Native explorer achievement counts the tutorial room");
+    require(Milestones::Completed(game)==0,"Fresh game has no completed achievements");
     require(std::string(Audio::EffectFromNotice("COFRE ABIERTO"))=="chest",
             "Native event audio maps chest opening to original sound");
 

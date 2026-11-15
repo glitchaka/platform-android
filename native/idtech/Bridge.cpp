@@ -116,7 +116,7 @@ void MeridianText(int x,int y,const char *text,const idVec4 &color){
                 default:c=' ';break;
             }
         }
-        if(c=='\\n'){cursor=x;y+=10;continue;}
+        if(c=='\n'){cursor=x;y+=10;continue;}
         if(c>='a'&&c<='z')c=(unsigned char)(c-'a'+'A');
         int gx=-1,gy=0;
         if(c>='A'&&c<='Z'){
@@ -144,7 +144,7 @@ void MeridianStart_f(const idCmdArgs &args){
     g_meridianSmoke=(smoke!=NULL && smoke[0]=='1' && smoke[1]=='\0');
     g_meridianSmokeStartX=g_meridian.Player().position.x;
     g_meridianLastMs=Sys_Milliseconds();
-    common->Printf("Ashen Meridian: new native session started.\\n");
+    common->Printf("Ashen Meridian: new native session started.\n");
 }
 void MeridianLoad_f(const idCmdArgs &args){
     g_meridianVisible=true;

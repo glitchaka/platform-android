@@ -3,6 +3,7 @@
 #include "Game.hpp"
 #include <algorithm>
 #include <cstring>
+#include <cstdlib>
 namespace meridian {
 struct Achievement {
     const char *id,*name,*description;

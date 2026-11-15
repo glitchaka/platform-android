@@ -11,6 +11,8 @@
 #include "../core/Terrain.hpp"
 #include "../core/Milestones.hpp"
 #include <cstdio>
+#include <fstream>
+#include <iterator>
 #include <cstdlib>
 #include <set>
 using namespace meridian;
@@ -163,6 +165,11 @@ int main(){
     game.Tick(0.02f,fire);
     require(!game.Shots().empty(),"Weapon spawns a projectile");
     require(game.Save("native_smoke.save"),"Native save writes to disk");
+    std::ifstream nativeCheck("native_smoke.save",std::ios::binary);
+    std::string saveHeader;
+    std::getline(nativeCheck,saveHeader);
+    require(saveHeader=="MERIDIAN_NATIVE_4","Native save preserves physical key-drop metadata");
+    nativeCheck.close();
     Game reload;
     require(reload.Load("native_smoke.save"),"Save reload succeeds");
     require(reload.RoomId()==game.RoomId(),"Save restores the room");

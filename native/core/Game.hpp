@@ -33,6 +33,19 @@ public:
     const std::string &Notice()const{return notice;}
     bool HasVisited(const std::string &id)const{return visited.count(id)!=0;}
     bool HasDefeated(const std::string &id)const{return defeated.count(id)!=0;}
+    bool HasCollected(const std::string &id)const{return collected.count(id)!=0;}
+    size_t VisitedCount()const{return visited.size();}
+    size_t EnemyKillCount()const{
+        size_t count=defeated.size();
+        for(const std::string &id:collected)if(id.compare(0,6,"enemy:")==0)++count;
+        return count;
+    }
+    size_t ChestCount()const{
+        size_t count=0;
+        for(const std::string &id:collected)
+            if(id.size()>=6&&id.compare(id.size()-6,6,":chest")==0)++count;
+        return count;
+    }
     bool IsCompleted()const{return completed;}
     bool IsPostgame()const{return postgame;}
     int WeaponIndex()const{return weaponIndex;}

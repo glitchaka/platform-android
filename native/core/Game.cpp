@@ -29,6 +29,13 @@ void Game::EnterRoom(const std::string &id,const std::string &from){
     challenges.Reset();
     visited.insert(id);
     room=CreateRoom(id,collected,defeated);
+    // Ordinary enemies are uniquely recorded by room and spawn index.
+    // Defeated enemies must not respawn or award coins on re-entry.
+    for(size_t i=0;i<room.enemies.size();++i){
+        if(room.enemies[i].boss||room.enemies[i].elite)continue;
+        const std::string token="enemy:"+roomId+":"+std::to_string(i);
+        if(collected.count(token))room.enemies[i].alive=false;
+    }
     Postgame::EnterRoom(room,completed,collected);
     shots.clear();
     hero.position=Vec2(24,room.floorY-4);
@@ -173,6 +180,12 @@ void Game::Fire(){
 }
 void Game::Attack(float dt){
     Combat::TickShots(dt,shots,room.enemies,hero.coins);
+    for(size_t i=0;i<room.enemies.size();++i){
+        const Enemy &e=room.enemies[i];
+        if(!e.alive&&!e.boss&&!e.elite){
+            collected.insert("enemy:"+roomId+":"+std::to_string(i));
+        }
+    }
     const bool trialResolved=challenges.Advance(room,collected,hero.coins,notice);
     if(trialResolved){
         if(Trials::HasThreeClean(collected))GrantWeapon(3);

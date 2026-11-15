@@ -120,12 +120,12 @@ def main() -> None:
         'void idCommonLocal::CreateMainMenu() {\n'
         '\tif ( cvarSystem->GetCVarBool("meridian_native") ) { return; }',
         'Common.cpp/native-shell')
-    # The compiled-in Meridian UI does not depend on proprietary DOOM SWF assets.
-    text = replace_once(text, '\\t\\tuiManager->Init();',
-        '\\t\\tif (!cvarSystem->GetCVarBool("meridian_native")) uiManager->Init();',
+    # Meridian has its own C++ menus; do not start DOOM's proprietary SWF UI.
+    text = replace_once(text, chr(9)*2 + 'uiManager->Init();',
+        chr(9)*2 + 'if (!cvarSystem->GetCVarBool("meridian_native")) uiManager->Init();',
         'Common.cpp/native-no-SWF')
-    text = replace_once(text, '\\t\\tStartMenu( true );',
-        '\\t\\tif (!cvarSystem->GetCVarBool("meridian_native")) StartMenu( true );',
+    text = replace_once(text, chr(9)*2 + 'StartMenu( true );',
+        chr(9)*2 + 'if (!cvarSystem->GetCVarBool("meridian_native")) StartMenu( true );',
         'Common.cpp/native-no-DOOM-menu')
     common.write_text(text, encoding="utf-8")
     # The original code targets WINVER 0x0501 (Windows XP). Visual Studio

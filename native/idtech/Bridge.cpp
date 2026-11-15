@@ -20,6 +20,7 @@
 #include "../core/Map.hpp"
 #include "../core/Audio.hpp"
 #include "../core/Terrain.hpp"
+#include "../core/Milestones.hpp"
 #include "../../../sound/sound.h"
 #include "../core/Combat.cpp"
 #include "../core/Weapons.cpp"
@@ -48,6 +49,8 @@ std::string g_meridianLastNotice;
 idSoundWorld *g_meridianMusicWorld=nullptr;
 bool g_meridianMuted=false;
 bool g_meridianMuteKeyDown=false;
+int g_meridianJournalPage=0;
+bool g_meridianJournalUp=false,g_meridianJournalDown=false;
 void MeridianAudioPlay(const char *id,int channel=-1){
     if(g_meridianMuted||id==nullptr||soundSystem==nullptr)return;
     idSoundWorld *world=soundSystem->GetPlayingSoundWorld();
@@ -162,6 +165,7 @@ void MeridianStart_f(const idCmdArgs &args){
     g_navigation.Playing();
     g_meridianLastNotice.clear();
     g_meridianCurrentTrack.clear();
+    g_meridianJournalPage=0;
     g_meridianTicks=0;g_meridianDraws=0;
     g_meridianSmokeMoved=false;g_meridianSmokeFired=false;
     const char *smoke=std::getenv("MERIDIAN_NATIVE_SMOKE");
@@ -226,6 +230,14 @@ void Meridian_Tick(){
         return;
     }
     if(g_navigation.Page()!=meridian::Screen::Game){
+        if(g_navigation.Page()==meridian::Screen::Journal){
+            const bool up=MeridianKey('w')||MeridianKey(K_UPARROW);
+            const bool down=MeridianKey('s')||MeridianKey(K_DOWNARROW);
+            if(up&&!g_meridianJournalUp)g_meridianJournalPage=(g_meridianJournalPage+1)%2;
+            if(down&&!g_meridianJournalDown)g_meridianJournalPage=(g_meridianJournalPage+1)%2;
+            g_meridianJournalUp=up;
+            g_meridianJournalDown=down;
+        }else{g_meridianJournalUp=false;g_meridianJournalDown=false;}
         g_meridianLastMs=Sys_Milliseconds();
         return;
     }
@@ -311,21 +323,24 @@ void MeridianDrawOverlay(){
         MeridianText(69,389,g_meridian.CurrentRoom().record->name,MeridianColor(1,0.89f,0.60f));
         MeridianText(345,389,"M O ESC PARA VOLVER",MeridianColor(0.69f,0.83f,0.82f));
     }else if(page==meridian::Screen::Journal){
-        MeridianText(68,84,"DIARIO DEL MERIDIANO",MeridianColor(0.98f,0.90f,0.59f));
-        const meridian::Hero &h=g_meridian.Player();
-        int visited=0;
-        for(size_t i=0;i<meridian::Map::Count();++i)if(g_meridian.HasVisited(meridian::Map::At(i).id))++visited;
-        MeridianText(69,127,va("SALAS DESCUBIERTAS %d / %d",visited,int(meridian::Map::Count())),
-            MeridianColor(0.76f,0.88f,0.85f));
-        MeridianText(69,163,va("VIDA %d / %d  MONEDAS %d  LLAVES %d",h.health,h.maxHealth,h.coins,h.keys),
-            MeridianColor(0.76f,0.88f,0.85f));
-        MeridianText(69,201,va("MISION POSJUEGO %d / 5",g_meridian.PostgameStage()),
-            MeridianColor(0.93f,0.83f,0.56f));
-        MeridianText(69,240,va("ARMA: %s",g_meridian.EquippedWeapon().name),
-            MeridianColor(0.76f,0.88f,0.85f));
-        MeridianText(69,280,g_meridian.IsCompleted()?"AVENTURA COMPLETADA":"AVENTURA EN CURSO",
-            MeridianColor(0.73f,0.82f,0.91f));
-        MeridianText(69,388,"Q O ESC PARA VOLVER",MeridianColor(0.69f,0.83f,0.82f));
+        MeridianText(65,79,"LOGROS Y PROGRESO",MeridianColor(0.98f,0.90f,0.59f));
+        MeridianText(385,79,va("%d / %d COMPLETADOS",
+            meridian::Milestones::Completed(g_meridian),meridian::Milestones::Count()),
+            MeridianColor(0.78f,0.88f,0.81f));
+        const int offset=g_meridianJournalPage*10;
+        for(int i=0;i<10;++i){
+            const meridian::Achievement &entry=meridian::Milestones::At(offset+i);
+            const int progress=std::min(entry.target,meridian::Milestones::Progress(g_meridian,entry));
+            const bool complete=progress>=entry.target;
+            const int y=112+i*25;
+            if(complete)MeridianIcon(60,float(y-4),152,MeridianColor(0.83f,0.99f,0.65f));
+            MeridianText(80,y,entry.name,complete?
+                MeridianColor(0.77f,0.98f,0.76f):MeridianColor(0.73f,0.82f,0.85f));
+            MeridianText(499,y,va("%d/%d",progress,entry.target),
+                complete?MeridianColor(0.94f,0.87f,0.57f):MeridianColor(0.64f,0.74f,0.78f));
+        }
+        MeridianText(78,375,va("PAGINA %d/2  W/S PASAR  Q/ESC VOLVER",
+            g_meridianJournalPage+1),MeridianColor(0.72f,0.86f,0.83f));
     }
 }
 void Meridian_Draw(){

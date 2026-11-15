@@ -163,6 +163,11 @@ def main() -> None:
         'while ( Sys_Milliseconds() - legalStartTime < legalMinTime ) {',
         'while ( !cvarSystem->GetCVarBool("meridian_native") && Sys_Milliseconds() - legalStartTime < legalMinTime ) {',
         'Common.cpp/native-no-DOOM-intro')
+    text = replace_once(text,
+        chr(9)*2 + 'menuSoundWorld->PlaceListener( vec3_origin, mat3_identity, 0 );',
+        chr(9)*2 + 'menuSoundWorld->PlaceListener( vec3_origin, mat3_identity, 0 );' + chr(10) +
+        chr(9)*2 + 'if (cvarSystem->GetCVarBool("meridian_native")) soundSystem->SetPlayingSoundWorld(menuSoundWorld);',
+        'Common.cpp/native-music-world')
     common.write_text(text, encoding="utf-8")
     # The original code targets WINVER 0x0501 (Windows XP). Visual Studio
     # 2026 ATL requires newer Windows APIs such as LCMapStringEx.

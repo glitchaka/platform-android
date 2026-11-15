@@ -99,6 +99,16 @@ def main() -> None:
         ("shell", "CreateMainMenu()"),
         ("startmenu", "StartMenu( true )"),
         ("finish-files", "fileSystem->EndLevelLoad()"),
+        ("unload-resources", 'fileSystem->UnloadResourceContainer( "_ordered" )'),
+        ("renderworld", "renderWorld = renderSystem->AllocRenderWorld()"),
+        ("soundworld", "soundWorld = soundSystem->AllocSoundWorld( renderWorld )"),
+        ("menuworld", "menuSoundWorld = soundSystem->AllocSoundWorld( NULL )"),
+        ("session-audio", "session->InitializeSoundRelatedSystems()"),
+        ("multiplayer-maps", "InitializeMPMapsModes()"),
+        ("dialog", "commonDialog.Init()"),
+        ("console-history", "consoleHistory.LoadHistoryFile()"),
+        ("startup-commands", "AddStartupCommands()"),
+        ("storage-check", "CheckStartupStorageRequirements()"),
     ):
         token = chr(9) * 2 + call + ";"
         text = replace_once(text, token,
@@ -135,6 +145,24 @@ def main() -> None:
         'if ( !cvarSystem->GetCVarBool("meridian_native") && !fileSystem->UsingResourceFiles() ) {' + chr(10) +
         chr(9)*3 + 'declManager->FindMaterial( "guis/assets/splash/legal_english" );',
         'Common.cpp/native-skip-proprietary-font')
+    # Native title, pause and HUD never access commercial SWF dialogs or
+    # leaderboards. These systems are excluded from native startup.
+    text = replace_once(text, chr(9)*2+'commonDialog.Init();',
+        chr(9)*2+'if (!cvarSystem->GetCVarBool("meridian_native")) commonDialog.Init();',
+        'Common.cpp/native-no-DOOM-dialogs')
+    text = replace_once(text, chr(9)*2+'InitializeMPMapsModes();',
+        chr(9)*2+'if (!cvarSystem->GetCVarBool("meridian_native")) InitializeMPMapsModes();',
+        'Common.cpp/native-no-multiplayer')
+    text = replace_once(text, chr(9)*2+'CheckStartupStorageRequirements();',
+        chr(9)*2+'if (!cvarSystem->GetCVarBool("meridian_native")) CheckStartupStorageRequirements();',
+        'Common.cpp/native-no-DOOM-storage-dialog')
+    text = replace_once(text, chr(9)*2+'game->Leaderboards_Init();',
+        chr(9)*2+'if (!cvarSystem->GetCVarBool("meridian_native")) game->Leaderboards_Init();',
+        'Common.cpp/native-no-DOOM-leaderboards')
+    text = replace_once(text,
+        'while ( Sys_Milliseconds() - legalStartTime < legalMinTime ) {',
+        'while ( !cvarSystem->GetCVarBool("meridian_native") && Sys_Milliseconds() - legalStartTime < legalMinTime ) {',
+        'Common.cpp/native-no-DOOM-intro')
     common.write_text(text, encoding="utf-8")
     # The original code targets WINVER 0x0501 (Windows XP). Visual Studio
     # 2026 ATL requires newer Windows APIs such as LCMapStringEx.

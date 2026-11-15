@@ -19,6 +19,7 @@
 #include "../core/Navigation.hpp"
 #include "../core/Map.hpp"
 #include "../core/Audio.hpp"
+#include "../core/Terrain.hpp"
 #include "../../../sound/sound.h"
 #include "../core/Combat.cpp"
 #include "../core/Weapons.cpp"
@@ -317,18 +318,85 @@ void Meridian_Draw(){
     const float cameraX=std::max(0.0f,std::min(h.position.x-160.0f,(float)room.record->width-320.0f));
     const float cameraY=std::max(0.0f,std::min(h.position.y-90.0f,(float)room.record->height-180.0f));
     MeridianFill(0,0,640,480,MeridianColor(0.07f,0.09f,0.11f));
-    MeridianFill(0,yOffset,640,360,MeridianColor(0.12f,0.15f,0.16f));
-    const idVec4 ground=MeridianColor(0.31f,0.36f,0.34f);
+    const meridian::TerrainStyle style=meridian::Terrain::RoomStyle(room.record->id);
+    const meridian::BackgroundRGB background=meridian::Terrain::Background(style);
+    MeridianFill(0,yOffset,640,360,MeridianColor(background.r,background.g,background.b));
+    const char *terrainMaterial=meridian::Terrain::Material(style);
+    float terrainW=MERIDIAN_TILES_W,terrainH=MERIDIAN_TILES_H;
+    switch(style){
+        case meridian::TerrainStyle::Moss:
+            terrainW=MERIDIAN_TILESETS_MOSS_FULL_W;terrainH=MERIDIAN_TILESETS_MOSS_FULL_H;break;
+        case meridian::TerrainStyle::Rock:
+            terrainW=MERIDIAN_TILESETS_ROCKS_FULL_W;terrainH=MERIDIAN_TILESETS_ROCKS_FULL_H;break;
+        case meridian::TerrainStyle::Brick:
+            terrainW=MERIDIAN_TILESETS_BRICKS_FULL_W;terrainH=MERIDIAN_TILESETS_BRICKS_FULL_H;break;
+        case meridian::TerrainStyle::Ember:
+            terrainW=MERIDIAN_TILESETS_ORANGE_FULL_W;terrainH=MERIDIAN_TILESETS_ORANGE_FULL_H;break;
+        case meridian::TerrainStyle::Forest:
+        case meridian::TerrainStyle::Frost:
+            terrainW=MERIDIAN_TILESETS_TILES_AND_ENEMIES_W;terrainH=MERIDIAN_TILESETS_TILES_AND_ENEMIES_H;break;
+        case meridian::TerrainStyle::Cave:
+            terrainW=MERIDIAN_TILESETS_TILESET_W;terrainH=MERIDIAN_TILESETS_TILESET_H;break;
+        default:break;
+    }
+    if(style!=meridian::TerrainStyle::Original){
+        for(int tx=24;tx<room.record->width-32;tx+=64){
+            for(int ty=40;ty<(int)room.floorY-24;ty+=32){
+                if((tx/64+ty/32)%3==0)continue;
+                const float sx=style==meridian::TerrainStyle::Frost?104.0f:
+                    style==meridian::TerrainStyle::Forest?0.0f:
+                    style==meridian::TerrainStyle::Cave?48.0f:64.0f;
+                const float sy=style==meridian::TerrainStyle::Forest||
+                    style==meridian::TerrainStyle::Frost?64.0f:
+                    style==meridian::TerrainStyle::Cave?0.0f:8.0f;
+                MeridianAtlas(terrainMaterial,(tx-cameraX)*scale,
+                    yOffset+(ty-cameraY)*scale,32,32,
+                    sx,sy,16,16,terrainW,terrainH,MeridianColor(.55f,.65f,.68f,.16f));
+            }
+        }
+    }
     for(size_t i=0;i<room.platforms.size();++i){
         const meridian::Rect &r=room.platforms[i];
         const float x=(r.x-cameraX)*scale,y=yOffset+(r.y-cameraY)*scale;
-        MeridianFill(x,y,r.w*scale,r.h*scale,ground);
-        const std::string biome=room.record->zone;
-        const float sourceY=(biome=="fungus"||biome=="aurora")?0.0f:
-                            biome=="bone"?160.0f:(biome=="city"||biome=="deep")?320.0f:520.0f;
-        for(int tile=0;tile<(int)r.w;tile+=8){
-            const float tw=std::min(8.0f,r.w-tile);
-            MeridianAtlas("meridian/tiles",x+tile*scale,y,tw*scale,16,8,sourceY,tw,8,
+        if(style!=meridian::TerrainStyle::Original){
+            for(int ty=0;ty<(int)r.h;ty+=8){
+                for(int tx=0;tx<(int)r.w;tx+=8){
+                    const float tw=std::min(8.0f,r.w-tx),th=std::min(8.0f,r.h-ty);
+                    const meridian::TileUV uv=meridian::Terrain::Source(
+                        style,tx,ty,(int)r.w,(int)r.h);
+                    MeridianAtlas(terrainMaterial,x+tx*scale,y+ty*scale,
+                        tw*scale,th*scale,uv.x,uv.y,tw,th,terrainW,terrainH,
+                        MeridianColor(1,1,1));
+                }
+            }
+            const int variant=(int(r.x)/8)%3;
+            const float px=x+(r.w-24.0f)*scale,py=y-16;
+            if(style==meridian::TerrainStyle::Forest||style==meridian::TerrainStyle::Frost){
+                const float offset=style==meridian::TerrainStyle::Frost?104.0f:0.0f;
+                MeridianAtlas(terrainMaterial,px,py,16,16,offset+64+variant*8,96,8,8,
+                    terrainW,terrainH,MeridianColor(1,1,1));
+            }else if(variant==0){
+                MeridianAtlas("meridian/tilesets/pot",px,py-16,32,32,0,0,16,16,
+                    MERIDIAN_TILESETS_POT_W,MERIDIAN_TILESETS_POT_H,
+                    MeridianColor(.54f,.58f,.56f));
+            }else{
+                MeridianAtlas("meridian/tilesets/props_full",px,py,16,16,variant*8,0,8,8,
+                    MERIDIAN_TILESETS_PROPS_FULL_W,MERIDIAN_TILESETS_PROPS_FULL_H,
+                    MeridianColor(1,1,1));
+            }
+        }else{
+            const std::string biome=room.record->zone;
+            const float sy=(biome=="fungus"||biome=="aurora")?0.0f:
+                           biome=="bone"?160.0f:(biome=="city"||biome=="deep")?320.0f:520.0f;
+            MeridianAtlas("meridian/tiles",x,y,16,48,56,sy+8,8,24,
+                MERIDIAN_TILES_W,MERIDIAN_TILES_H,MeridianColor(1,1,1));
+            for(int tx=8;tx<(int)r.w-8;tx+=8){
+                const float tw=std::min(8.0f,r.w-tx);
+                MeridianAtlas("meridian/tiles",x+tx*scale,y,tw*scale,16,
+                    8+((tx/8-1)%11)*8,sy,tw,8,
+                    MERIDIAN_TILES_W,MERIDIAN_TILES_H,MeridianColor(1,1,1));
+            }
+            MeridianAtlas("meridian/tiles",x+(r.w-8)*scale,y,16,16,96,sy,8,8,
                 MERIDIAN_TILES_W,MERIDIAN_TILES_H,MeridianColor(1,1,1));
         }
     }

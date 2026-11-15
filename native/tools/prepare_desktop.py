@@ -99,6 +99,7 @@ def main() -> None:
         '        Sys_GenerateEvents();' + chr(10) +
         '        eventLoop->RunEventLoop();' + chr(10) +
         '        UpdateScreen(false);' + chr(10) +
+        '        soundSystem->Render();' + chr(10) +
         '        Sys_Sleep(1);' + chr(10) +
         '        return;' + chr(10) +
         '    }',

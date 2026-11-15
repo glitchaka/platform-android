@@ -7,6 +7,7 @@
 #include "../core/Trials.hpp"
 #include "../core/Navigation.hpp"
 #include "../core/Map.hpp"
+#include "../core/Audio.hpp"
 #include <cstdio>
 #include <cstdlib>
 #include <set>
@@ -111,6 +112,10 @@ int main(){
     Game game;
     game.NewGame();
     require(game.IsStarted(),"New game starts");
+    require(std::string(Audio::Track(game))=="tutorial","Native audio selects tutorial theme");
+    require(std::string(Audio::EffectFromNotice("COFRE ABIERTO"))=="chest",
+            "Native event audio maps chest opening to original sound");
+
     require(Arsenal::IndexOf("phoenix")==5,"All six original weapons are enumerated");
     require(Arsenal::Stats(1,3).pellets==5,"Upgraded shotgun fires five pellets");
     require(Arsenal::Stats(4,2).burst==3,"Tempest fires three-bullet bursts");

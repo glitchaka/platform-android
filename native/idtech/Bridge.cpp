@@ -16,6 +16,8 @@
 #include <sstream>
 #include <cstdlib>
 #include "../core/World.cpp"
+#include "../core/Navigation.hpp"
+#include "../core/Map.hpp"
 #include "../core/Combat.cpp"
 #include "../core/Weapons.cpp"
 #include "../core/Shop.cpp"
@@ -35,6 +37,7 @@ idCVar meridian_native("meridian_native","1",CVAR_BOOL|CVAR_GAME,"run Ashen Meri
 
 namespace {
 meridian::Game g_meridian;
+meridian::Navigation g_navigation;
 bool g_meridianVisible=false;
 int g_meridianLastMs=0;
 // CI-only input: disabled in ordinary sessions.
@@ -100,6 +103,7 @@ void MeridianStart_f(const idCmdArgs &args){
     g_meridianVisible=true;
     meridian_native.SetBool(true);
     g_meridian.NewGame();
+    g_navigation.Playing();
     g_meridianTicks=0;g_meridianDraws=0;
     g_meridianSmokeMoved=false;g_meridianSmokeFired=false;
     const char *smoke=std::getenv("MERIDIAN_NATIVE_SMOKE");
@@ -112,10 +116,21 @@ void MeridianLoad_f(const idCmdArgs &args){
     g_meridianVisible=true;
     meridian_native.SetBool(true);
     if(!g_meridian.Load("meridian-native.save"))g_meridian.NewGame();
+    g_navigation.Playing();
     g_meridianLastMs=Sys_Milliseconds();
 }
-void MeridianStop_f(const idCmdArgs &args){g_meridianVisible=false;meridian_native.SetBool(false);}
+void MeridianBoot_f(const idCmdArgs &args){
+    g_meridianVisible=true;
+    meridian_native.SetBool(true);
+    std::ifstream file("meridian-native.save");
+    g_navigation.Boot(file.good());
+    const char *smoke=std::getenv("MERIDIAN_NATIVE_SMOKE");
+    if(smoke!=nullptr&&smoke[0]=='1'&&smoke[1]=='\0')MeridianStart_f(args);
+    g_meridianLastMs=Sys_Milliseconds();
+}
+void MeridianStop_f(const idCmdArgs &args){g_navigation.Boot(false);}
 void MeridianRegisterCommands(){
+    cmdSystem->AddCommand("meridian_boot",MeridianBoot_f,CMD_FL_GAME,"opens the native Ashen Meridian menu");
     cmdSystem->AddCommand("meridian_start",MeridianStart_f,CMD_FL_GAME,"starts the native Ashen Meridian game");
     cmdSystem->AddCommand("meridian_load",MeridianLoad_f,CMD_FL_GAME,"loads the last native Ashen Meridian save");
     cmdSystem->AddCommand("meridian_stop",MeridianStop_f,CMD_FL_GAME,"returns to DOOM's renderer");
@@ -123,6 +138,29 @@ void MeridianRegisterCommands(){
 bool Meridian_IsActive(){return g_meridianVisible;}
 void Meridian_Tick(){
     if(!g_meridianVisible)return;
+    meridian::MenuKeys keys;
+    keys.up=MeridianKey(K_UPARROW)||MeridianKey('w');
+    keys.down=MeridianKey(K_DOWNARROW)||MeridianKey('s');
+    keys.accept=MeridianKey(K_ENTER)||MeridianKey(K_SPACE)||MeridianKey('e');
+    keys.back=MeridianKey(K_ESCAPE);
+    keys.atlas=MeridianKey('m')||MeridianKey(K_TAB);
+    keys.journal=MeridianKey('q')&&!g_meridian.IsShopOpen();
+    const meridian::MenuAction action=g_navigation.Step(keys);
+    if(action==meridian::MenuAction::NewGame){MeridianStart_f(idCmdArgs());return;}
+    if(action==meridian::MenuAction::LoadGame){MeridianLoad_f(idCmdArgs());return;}
+    if(action==meridian::MenuAction::SaveAndTitle){
+        g_navigation.SetHasSave(g_meridian.Save("meridian-native.save"));
+        return;
+    }
+    if(action==meridian::MenuAction::Quit){
+        if(g_meridian.IsStarted())g_meridian.Save("meridian-native.save");
+        cmdSystem->BufferCommandText(CMD_EXEC_APPEND,"quit\n");
+        return;
+    }
+    if(g_navigation.Page()!=meridian::Screen::Game){
+        g_meridianLastMs=Sys_Milliseconds();
+        return;
+    }
     const int now=Sys_Milliseconds();
     const float dt=g_meridianLastMs?float(now-g_meridianLastMs)/1000.0f:0.016f;
     g_meridianLastMs=now;
@@ -133,9 +171,9 @@ void Meridian_Tick(){
     in.fire=MeridianKey('j');
     in.interact=MeridianKey('e')||MeridianKey(K_DOWNARROW);
     in.dash=(MeridianKey(K_LSHIFT)||MeridianKey(K_RSHIFT))||MeridianKey('k');
-    in.pause=MeridianKey(K_ESCAPE);
+    in.pause=false;
     in.save=MeridianKey('p');
-    in.weaponNext=MeridianKey('q');
+    in.weaponNext=MeridianKey('r')||(g_meridian.IsShopOpen()&&MeridianKey('q'));
     in.heal=MeridianKey('f');
     if(g_meridianSmoke){
         in.left=false;in.right=true;
@@ -148,8 +186,76 @@ void Meridian_Tick(){
         if(!g_meridian.Shots().empty())g_meridianSmokeFired=true;
     }
 }
+void MeridianDrawTitle(){
+    MeridianFill(0,0,640,480,MeridianColor(0.07f,0.09f,0.13f));
+    MeridianFill(74,76,492,324,MeridianColor(0.15f,0.20f,0.24f));
+    MeridianText(165,121,"ASHEN MERIDIAN",MeridianColor(0.98f,0.90f,0.65f));
+    MeridianText(143,151,"MOTOR NATIVO IDTECH 4",MeridianColor(0.65f,0.84f,0.82f));
+    const char *items[]={"NUEVA PARTIDA","CONTINUAR","SALIR"};
+    for(int i=0;i<3;++i){
+        const bool active=i==g_navigation.Selection();
+        if(active)MeridianFill(138,203+i*44,366,34,MeridianColor(0.25f,0.40f,0.43f));
+        MeridianText(168,215+i*44,items[i],
+            i==1&&!g_navigation.HasSave()?MeridianColor(0.41f,0.45f,0.48f):
+            active?MeridianColor(1,0.91f,0.57f):MeridianColor(0.78f,0.88f,0.84f));
+    }
+    MeridianText(160,365,"W/S ELEGIR   ENTER ACEPTAR",MeridianColor(0.64f,0.75f,0.77f));
+}
+void MeridianDrawOverlay(){
+    const meridian::Screen page=g_navigation.Page();
+    if(page==meridian::Screen::Game)return;
+    MeridianFill(32,57,576,366,MeridianColor(0.07f,0.10f,0.14f,0.96f));
+    if(page==meridian::Screen::Pause){
+        MeridianText(250,103,"PAUSA",MeridianColor(1,0.89f,0.60f));
+        const char *items[]={"CONTINUAR","GUARDAR Y VOLVER AL INICIO","GUARDAR Y SALIR"};
+        for(int i=0;i<3;++i){
+            if(g_navigation.Selection()==i)MeridianFill(68,158+i*48,500,36,MeridianColor(0.23f,0.40f,0.42f));
+            MeridianText(89,170+i*48,items[i],
+                g_navigation.Selection()==i?MeridianColor(1,0.91f,0.58f):MeridianColor(0.78f,0.88f,0.84f));
+        }
+        MeridianText(104,370,"W/S ELEGIR   ENTER ACEPTAR   ESC VOLVER",MeridianColor(0.63f,0.78f,0.80f));
+    }else if(page==meridian::Screen::Atlas){
+        MeridianText(64,71,"ATLAS DEL MERIDIANO",MeridianColor(0.98f,0.92f,0.64f));
+        for(size_t i=0;i<meridian::Map::Count();++i){
+            const meridian::MapRoom &m=meridian::Map::At(i);
+            const bool current=g_meridian.RoomId()==m.id;
+            const bool explored=g_meridian.HasVisited(m.id);
+            const float x=64.0f+float(m.x)*1.32f;
+            const float y=91.0f+float(m.y)*1.30f;
+            const float w=std::max(2.0f,float(m.w)*1.32f);
+            const float h=std::max(2.0f,float(m.h)*1.30f);
+            MeridianFill(x,y,w,h,
+                current?MeridianColor(1,0.83f,0.35f):
+                explored?MeridianColor(0.35f,0.79f,0.72f):MeridianColor(0.23f,0.30f,0.35f));
+            if(current)MeridianFill(x+2,y+2,std::max(1.0f,w-4),std::max(1.0f,h-4),MeridianColor(0.18f,0.23f,0.30f));
+        }
+        MeridianText(69,389,g_meridian.CurrentRoom().record->name,MeridianColor(1,0.89f,0.60f));
+        MeridianText(345,389,"M O ESC PARA VOLVER",MeridianColor(0.69f,0.83f,0.82f));
+    }else if(page==meridian::Screen::Journal){
+        MeridianText(68,84,"DIARIO DEL MERIDIANO",MeridianColor(0.98f,0.90f,0.59f));
+        const meridian::Hero &h=g_meridian.Player();
+        int visited=0;
+        for(size_t i=0;i<meridian::Map::Count();++i)if(g_meridian.HasVisited(meridian::Map::At(i).id))++visited;
+        MeridianText(69,127,va("SALAS DESCUBIERTAS %d / %d",visited,int(meridian::Map::Count())),
+            MeridianColor(0.76f,0.88f,0.85f));
+        MeridianText(69,163,va("VIDA %d / %d  MONEDAS %d  LLAVES %d",h.health,h.maxHealth,h.coins,h.keys),
+            MeridianColor(0.76f,0.88f,0.85f));
+        MeridianText(69,201,va("MISION POSJUEGO %d / 5",g_meridian.PostgameStage()),
+            MeridianColor(0.93f,0.83f,0.56f));
+        MeridianText(69,240,va("ARMA: %s",g_meridian.EquippedWeapon().name),
+            MeridianColor(0.76f,0.88f,0.85f));
+        MeridianText(69,280,g_meridian.IsCompleted()?"AVENTURA COMPLETADA":"AVENTURA EN CURSO",
+            MeridianColor(0.73f,0.82f,0.91f));
+        MeridianText(69,388,"Q O ESC PARA VOLVER",MeridianColor(0.69f,0.83f,0.82f));
+    }
+}
 void Meridian_Draw(){
     if(!g_meridianVisible)return;
+    if(g_navigation.Page()==meridian::Screen::Title){
+        MeridianDrawTitle();
+        ++g_meridianDraws;
+        return;
+    }
     const meridian::Room &room=g_meridian.CurrentRoom();
     if(!room.record)return;
     const meridian::Hero &h=g_meridian.Player();
@@ -226,7 +332,7 @@ void Meridian_Draw(){
     MeridianFill(0,0,640,50,MeridianColor(0.08f,0.08f,0.11f));
     MeridianText(12,12,va("ASHEN MERIDIAN | %s",room.record->name),MeridianColor(0.87f,0.98f,0.92f));
     MeridianText(12,29,va("VIDA %d/%d  MONEDAS %d  LLAVES %d  %s",h.health,h.maxHealth,h.coins,h.keys,g_meridian.EquippedWeapon().name),MeridianColor(0.98f,0.92f,0.73f));
-    MeridianText(12,434,"A/D MOVER  ESPACIO SALTAR  J TIRO  E USAR  Q ARMA  F CURAR",MeridianColor(0.75f,0.85f,0.81f));
+    MeridianText(12,434,"A/D MOVER  ESPACIO SALTAR  J TIRO  E USAR  R ARMA  F CURAR",MeridianColor(0.75f,0.85f,0.81f));
     if(!g_meridian.Notice().empty())
         MeridianText(12,453,g_meridian.Notice().c_str(),MeridianColor(1,0.76f,0.43f));
     if(g_meridian.IsShopOpen()){
@@ -258,6 +364,7 @@ void Meridian_Draw(){
               g_meridian.PostgameTargetsDone(),quest.roomCount),MeridianColor(0.92f,0.86f,0.52f));
     }
     if(g_meridian.IsPaused())MeridianText(245,225,"EN PAUSA",MeridianColor(1,1,1));
+    MeridianDrawOverlay();
     renderSystem->SetColor(MeridianColor(1,1,1));
     ++g_meridianDraws;
     if(g_meridianDraws<=8 || g_meridianDraws%30==0)MeridianWriteHealth();

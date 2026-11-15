@@ -127,6 +127,14 @@ def main() -> None:
     text = replace_once(text, chr(9)*2 + 'StartMenu( true );',
         chr(9)*2 + 'if (!cvarSystem->GetCVarBool("meridian_native")) StartMenu( true );',
         'Common.cpp/native-no-DOOM-menu')
+    # Do not eagerly load original DOOM splash/font assets that are absent
+    # from the open-source engine. Meridian renders its own native UI sprites.
+    text = replace_once(text,
+        'if ( !fileSystem->UsingResourceFiles() ) {' + chr(10) +
+        chr(9)*3 + 'declManager->FindMaterial( "guis/assets/splash/legal_english" );',
+        'if ( !cvarSystem->GetCVarBool("meridian_native") && !fileSystem->UsingResourceFiles() ) {' + chr(10) +
+        chr(9)*3 + 'declManager->FindMaterial( "guis/assets/splash/legal_english" );',
+        'Common.cpp/native-skip-proprietary-font')
     common.write_text(text, encoding="utf-8")
     # The original code targets WINVER 0x0501 (Windows XP). Visual Studio
     # 2026 ATL requires newer Windows APIs such as LCMapStringEx.

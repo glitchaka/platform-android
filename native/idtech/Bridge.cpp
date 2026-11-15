@@ -454,6 +454,9 @@ void Meridian_Draw(){
             MeridianAtlas("meridian/collectables",x-8,y-8,16,16,8,0,8,8,MERIDIAN_COLLECTABLES_W,MERIDIAN_COLLECTABLES_H,MeridianColor(1,1,1));
         else if(p.kind=="chest")
             MeridianAtlas("meridian/tiles",x-8,y-8,16,16,16,792,8,8,MERIDIAN_TILES_W,MERIDIAN_TILES_H,MeridianColor(1,1,1));
+        else if(p.kind=="boss_key")
+            MeridianAtlas("meridian/collectables",x-8,y-8,16,16,24,0,8,8,
+                MERIDIAN_COLLECTABLES_W,MERIDIAN_COLLECTABLES_H,MeridianColor(1,1,1));
         else if(p.kind=="trial")
             MeridianFill(x-8,y-18,16,20,MeridianColor(0.73f,0.40f,0.92f));
         else if(p.kind=="quest")

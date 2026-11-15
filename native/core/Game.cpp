@@ -37,6 +37,14 @@ void Game::EnterRoom(const std::string &id,const std::string &from){
         if(collected.count(token))room.enemies[i].alive=false;
     }
     Postgame::EnterRoom(room,completed,collected);
+    if((id=="bone_lord"||id=="royal_spire")&&defeated.count(id)&&
+       !collected.count("bosskey:"+id)){
+        Pickup key;
+        key.kind="boss_key";
+        key.id="bosskey:"+id;
+        key.position=Vec2(room.record->width*0.62f,room.floorY-4.0f);
+        room.pickups.push_back(key);
+    }
     shots.clear();
     hero.position=Vec2(24,room.floorY-4);
     for(size_t i=0;i<room.doors.size();++i)
@@ -239,9 +247,19 @@ void Game::DamageHero(int amount){
 void Game::OnBossDefeated(){
     defeated.insert(roomId);
     notice="GUARDIAN DERROTADO";
-    if(roomId=="bone_lord"||roomId=="royal_spire"){
-        ++hero.keys;
-        notice="LLAVE OBTENIDA";
+    if((roomId=="bone_lord"||roomId=="royal_spire")&&
+       !collected.count("bosskey:"+roomId)){
+        Pickup key;
+        key.kind="boss_key";
+        key.id="bosskey:"+roomId;
+        key.position=Vec2(room.record->width*0.62f,room.floorY-4.0f);
+        for(const Enemy &enemy:room.enemies)if(enemy.boss&&!enemy.elite){
+            key.position.x=std::max(48.0f,std::min(enemy.position.x,
+                               float(room.record->width)-48.0f));
+            break;
+        }
+        room.pickups.push_back(key);
+        notice="GUARDIAN VENCIDO. RECOGE LA LLAVE";
     }
     if(roomId=="nest")notice="NIDO LIBERADO";
     if(roomId=="aurora_core")notice="SANTUARIO DEL ALBA LIBERADO";
@@ -249,8 +267,16 @@ void Game::OnBossDefeated(){
 void Game::Collect(){
     for(size_t i=0;i<room.pickups.size();++i){
         Pickup &p=room.pickups[i];
-        if(p.taken||p.kind!="coin"||!nearbyPoint(hero.position,p.position,shop.Has("magnet")?30.0f:10.0f))continue;
-        p.taken=true;collected.insert(p.id);++hero.coins;
+        if(p.taken)continue;
+        if(p.kind=="coin"&&
+           nearbyPoint(hero.position,p.position,shop.Has("magnet")?30.0f:10.0f)){
+            p.taken=true;collected.insert(p.id);++hero.coins;
+        }else if(p.kind=="boss_key"&&nearbyPoint(hero.position,p.position,12.0f)){
+            p.taken=true;
+            if(collected.insert(p.id).second)hero.keys=std::min(2,hero.keys+1);
+            notice="LLAVE RECOGIDA. TOTAL "+std::to_string(hero.keys)+" DE 2";
+            Save("meridian-native.save");
+        }
     }
 }
 void Game::Interact(){
@@ -403,7 +429,7 @@ bool Game::Save(const std::string &path)const{
     if(!started)return false;
     std::ofstream f(path.c_str(),std::ios::out|std::ios::trunc);
     if(!f)return false;
-    f<<"MERIDIAN_NATIVE_3\n"<<roomId<<"\n"<<hero.coins<<" "<<hero.health<<" "
+    f<<"MERIDIAN_NATIVE_4\n"<<roomId<<"\n"<<hero.coins<<" "<<hero.health<<" "
         <<hero.maxHealth<<" "<<hero.keys<<" "<<hero.doubleJump<<" "<<hero.dashUnlocked<<" "
         <<completed<<" "<<postgame<<" "<<weaponIndex<<"\n";
     const std::set<std::string>* groups[]={&visited,&collected,&defeated};
@@ -422,9 +448,10 @@ bool Game::Load(const std::string &path){
     std::ifstream f(path.c_str());
     std::string magic,roomName;
     if(!std::getline(f,magic)||
-        (magic!="MERIDIAN_NATIVE_1"&&magic!="MERIDIAN_NATIVE_2"&&magic!="MERIDIAN_NATIVE_3"))return false;
+        (magic!="MERIDIAN_NATIVE_1"&&magic!="MERIDIAN_NATIVE_2"&&
+         magic!="MERIDIAN_NATIVE_3"&&magic!="MERIDIAN_NATIVE_4"))return false;
     const bool newer=(magic!="MERIDIAN_NATIVE_1");
-    const bool shopSaved=(magic=="MERIDIAN_NATIVE_3");
+    const bool shopSaved=(magic=="MERIDIAN_NATIVE_3"||magic=="MERIDIAN_NATIVE_4");
     if(!std::getline(f,roomName)||!FindRoom(roomName))return false;
     Hero loaded;
     int doubleJumpFlag,dashFlag,completedFlag,postgameFlag,newWeapon;
@@ -486,6 +513,19 @@ bool Game::Load(const std::string &path){
     weaponIndex=std::max(0,std::min(kWeaponCount-1,newWeapon));
     if(!weapons[weaponIndex].owned)weaponIndex=0;
     visited=groups[0];collected=groups[1];defeated=groups[2];
+    // Reconcile historical native saves that awarded keys automatically
+    // without recording which physical key had been collected.
+    if(magic!="MERIDIAN_NATIVE_4"){
+        const char *bosses[]={"bone_lord","royal_spire"};
+        int recovered=0;
+        for(const char *boss:bosses){
+            if(recovered>=hero.keys)break;
+            if(defeated.count(boss)){
+                collected.insert(std::string("bosskey:")+boss);
+                ++recovered;
+            }
+        }
+    }
     EnterRoom(roomName,"");
     notice="PARTIDA CARGADA";
     return true;

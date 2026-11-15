@@ -18,6 +18,8 @@
 #include "../core/World.cpp"
 #include "../core/Navigation.hpp"
 #include "../core/Map.hpp"
+#include "../core/Audio.hpp"
+#include "../../../sound/sound.h"
 #include "../core/Combat.cpp"
 #include "../core/Weapons.cpp"
 #include "../core/Shop.cpp"
@@ -40,6 +42,36 @@ meridian::Game g_meridian;
 meridian::Navigation g_navigation;
 bool g_meridianVisible=false;
 int g_meridianLastMs=0;
+std::string g_meridianCurrentTrack;
+std::string g_meridianLastNotice;
+idSoundWorld *g_meridianMusicWorld=nullptr;
+bool g_meridianMuted=false;
+bool g_meridianMuteKeyDown=false;
+void MeridianAudioPlay(const char *id,int channel=-1){
+    if(g_meridianMuted||id==nullptr||soundSystem==nullptr)return;
+    idSoundWorld *world=soundSystem->GetPlayingSoundWorld();
+    if(world==nullptr)return;
+    const std::string shader=std::string("meridian/audio/")+id;
+    world->PlayShaderDirectly(shader.c_str(),channel);
+}
+void MeridianAudioTrack(const char *track){
+    if(track==nullptr||soundSystem==nullptr)return;
+    idSoundWorld *world=soundSystem->GetPlayingSoundWorld();
+    if(world==nullptr)return;
+    if(g_meridianMusicWorld!=world)g_meridianCurrentTrack.clear();
+    g_meridianMusicWorld=world;
+    if(g_meridianMuted){
+        if(!g_meridianCurrentTrack.empty()){
+            world->PlayShaderDirectly("",1);
+            g_meridianCurrentTrack.clear();
+        }
+        return;
+    }
+    if(g_meridianCurrentTrack==track)return;
+    const std::string shader=std::string("meridian/audio/")+track;
+    world->PlayShaderDirectly(shader.c_str(),1);
+    g_meridianCurrentTrack=track;
+}
 // CI-only input: disabled in ordinary sessions.
 bool g_meridianSmoke=false, g_meridianSmokeMoved=false, g_meridianSmokeFired=false;
 float g_meridianSmokeStartX=0.0f;
@@ -104,6 +136,8 @@ void MeridianStart_f(const idCmdArgs &args){
     meridian_native.SetBool(true);
     g_meridian.NewGame();
     g_navigation.Playing();
+    g_meridianLastNotice.clear();
+    g_meridianCurrentTrack.clear();
     g_meridianTicks=0;g_meridianDraws=0;
     g_meridianSmokeMoved=false;g_meridianSmokeFired=false;
     const char *smoke=std::getenv("MERIDIAN_NATIVE_SMOKE");
@@ -117,6 +151,8 @@ void MeridianLoad_f(const idCmdArgs &args){
     meridian_native.SetBool(true);
     if(!g_meridian.Load("meridian-native.save"))g_meridian.NewGame();
     g_navigation.Playing();
+    g_meridianCurrentTrack.clear();
+    g_meridianLastNotice.clear();
     g_meridianLastMs=Sys_Milliseconds();
 }
 void MeridianBoot_f(const idCmdArgs &args){
@@ -124,6 +160,7 @@ void MeridianBoot_f(const idCmdArgs &args){
     meridian_native.SetBool(true);
     std::ifstream file("meridian-native.save");
     g_navigation.Boot(file.good());
+    g_meridianCurrentTrack.clear();
     const char *smoke=std::getenv("MERIDIAN_NATIVE_SMOKE");
     if(smoke!=nullptr&&smoke[0]=='1'&&smoke[1]=='\0')MeridianStart_f(args);
     g_meridianLastMs=Sys_Milliseconds();
@@ -138,6 +175,13 @@ void MeridianRegisterCommands(){
 bool Meridian_IsActive(){return g_meridianVisible;}
 void Meridian_Tick(){
     if(!g_meridianVisible)return;
+    const bool muteKey=MeridianKey('v');
+    if(muteKey&&!g_meridianMuteKeyDown){
+        g_meridianMuted=!g_meridianMuted;
+        if(!g_meridianMuted)g_meridianCurrentTrack.clear();
+    }
+    g_meridianMuteKeyDown=muteKey;
+    if(g_navigation.Page()==meridian::Screen::Title)MeridianAudioTrack("title");
     meridian::MenuKeys keys;
     keys.up=MeridianKey(K_UPARROW)||MeridianKey('w');
     keys.down=MeridianKey(K_DOWNARROW)||MeridianKey('s');
@@ -179,7 +223,17 @@ void Meridian_Tick(){
         in.left=false;in.right=true;
         in.fire=(g_meridianTicks>=2 && g_meridianTicks<8);
     }
+    const float cooldownBefore=g_meridian.Player().shotCooldown;
     g_meridian.Tick(dt,in);
+    if(in.fire&&cooldownBefore<=0&&g_meridian.Player().shotCooldown>0)
+        MeridianAudioPlay("shoot");
+    const std::string &notice=g_meridian.Notice();
+    if(notice!=g_meridianLastNotice){
+        const char *effect=meridian::Audio::EffectFromNotice(notice);
+        if(effect!=nullptr)MeridianAudioPlay(effect);
+        g_meridianLastNotice=notice;
+    }
+    MeridianAudioTrack(meridian::Audio::Track(g_meridian));
     ++g_meridianTicks;
     if(g_meridianSmoke){
         if(g_meridian.Player().position.x>g_meridianSmokeStartX+2.0f)g_meridianSmokeMoved=true;

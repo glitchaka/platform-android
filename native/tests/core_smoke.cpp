@@ -8,6 +8,7 @@
 #include "../core/Navigation.hpp"
 #include "../core/Map.hpp"
 #include "../core/Audio.hpp"
+#include "../core/Terrain.hpp"
 #include <cstdio>
 #include <cstdlib>
 #include <set>
@@ -17,6 +18,14 @@ static void require(bool value,const char *message){
 }
 int main(){
     require(Map::Count()==55,"Native atlas contains 55 exported room rectangles");
+    require(Terrain::RoomStyle("moss_depths")==TerrainStyle::Moss,
+            "Moss room uses original moss texture rather than placeholder geometry");
+    require(Terrain::RoomStyle("aurora_core")==TerrainStyle::Frost,
+            "Final boss uses original frost atlas");
+    require(Terrain::RoomStyle("tutorial")==TerrainStyle::Original,
+            "Tutorial retains original sprite palette");
+    require(Terrain::Source(TerrainStyle::Cave,0,0,32,16).y==48.0f,
+            "Native cave terrain selects the source atlas surface row");
     require(Map::Find("tutorial")!=nullptr&&Map::Find("town")!=nullptr,
             "Source room coordinates are available without Godot");
     require(Map::Find("tutorial")->x==105&&Map::Find("tutorial")->y==8,

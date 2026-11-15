@@ -39,35 +39,35 @@ public:
     }
     static int Progress(const Game &game,const Achievement &achievement){
         const char *id=achievement.id;
-        if(!std::strcmp(id,"first_chest"))return game.ChestCount()>0?1:0;
-        if(!std::strcmp(id,"nest"))return game.HasDefeated("nest")?1:0;
-        if(!std::strcmp(id,"double"))return game.Player().doubleJump?1:0;
-        if(!std::strcmp(id,"explorer"))return (int)game.VisitedCount();
-        if(!std::strcmp(id,"bone"))return game.HasDefeated("bone_lord")?1:0;
-        if(!std::strcmp(id,"dash"))return game.Player().dashUnlocked?1:0;
-        if(!std::strcmp(id,"royal"))return game.HasDefeated("royal_spire")?1:0;
-        if(!std::strcmp(id,"keys"))return game.Player().keys;
-        if(!std::strcmp(id,"treasure"))return (int)game.ChestCount();
-        if(!std::strcmp(id,"hunter"))return (int)game.EnemyKillCount();
-        if(!std::strcmp(id,"ending"))return game.IsCompleted()?1:0;
-        if(!std::strcmp(id,"atlas"))return (int)game.VisitedCount();
-        if(!std::strncmp(id,"post_",5)){
+        if(std::string(id)=="first_chest")return game.ChestCount()>0?1:0;
+        if(std::string(id)=="nest")return game.HasDefeated("nest")?1:0;
+        if(std::string(id)=="double")return game.Player().doubleJump?1:0;
+        if(std::string(id)=="explorer")return (int)game.VisitedCount();
+        if(std::string(id)=="bone")return game.HasDefeated("bone_lord")?1:0;
+        if(std::string(id)=="dash")return game.Player().dashUnlocked?1:0;
+        if(std::string(id)=="royal")return game.HasDefeated("royal_spire")?1:0;
+        if(std::string(id)=="keys")return game.Player().keys;
+        if(std::string(id)=="treasure")return (int)game.ChestCount();
+        if(std::string(id)=="hunter")return (int)game.EnemyKillCount();
+        if(std::string(id)=="ending")return game.IsCompleted()?1:0;
+        if(std::string(id)=="atlas")return (int)game.VisitedCount();
+        if(std::string(id).compare(0,5,"post_")==0){
             const int goal=std::atoi(id+5);
             return game.PostgameStage()>=goal?1:0;
         }
-        if(!std::strcmp(id,"clean_trials")){
+        if(std::string(id)=="clean_trials"){
             int count=0;
             for(const char *room:{"nest","bone_lord","royal_spire"})
                 if(game.HasCollected(std::string("trial:clean:")+room))++count;
             return count;
         }
-        if(!std::strcmp(id,"speed_trials")){
+        if(std::string(id)=="speed_trials"){
             int count=0;
             for(const char *room:{"nest","bone_lord","royal_spire"})
                 if(game.HasCollected(std::string("trial:speed:")+room))++count;
             return count;
         }
-        if(!std::strcmp(id,"marathon"))return game.HasCollected("trial:marathon")?1:0;
+        if(std::string(id)=="marathon")return game.HasCollected("trial:marathon")?1:0;
         return 0;
     }
     static bool Unlocked(const Game &game,const Achievement &achievement){

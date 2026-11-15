@@ -68,6 +68,13 @@ def pack_assets(resources: Path, base_dir: Path, header: Path) -> None:
                 macro = name.upper()
                 dimensions += [f"#define MERIDIAN_{macro}_W {width}.0f",
                                f"#define MERIDIAN_{macro}_H {height}.0f"]
+            elif len(relative.parts) > 1:
+                # Native environments use the same biome atlases as the old
+                # game, with source coordinates and sizes generated from PNGs.
+                macro = "".join(c if c.isalnum() else "_" for c in
+                                relative.with_suffix("").as_posix().upper())
+                dimensions += [f"#define MERIDIAN_{macro}_W {width}.0f",
+                               f"#define MERIDIAN_{macro}_H {height}.0f"]
         elif source.suffix.lower() in (".wav", ".ogg"):
             name = relative.with_suffix("").as_posix().lower()
             sound_path = sounds / relative

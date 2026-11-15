@@ -16,7 +16,11 @@ Los recursos comerciales del DOOM 3 BFG no vienen con el codigo GPL; se
 suministran materiales propios para las rutas basicas del renderer. Se
 conservan los sprites, sonidos y mapa propios de Ashen Meridian.
 
-Limitaciones sin resolver: arranque hasta el primer cuadro jugable, paridad
-de toda la interfaz/sonido, migracion del antiguo guardado, pruebas de la
-campana completa y port Android nativo. La compilacion por si sola no
-demuestra jugabilidad.
+Avance comprobado: la prueba automatizada Windows del commit 7a0920f
+completo inicializacion, simulacion y dibujado reales del tutorial.
+Posteriormente se incorporaron atlas de escenarios, paneles de UI,
+audio, registro de enemigos persistentes, logros y llaves fisicas de jefes.
+
+Limitaciones sin resolver: prueba humana de la campana completa,
+paridad detallada de los menus y contenido, migracion del antiguo guardado
+JSON y port Android NDK. Un smoke test no prueba una partida completa.

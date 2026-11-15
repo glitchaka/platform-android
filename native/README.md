@@ -2,10 +2,12 @@
 
 ## Estado
 
-**Migracion en desarrollo.** CI compila el ejecutable Windows y verifica
-arranque; el chequeo ampliado exige cuadros reales del tutorial, simulacion
-de movimiento y disparos. Una partida completa y Android idTech todavia no
-estan certificados. Este directorio
+**Migracion en desarrollo.** El workflow Windows del commit 7a0920f
+compilo el ejecutable y registro 2250 cuadros del tutorial, 2250 ticks,
+movimiento y disparo simulados en el motor idTech.
+Las revisiones posteriores incorporan render de escenarios, audio y
+progreso nativo. La prueba humana de una partida completa y Android NDK
+siguen sin estar certificados. Este directorio
 contiene una implementacion C++ independiente de la escena original, un adaptador que
 se compila dentro de `Game_local.cpp` y una preparacion de recursos para el renderizador
 idTech 4. El motor de la fuente original NO incluye los datos comerciales de DOOM 3 BFG.

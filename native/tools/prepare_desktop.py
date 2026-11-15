@@ -78,6 +78,31 @@ def main() -> None:
         '\t\tgame->Draw(-1);\n'
         '\t} else if ( loadGUI != NULL ) {',
         'common_frame.cpp/native-draw')
+    # Ashen Meridian owns its game loop. BFG's session/map/SWF frame orchestration
+    # cannot drive a standalone 2D game without commercial campaign resources.
+    text = replace_once(text,
+        'if ( cvarSystem->GetCVarBool("meridian_native") && game != NULL ) {' + chr(10) +
+        chr(9)*2 + 'game->Draw(-1);',
+        'if ( cvarSystem->GetCVarBool("meridian_native") && game != NULL ) {' + chr(10) +
+        chr(9)*2 + 'game->Draw(-1);' + chr(10) +
+        chr(9)*2 + 'return;',
+        'common_frame.cpp/native-exclusive-draw')
+    text = replace_once(text,
+        'void idCommonLocal::Frame() {' + chr(10) +
+        '    static bool traced = false;' + chr(10) +
+        '    if (!traced) { traced = true; MeridianEngineStage("common.Frame"); }',
+        'void idCommonLocal::Frame() {' + chr(10) +
+        '    static bool traced = false;' + chr(10) +
+        '    if (!traced) { traced = true; MeridianEngineStage("common.Frame"); }' + chr(10) +
+        '    if (cvarSystem->GetCVarBool("meridian_native")) {' + chr(10) +
+        '        ++idLib::frameNumber;' + chr(10) +
+        '        Sys_GenerateEvents();' + chr(10) +
+        '        eventLoop->RunEventLoop();' + chr(10) +
+        '        UpdateScreen(false);' + chr(10) +
+        '        Sys_Sleep(1);' + chr(10) +
+        '        return;' + chr(10) +
+        '    }',
+        'common_frame.cpp/native-frame-loop')
     common_frame.write_text(text, encoding="utf-8")
 
     common = OUT / "neo" / "framework" / "Common.cpp"
@@ -168,6 +193,26 @@ def main() -> None:
         chr(9)*2 + 'menuSoundWorld->PlaceListener( vec3_origin, mat3_identity, 0 );' + chr(10) +
         chr(9)*2 + 'if (cvarSystem->GetCVarBool("meridian_native")) soundSystem->SetPlayingSoundWorld(menuSoundWorld);',
         'Common.cpp/native-music-world')
+    # Complete only the systems that the native game actually needs.
+    # Skip the BFG session, multiplayer maps, profile UI and missing commercial
+    # assets; otherwise the desktop process can remain alive without frames.
+    text = replace_once(text,
+        '        MeridianEngineStage("after.gameDLL");',
+        '        MeridianEngineStage("after.gameDLL");' + chr(10) +
+        '        if (cvarSystem->GetCVarBool("meridian_native")) {' + chr(10) +
+        '            MeridianEngineStage("native.bootstrap");' + chr(10) +
+        '            fileSystem->UnloadResourceContainer("_ordered");' + chr(10) +
+        '            renderWorld = renderSystem->AllocRenderWorld();' + chr(10) +
+        '            soundWorld = soundSystem->AllocSoundWorld(renderWorld);' + chr(10) +
+        '            menuSoundWorld = soundSystem->AllocSoundWorld(NULL);' + chr(10) +
+        '            menuSoundWorld->PlaceListener(vec3_origin, mat3_identity, 0);' + chr(10) +
+        '            soundSystem->SetPlayingSoundWorld(menuSoundWorld);' + chr(10) +
+        '            fileSystem->EndLevelLoad();' + chr(10) +
+        '            com_fullyInitialized = true;' + chr(10) +
+        '            MeridianEngineStage("native.ready");' + chr(10) +
+        '            return;' + chr(10) +
+        '        }',
+        'Common.cpp/native-direct-bootstrap')
     common.write_text(text, encoding="utf-8")
     # The original code targets WINVER 0x0501 (Windows XP). Visual Studio
     # 2026 ATL requires newer Windows APIs such as LCMapStringEx.
